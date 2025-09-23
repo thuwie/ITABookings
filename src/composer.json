@@ -1,0 +1,17 @@
+{
+    "name": "root/html",
+    "require": {
+        "twig/twig": "^3.21",
+        "illuminate/database": "^12.31"
+    },
+    "autoload": {
+        "psr-4": {
+            "Root\\Html\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "thu-nh"
+        }
+    ]
+}
