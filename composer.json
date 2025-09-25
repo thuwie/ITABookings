@@ -2,11 +2,13 @@
     "name": "root/html",
     "require": {
         "twig/twig": "^3.21",
-        "illuminate/database": "^12.31"
+        "illuminate/database": "^12.31",
+        "slim/slim": "^4.15",
+        "slim/psr7": "^1.7"
     },
     "autoload": {
         "psr-4": {
-            "Root\\Html\\": "src/"
+            "App\\": "src/"
         }
     },
     "authors": [

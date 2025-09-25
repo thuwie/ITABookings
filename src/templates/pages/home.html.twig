@@ -4,5 +4,21 @@
 
 {% block content %}
 <h1>Welcome to the Home Page</h1>
-<p>This is some sample content.</p>
+<h1>Test Create User</h1>
+
+<button id="createUserBtn">Create User</button>
+<pre id="result"></pre>
+
+<script>
+document.getElementById("createUserBtn").addEventListener("click", async () => {
+    const response = await fetch("/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Peter" })
+    });
+
+    const data = await response.json();
+    document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+});
+</script>
 {% endblock %}

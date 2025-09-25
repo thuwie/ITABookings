@@ -5,7 +5,7 @@
         dockerfile: Dockerfile
       container_name: php_app
       volumes:
-        - ./src:/var/www/html       # map code local
+        - ./:/var/www/html       # map code local
       ports:
         - "8080:80"                 # localhost:8080 -> Apache
       environment:

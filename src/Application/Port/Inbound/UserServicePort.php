@@ -1,0 +1,7 @@
+<?php
+// src/Application/Ports/UserServicePort.php
+namespace App\Application\Port\Inbound;
+
+interface UserServicePort {
+    public function createUser(string $name): array;
+}
