@@ -14,11 +14,32 @@ class UserController {
 
     public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
         $data = json_decode($request->getBody()->getContents(), true);
-        $name = $data['name'] ?? 'Peter';
 
-        $result = $this->service->createUser($name);
+        $firstName   = $data['firstName'] ?? '';
+        $lastName    = $data['lastName'] ?? '';
+        $password    = $data['password'] ?? '';
+        $email       = $data['email'] ?? '';
+        $phoneNumber = $data['phoneNumber'] ?? null;
+        $portrait    = $data['portrait'] ?? null;
 
-        $response->getBody()->write(json_encode($result));
-        return $response->withHeader('Content-Type', 'application/json');
+        try {
+            $result = $this->service->createUser(
+                $firstName,
+                $lastName,
+                $password,
+                $email,
+                $phoneNumber,
+                $portrait
+            );
+
+            $response->getBody()->write(json_encode($result));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus(201); // Created
+        } catch (\DomainException $e) {
+            $error = ['error' => $e->getMessage()];
+            $response->getBody()->write(json_encode($error));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus(400); // Bad Request
+        }
     }
 }

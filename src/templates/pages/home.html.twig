@@ -1,24 +1,58 @@
-{% extends 'layouts/base.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+</head>
+<body>
+    <h1>Create User</h1>
+    <form id="createUserForm">
+        <label>First Name:
+            <input type="text" name="firstName" required>
+        </label><br><br>
 
-{% block title %}Home Page{% endblock %}
+        <label>Last Name:
+            <input type="text" name="lastName" required>
+        </label><br><br>
 
-{% block content %}
-<h1>Welcome to the Home Page</h1>
-<h1>Test Create User</h1>
+        <label>Email:
+            <input type="email" name="email" required>
+        </label><br><br>
 
-<button id="createUserBtn">Create User</button>
-<pre id="result"></pre>
+        <label>Password:
+            <input type="password" name="password" required>
+        </label><br><br>
 
-<script>
-document.getElementById("createUserBtn").addEventListener("click", async () => {
-    const response = await fetch("/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: "Peter" })
-    });
+        <label>Phone Number:
+            <input type="text" name="phoneNumber">
+        </label><br><br>
 
-    const data = await response.json();
-    document.getElementById("result").textContent = JSON.stringify(data, null, 2);
-});
-</script>
-{% endblock %}
+        <label>Portrait URL:
+            <input type="text" name="portrait">
+        </label><br><br>
+
+        <button type="submit">Create User</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('createUserForm');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch('/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            console.log(result);
+            alert(JSON.stringify(result, null, 2));
+        });
+    </script>
+</body>
+</html>
