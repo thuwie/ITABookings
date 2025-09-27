@@ -1,0 +1,7 @@
+{
+    "path-intellisense.mappings": {
+        "/public": "${workspaceFolder}/public",
+        "/src": "${workspaceFolder}/src"
+    },
+    "path-intellisense.extensionOnImport": true
+}

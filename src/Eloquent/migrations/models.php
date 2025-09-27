@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model;
