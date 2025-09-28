@@ -3,5 +3,24 @@
         "/public": "${workspaceFolder}/public",
         "/src": "${workspaceFolder}/src"
     },
-    "path-intellisense.extensionOnImport": true
+    "files.associations": {
+        "*.twig": "html",
+        "*.html.twig": "html"
+    },
+    "emmet.includeLanguages": {
+        "twig": "html",
+        "html.twig": "html",
+        "html": "html"
+    },
+    "auto-rename-tag.activationOnLanguage": [
+        "html",
+        "twig"
+    ],
+    "editor.autoClosingTags": "always",
+    "html.suggest.html5": true,
+    "editor.quickSuggestions": {
+        "strings": true,
+        "other": true,
+        "comments": true
+    }
 }

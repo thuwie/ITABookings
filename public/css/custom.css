@@ -1,0 +1,21 @@
+/* header */
+.hover-underline:hover {
+    text-decoration: underline !important;
+}
+
+.pointer-hover:hover {
+    cursor: pointer;
+
+}
+
+
+/*Nút đăng nhập và đăng ký hiệu ứng shadow text*/
+
+.hover-shadow {
+    transition: text-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9),
+        -2px -2px 8px rgba(255, 255, 255, 0.9);
+}
