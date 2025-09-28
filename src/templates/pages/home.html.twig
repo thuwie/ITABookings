@@ -4,6 +4,88 @@
 {% block title %}Trang chủ{% endblock %}
 
 {% block body %}
-<h2>Chào mừng đến với trang chủ!</h2>
-<p>Đây là nội dung chính của trang.</p>
+
+{# banner searching #}
+<div class="bg-banner-custom p-3 position-relative">
+
+    <h2 class="text-center text-white mt-4">Khám phá điểm du lịch mơ ước của bạn</h2>
+
+    <div class="bg-white w-25 py-2 px-3 rounded-5 position-absolute top-50 start-50 translate-middle">
+        <i class="bi bi-search"></i>
+        <input type="text" name="search" class="ms-2 border-0 shadow-none focus-ring-0 input-searching"
+            placeholder="Bạn cần tìm gì...." style="width: 90%" />
+    </div>
+</div>
+
+<div class="container mt-5">
+    {# Dịch vụ nổi bật #}
+    <section>
+        <h2 class="mb-4">Dịch vụ nổi bật</h2>
+        <div class="row row-cols-4 g-4">
+            <a href="#" class="col text-decoration-none text-reset">
+                <div class="p-4 rounded-4 pointer-hover-col"
+                    style="background-color: #F1EFFF; --shadow-color: rgba(13,80,168,0.4)">
+                    <div class="d-flex flex-row gap-4 align-items-center">
+                        <div class="rounded-circle flex-row d-flex justify-content-center align-items-center "
+                            style="width: 80px; height: 80px; background-color: #DFDDF4;">
+                            <i class="bi bi-fork-knife fs-3 " style="color: #0D50A8;"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fs-4">Ẩm thực</span>
+                            <span class="fs-5">50+ quán</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="col text-decoration-none text-reset">
+                <div class="p-4 rounded-4 pointer-hover-col"
+                    style="background-color: #E7F7F1; --shadow-color: rgba(5,128,74,0.4)">
+                    <div class="d-flex flex-row gap-4 align-items-center">
+                        <div class="rounded-circle flex-row d-flex justify-content-center align-items-center "
+                            style="width: 80px; height: 80px; background-color: #CAF3E5;">
+                            <i class="bi bi-geo-alt-fill fs-3" style="color: #05804A;"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fs-4">Tham quan</span>
+                            <span class="fs-5">50+ địa điểm</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="col text-decoration-none text-reset">
+                <div class="p-4 rounded-4 pointer-hover-col" style="background-color: #FFF3E6; --shadow-color: #FFCC33">
+                    <div class="d-flex flex-row gap-4 align-items-center">
+                        <div class="rounded-circle flex-row d-flex justify-content-center align-items-center "
+                            style="width: 80px; height: 80px; background-color: #FFEBCF;">
+                            <i class="bi bi-car-front-fill fs-3" style="color: #FBA01C"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fs-4">Thuê xe</span>
+                            <span class="fs-5">50+ xe</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="col text-decoration-none text-reset">
+                <div class="p-4 rounded-4 pointer-hover-col" style="background-color: #E5F3FF; --shadow-color: #3366CC">
+                    <div class="d-flex flex-row gap-4 align-items-center">
+                        <div class="rounded-circle flex-row d-flex justify-content-center align-items-center "
+                            style="width: 80px; height: 80px; background-color: #D2ECFF;">
+                            <i class="bi bi-person-badge-fill fs-3" style="color: #2394E8"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fs-4">Đặt tài xế</span>
+                            <span class="fs-5">50+ tài xế</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    {# Địa điểm nổi bật #}
+    <section>
+
+    </section>
+</div>
 {% endblock %}

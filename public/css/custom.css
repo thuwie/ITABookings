@@ -19,3 +19,34 @@
     text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9),
         -2px -2px 8px rgba(255, 255, 255, 0.9);
 }
+
+/*Banner searching*/
+.bg-banner-custom {
+    background-image: url('../images/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 300px;
+}
+
+.input-searching:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/*Hiệu ứng cho các dịch vụ nổi bật*/
+.pointer-hover-col {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* mượt khi hover */
+    cursor: pointer;
+    /* default shadow màu đen trong suốt */
+    --shadow-color: rgba(0, 0, 0, 0.15);
+}
+
+.pointer-hover-col:hover {
+    transform: scale(1.05);
+    /* scale vừa phải */
+    /* đổ shadow theo màu nền */
+    box-shadow: 0 8px 20px var(--shadow-color);
+}
