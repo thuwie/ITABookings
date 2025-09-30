@@ -50,3 +50,25 @@
     /* đổ shadow theo màu nền */
     box-shadow: 0 8px 20px var(--shadow-color);
 }
+
+/*Card địa điểm nổi bật*/
+.clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Giới hạn 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/*Xem chi tiết*/
+.btn-view-detail:hover {
+    color: var(--bs-primary) !important;
+}
+
+/*Xu hướng 2025*/
+.rounded-left-custom {
+    border-top-left-radius: 1rem;
+    /* bo góc trên bên trái */
+    border-bottom-left-radius: 1rem;
+    /* bo góc dưới bên trái */
+}
