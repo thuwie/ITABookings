@@ -1,0 +1,16 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Các tỉnh/thành phố{% endblock %}
+
+{% block body %}
+
+{# banner searching #}
+<h2>Provinces</h2>
+<ul>
+    {% for province in provinces %}
+    <li>{{ province }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

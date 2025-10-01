@@ -1,45 +1,55 @@
-  services:
-    php:
-      build:
-        context: .
-        dockerfile: Dockerfile
-      container_name: php_app
-      volumes:
-        - ./:/var/www/html    # map code local
-        - ./apache.conf:/etc/apache2/sites-available/000-default.conf   
-      ports:
-        - "8080:80"                 # localhost:8080 -> Apache
-      environment:
-        APP_ENV: local
-        DB_CONNECTION: mysql
-        DB_HOST: mysql
-        DB_PORT: 3306
-        DB_DATABASE: booking
-        DB_USERNAME: dev  
-        DB_PASSWORD: 02468
-      depends_on:
-        - mysql
-      networks:
-        - app_network
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php_app
+    volumes:
+      - ./:/var/www/html
+      - ./apache.conf:/etc/apache2/sites-available/000-default.conf
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: booking
+      DB_USERNAME: dev
+      DB_PASSWORD: 02468
+    depends_on:
+      - mysql
+      - redis   # ✅ Thêm dòng này để đảm bảo php chạy sau redis
+    networks:
+      - app_network
 
-    mysql:
-      image: mysql:8.0
-      container_name: mysql_db
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: 123456
-        MYSQL_DATABASE: booking
-        MYSQL_USER: dev
-        MYSQL_PASSWORD: 02468
-      ports:
-        - "3306:3306"               # desktop connect
-      volumes:
-        - mysql_data:/var/lib/mysql
-      networks:
-        - app_network
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: booking
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: 02468
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
 
-  networks:
-    app_network:
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
 
-  volumes:
-    mysql_data:
+networks:
+  app_network:
+
+volumes:
+  mysql_data:

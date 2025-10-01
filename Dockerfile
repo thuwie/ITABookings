@@ -22,5 +22,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install zip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-    
+
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
 EXPOSE 80
