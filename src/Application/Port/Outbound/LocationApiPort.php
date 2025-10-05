@@ -3,5 +3,5 @@ namespace App\Application\Port\Outbound;
 
 interface LocationApiPort {
     public function getProvinces(): array;
-    // public function getDistricts(int $provinceId): array;
+    public function getWardsByProvince(int $provinceCode): array;
 }

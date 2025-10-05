@@ -4,7 +4,7 @@ namespace App\Adapter\Outbound;
 use App\Application\Port\Outbound\LocationApiPort;
 
 class LocationApiAdapter implements LocationApiPort {
-    private string $baseUrl = "https://provinces.open-api.vn/api/v2/p/";
+    private string $baseUrl = "https://tinhthanhpho.com/api/v1/new-provinces";
 
    public function getProvinces(): array {
     $ch = curl_init();
@@ -22,25 +22,25 @@ class LocationApiAdapter implements LocationApiPort {
     // đóng cURL
     curl_close($ch);
 
-    // debug: in dữ liệu thô (JSON)
-    echo "<pre>";
-    var_dump($res);
-    echo "</pre>";
-
     // decode JSON
-    $data = json_decode($res, true);
-
-    // debug: in dữ liệu mảng PHP
-    echo "<pre>";
-    print_r($data);
-    echo "</pre>";
-
-    return $data ?? [];
+   $decoded = json_decode($res, true); 
+    return $decoded['data'] ?? [];
 }
     
 
-    // public function getDistricts(int $provinceId): array {
-    //     $res = file_get_contents($this->baseUrl . "/districts?province_id=" . $provinceId);
-    //     return json_decode($res, true) ?? [];
-    // }
+  public function getWardsByProvince(int $provinceCode): array {
+    // Chuẩn hóa URL
+    $url = rtrim($this->baseUrl, '/') . '/' .  $provinceCode . '/wards';
+
+    // Gọi API
+    $res = @file_get_contents($url);
+    if ($res === false) {
+        error_log("Failed to fetch wards from URL: $url");
+        return [];
+    }
+
+    $decoded = json_decode($res, true);
+    return $decoded['data'] ?? $decoded ?? [];
+}
+
 }

@@ -276,132 +276,6 @@ $tables = [
         $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
     },
 
-    'address' => function($table) {
-        $table->increments('id');                     // Primary key
-        $table->string('name');                        // Tên địa chỉ (ví dụ: "Văn phòng Hà Nội")
-        $table->text('description');      // Mô tả chi tiết địa chỉ, có thể null
-        $table->decimal('average_rates', 3, 2)->nullable(); // Đánh giá trung bình (1–5 sao), có thể null
-        $table->timestamps();                          // created_at, updated_at
-    },
-     'address_imgs' => function($table) {
-        $table->increments('id');                       // Primary key
-        $table->string('name');                    // Tên ảnh hoặc mô tả ảnh - publicUrl
-        $table->unsignedInteger('id_address');          // Khóa ngoại tới address
-        $table->string('url');                           // Đường dẫn lưu file ảnh (trong server hoặc cloud)
-        $table->timestamps();                            // created_at, updated_at
-
-        // Foreign key tới address
-        $table->foreign('id_address')->references('id')->on('address')->onDelete('cascade');
-    },
-    'address_short_videos' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->string('name');                           // Tên video hoặc mô tả ngắn (pulbicUrl)
-        $table->unsignedInteger('id_address');           // Khóa ngoại tới address
-        $table->string('url');                            // Đường dẫn lưu file video (trong server hoặc cloud)
-        $table->timestamps();                             // created_at, updated_at
-
-        // Foreign key tới address
-        $table->foreign('id_address')->references('id')->on('address')->onDelete('cascade');
-    },
-    'rates_address' => function($table) {
-        $table->increments('id');                     // Primary key
-        $table->unsignedInteger('id_user');          // Khóa ngoại tới users (người đánh giá)
-        $table->unsignedInteger('id_address');       // Khóa ngoại tới address
-        $table->unsignedTinyInteger('number_rates'); // Số sao (1–5)
-        $table->text('content')->nullable();         // Nội dung đánh giá, có thể null
-        $table->timestamps();                         // created_at, updated_at
-
-        // Foreign keys
-        $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-        $table->foreign('id_address')->references('id')->on('address')->onDelete('cascade');
-    },
-      'rate_imgs_address' => function($table) {
-        $table->increments('id');                       // Primary key
-        $table->unsignedInteger('id_rate_address');     // Khóa ngoại tới rates_address
-        $table->string('url');                           // Đường dẫn lưu file ảnh (trong server hoặc cloud)
-        $table->string('public_url')->nullable();       // URL công khai để hiển thị
-        $table->timestamps();                            // created_at, updated_at
-
-        // Foreign key tới rates_address
-        $table->foreign('id_rate_address')->references('id')->on('rates_address')->onDelete('cascade');
-    },
-
-    'rate_videos_address' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->unsignedInteger('id_rate_address');      // Khóa ngoại tới rates_address
-        $table->string('url');                            // Đường dẫn lưu file video (trong server hoặc cloud)
-        $table->string('public_url')->nullable();        // URL công khai để hiển thị
-        $table->timestamps();                             // created_at, updated_at
-
-        // Foreign key tới rates_address
-        $table->foreign('id_rate_address')->references('id')->on('rates_address')->onDelete('cascade');
-    },
-    'travel_spots' => function($table) {
-        $table->increments('id');                     // Primary key
-        $table->string('name');                        // Tên điểm tham quan
-        $table->text('description')->nullable();      // Mô tả chi tiết
-        $table->unsignedInteger('id_address');        // Khóa ngoại tới address
-        $table->time('open_time')->nullable();        // Giờ mở cửa
-        $table->time('close_time')->nullable();       // Giờ đóng cửa
-        $table->decimal('price_tag', 18, 2)->nullable(); // Giá vé tham khảo
-        $table->timestamps();                          // created_at, updated_at
-
-        // Foreign key tới address
-        $table->foreign('id_address')->references('id')->on('address')->onDelete('cascade');
-    },
-
-    'travel_spot_imgs' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->unsignedInteger('id_travel_spot');       // Khóa ngoại tới travel_spots
-        $table->string('url');                            // Đường dẫn lưu file ảnh (trong server hoặc cloud)
-        $table->string('public_url')->nullable();        // URL công khai để hiển thị
-        $table->timestamps();                             // created_at, updated_at
-
-        // Foreign key tới travel_spots
-        $table->foreign('id_travel_spot')->references('id')->on('travel_spots')->onDelete('cascade');
-    },
-    'travel_spot_videos' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->unsignedInteger('id_travel_spot');       // Khóa ngoại tới travel_spots
-        $table->string('url');                            // Đường dẫn lưu file video (trong server hoặc cloud)
-        $table->string('public_url')->nullable();        // URL công khai để hiển thị
-        $table->timestamps();                             // created_at, updated_at
-
-        // Foreign key tới travel_spots
-        $table->foreign('id_travel_spot')->references('id')->on('travel_spots')->onDelete('cascade');
-    },
-    'rate_travel_spot' => function($table) {
-        $table->increments('id');                     // Primary key
-        $table->unsignedInteger('id_travel_spot');    // Khóa ngoại tới travel_spots
-        $table->unsignedInteger('id_user');           // Khóa ngoại tới users (người đánh giá)
-        $table->unsignedTinyInteger('number_rates');  // Số sao (1–5)
-        $table->text('content')->nullable();          // Nội dung đánh giá, có thể null
-        $table->timestamps();                          // created_at, updated_at
-
-        // Foreign keys
-        $table->foreign('id_travel_spot')->references('id')->on('travel_spots')->onDelete('cascade');
-        $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-    },
-    'rate_imgs_travel_spots' => function($table) {
-        $table->increments('id');                         // Primary key
-        $table->unsignedInteger('id_rate_travel_spot');   // Khóa ngoại tới rate_travel_spot
-        $table->string('url');                             // Đường dẫn lưu file ảnh (trong server hoặc cloud)
-        $table->string('public_url')->nullable();         // URL công khai để hiển thị
-        $table->timestamps();                              // created_at, updated_at
-
-        // Foreign key tới rate_travel_spot
-        $table->foreign('id_rate_travel_spot')->references('id')->on('rate_travel_spot')->onDelete('cascade');
-    },
-    'rate_videos_travel_spots' => function($table) {
-        $table->increments('id');                         // Primary key
-        $table->unsignedInteger('id_rate_travel_spot');   // Khóa ngoại tới rate_travel_spot
-        $table->string('url');                             // Đường dẫn lưu file video (trong server hoặc cloud)
-        $table->string('public_url')->nullable();         // URL công khai để hiển thị
-        $table->timestamps();                              // created_at, updated_at
-
-        // Foreign key tới rate_travel_spot
-        $table->foreign('id_rate_travel_spot')->references('id')->on('rate_travel_spot')->onDelete('cascade');
-    },
     'historical_bookings' => function($table) {
         $table->increments('id');                         // Primary key
         $table->unsignedInteger('user_id');               // Khóa ngoại tới users
@@ -437,60 +311,7 @@ $tables = [
             // Foreign key tới historical_bookings
             $table->foreign('id_historical_booking')->references('id')->on('historical_bookings')->onDelete('cascade');
     },
-
-    'country' => function($table) {
-        $table->increments('id');           // Primary key
-        $table->string('name');             // Tên quốc gia
-        $table->string('code');         // Mã quốc gia (VD: "VN")
-        $table->timestamps();               // created_at, updated_at
-    },
-
-    'province_city' => function($table) {
-        $table->increments('id');                     // Primary key
-        $table->unsignedInteger('id_country');        // Khóa ngoại tới country
-        $table->string('name');                        // Tên tỉnh/thành phố
-        $table->enum('type', ['province','city']);    // Loại: province hoặc city
-        $table->string('code');                    // Mã tỉnh/thành phố, ví dụ "01" cho Hà Nội
-        $table->timestamps();                          // created_at, updated_at
-
-        // Foreign key tới country
-        $table->foreign('id_country')->references('id')->on('country')->onDelete('cascade');
-    },
-
-    'districts' => function($table) {
-        $table->increments('id');                       // Primary key
-        $table->unsignedInteger('id_province');         // Khóa ngoại tới province_city
-        $table->string('name');                          // Tên quận/huyện/thị xã/thành phố
-        $table->enum('type', ['district','town','city']); // Loại hành chính
-        $table->string('code');                      // Mã hành chính, ví dụ "760" cho Q.1
-        $table->timestamps();                            // created_at, updated_at
-
-        // Foreign key tới province_city
-        $table->foreign('id_province')->references('id')->on('province_city')->onDelete('cascade');
-    },
-    'ward_commune' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->unsignedInteger('id_district');          // Khóa ngoại tới districts
-        $table->string('name');                           // Tên phường/xã/thị trấn
-        $table->enum('type', ['ward','commune','townlet']); // Loại hành chính
-        $table->string('code');                       // Mã hành chính, ví dụ "26734" cho P. Bến Nghé
-        $table->timestamps();                             // created_at, updated_at
-
-        // Foreign key tới districts
-        $table->foreign('id_district')->references('id')->on('districts')->onDelete('cascade');
-    },
-     'address' => function($table) {
-        $table->increments('id');                        // Primary key
-        $table->unsignedInteger('user_id');             // Khóa ngoại tới users
-        $table->unsignedInteger('ward_id');             // Khóa ngoại tới ward_commune
-        $table->string('street_address');               // Tên đường, số nhà
-        $table->text('full_address');                   // Địa chỉ đầy đủ (street + ward + district + province + country)
-        $table->timestamps();                           // created_at, updated_at
-
-        // Foreign keys
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        $table->foreign('ward_id')->references('id')->on('ward_commune')->onDelete('cascade');
-    },
+     
      'complaints' => function($table) {
         $table->increments('id');                        // Primary key
         $table->unsignedInteger('id_user');             // Khóa ngoại tới users (người khiếu nại)
@@ -504,6 +325,162 @@ $tables = [
         $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         $table->foreign('id_booking')->references('id')->on('bookings')->onDelete('cascade');
     },
+
+    'provinces' => function($table) {
+        $table->increments('id');        // Primary key (auto increment)
+        $table->string('code')->unique();          // Mã tỉnh / thành phố
+        $table->string('name');          // Tên tỉnh / thành phố
+        $table->string('type');          // Loại (Tỉnh / Thành phố)
+        $table->timestamps();            // created_at, updated_at
+    },
+
+    'province_images' => function($table) {
+        $table->increments('id');              // Primary key
+        $table->unsignedInteger('province_id'); // Khóa ngoại tới provinces
+        $table->string('url');                 // Đường dẫn ảnh (trong hệ thống)
+        $table->string('publicUrl');           // Link public ra ngoài
+        $table->timestamps();                  // created_at, updated_at
+
+        // Foreign key
+        $table->foreign('province_id')->references('id')->on('provinces')->onDelete('cascade');
+    },
+
+    'wards' => function($table) {
+        $table->increments('id');              // Primary key (auto increment)
+        $table->unsignedInteger('ward_id');    // ID lấy từ API
+        $table->string('code');                // Mã ward
+        $table->string('type');                // Loại (Phường/Xã/Thị trấn)
+        $table->string('province_code');       // Mã tỉnh (tham chiếu provinces.code)
+
+        $table->float('average_rate')->nullable();  // Điểm đánh giá trung bình
+        $table->unsignedInteger('price_from')->nullable(); // Giá thấp nhất
+        $table->unsignedInteger('price_to')->nullable();   // Giá cao nhất
+        $table->string('open_time')->nullable();   // Giờ mở cửa
+        $table->string('close_time')->nullable();  // Giờ đóng cửa
+        $table->unsignedInteger('total_rates')->default(0); // Tổng số lượt đánh giá
+
+        $table->string('full_address');        // Địa chỉ đầy đủ
+
+        $table->timestamps();                  // created_at, updated_at
+        $table->foreign('province_code')->references('code')->on('provinces')->onDelete('cascade');
+    },
+
+    'ward_images' => function($table) {
+        $table->increments('id');             // Primary key
+        $table->unsignedInteger('ward_id');   // Khóa ngoại tới wards
+        $table->string('url');                // Đường dẫn ảnh (nội bộ)
+        $table->string('publicUrl');          // Link public
+        $table->timestamps();                 // created_at, updated_at
+
+        $table->foreign('ward_id')->references('id')->on('wards')->onDelete('cascade');
+    },
+
+    'rate_ward_by_comments' => function($table) {
+        $table->increments('id');           // Primary key
+        $table->unsignedInteger('ward_id'); // Khóa ngoại tới wards
+        $table->unsignedInteger('reviewer_id'); // Khóa ngoại tới users (người đánh giá)
+        $table->text('content');            // Nội dung đánh giá
+        $table->timestamps();               // created_at, updated_at
+
+        $table->foreign('ward_id')->references('id')->on('wards')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+    },
+
+    'rate_ward_by_imgs' => function($table) {
+        $table->increments('id');                     // Primary key
+        $table->unsignedInteger('ward_id');          // Khóa ngoại tới wards
+        $table->unsignedInteger('reviewer_id');      // Khóa ngoại tới users (người đánh giá)
+        $table->unsignedInteger('rate_ward_by_comments_id'); // Khóa ngoại tới rate_ward_by_comments
+        $table->string('url');                        // Đường dẫn ảnh (nội bộ)
+        $table->string('publicUrl');                  // Link public
+        $table->timestamps();                         // created_at, updated_at
+
+        $table->foreign('ward_id')->references('id')->on('wards')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('rate_ward_by_comments_id')->references('id')->on('rate_ward_by_comments')->onDelete('cascade');
+    },
+
+    'rate_ward_stars' => function($table) {
+        $table->increments('id');                     // Primary key
+        $table->unsignedInteger('ward_id');          // Khóa ngoại tới wards
+        $table->unsignedInteger('reviewer_id');      // Khóa ngoại tới users (người đánh giá)
+        $table->unsignedInteger('rate_ward_by_comments_id'); // Khóa ngoại tới rate_ward_by_comments
+        $table->unsignedTinyInteger('number_rate');  // Số sao đánh giá (ví dụ 1-5)
+        $table->timestamps();                         // created_at, updated_at
+
+        $table->foreign('ward_id')->references('id')->on('wards')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('rate_ward_by_comments_id')->references('id')->on('rate_ward_by_comments')->onDelete('cascade');
+    },
+
+    'foods' => function($table) {
+        $table->increments('id');               // Primary key
+        $table->string('name');                  // Tên món ăn / quán
+        $table->text('description');            // Mô tả
+        $table->string('address');               // Địa chỉ (ngắn)
+        $table->unsignedInteger('ward_id');     // Khóa ngoại tới wards
+        $table->string('province_code');        // Mã tỉnh
+        $table->string('open_time')->nullable(); // Giờ mở cửa
+        $table->string('close_time')->nullable();// Giờ đóng cửa
+        $table->float('average_star')->nullable(); // Điểm đánh giá trung bình
+        $table->unsignedInteger('total_rates')->default(0); // Tổng số lượt đánh giá
+        $table->unsignedInteger('price_from')->nullable();  // Giá từ
+        $table->unsignedInteger('price_to')->nullable();    // Giá tới
+        $table->timestamps();                   // created_at, updated_at
+
+        $table->foreign('ward_id')->references('id')->on('wards')->onDelete('cascade');
+        $table->foreign('province_code')->references('code')->on('provinces')->onDelete('cascade');
+    },
+
+    'food_images' => function($table) {
+        $table->increments('id');          // Primary key
+        $table->unsignedInteger('food_id'); // Khóa ngoại tới foods
+        $table->string('url');             // Đường dẫn ảnh (nội bộ)
+        $table->string('public_url');      // Link public
+        $table->timestamps();              // created_at, updated_at
+
+        $table->foreign('food_id')->references('id')->on('foods')->onDelete('cascade');
+    },
+
+    'rate_food_by_comments' => function($table) {
+        $table->increments('id');             // Primary key
+        $table->unsignedInteger('food_id');   // Khóa ngoại tới foods
+        $table->unsignedInteger('reviewer_id'); // Khóa ngoại tới users (người đánh giá)
+        $table->text('content');              // Nội dung đánh giá
+        $table->timestamps();                 // created_at, updated_at
+
+        $table->foreign('food_id')->references('id')->on('foods')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+    },
+
+
+    'rate_food_by_imgs' => function($table) {
+        $table->increments('id');                         // Primary key
+        $table->unsignedInteger('food_id');              // Khóa ngoại tới foods
+        $table->unsignedInteger('reviewer_id');          // Khóa ngoại tới users (người đánh giá)
+        $table->unsignedInteger('rate_food_by_comment_id'); // Khóa ngoại tới rate_food_by_comments
+        $table->string('url')->nullable();               // Đường dẫn ảnh (nếu cần)
+        $table->string('public_url')->nullable();        // Link public (nếu cần)
+        $table->timestamps();                             // created_at, updated_at
+
+        $table->foreign('food_id')->references('id')->on('foods')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('rate_food_by_comment_id')->references('id')->on('rate_food_by_comments')->onDelete('cascade');
+    },
+
+    'rate_food_by_stars' => function($table) {
+        $table->increments('id');                         // Primary key
+        $table->unsignedInteger('food_id');              // Khóa ngoại tới foods
+        $table->unsignedInteger('reviewer_id');          // Khóa ngoại tới users (người đánh giá)
+        $table->unsignedInteger('rate_food_by_comment_id'); // Khóa ngoại tới rate_food_by_comments
+        $table->unsignedTinyInteger('number_stars');     // Số sao đánh giá (ví dụ 1-5)
+        $table->timestamps();                             // created_at, updated_at
+
+        $table->foreign('food_id')->references('id')->on('foods')->onDelete('cascade');
+        $table->foreign('reviewer_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('rate_food_by_comment_id')->references('id')->on('rate_food_by_comments')->onDelete('cascade');
+    },
+
 ];
 
 // Tạo table

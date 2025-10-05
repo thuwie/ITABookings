@@ -5,7 +5,6 @@ use App\Application\Port\Inbound\UserServicePort;
 use App\Domain\Entity\User;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
-use App\Adapter\Outbound\UserRepository;
 use App\Application\Port\Outbound\UserRepositoryPort;
 use App\Domain\ValueObject\PhoneNumber;
 

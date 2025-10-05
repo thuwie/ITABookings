@@ -10,6 +10,10 @@ use Slim\Factory\AppFactory;
 $loader = new FilesystemLoader(__DIR__ . '/../src/templates');
 $twig = new Environment($loader);
 
+//Khai báo container để khởi tạo các service cần thiết cho các routes
+$containerFactory = require __DIR__ . '/../src/Container/container.php';
+$container = $containerFactory();
+
 
 // Tạo repository và service sau khi bootstrap
 $userRepository = new \App\Adapter\Outbound\UserRepository();
@@ -18,6 +22,7 @@ $userController = new \App\Adapter\Inbound\UserController($userService);
 
 
 // Khởi tạo Slim App
+AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 // Load routes
