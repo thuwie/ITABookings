@@ -52,4 +52,4 @@ class ProvinceImages
             'updated_at'  => $this->updatedAt?->format('Y-m-d H:i:s') ?? (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
     }
-}
+}   

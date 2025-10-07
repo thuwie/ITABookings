@@ -2,6 +2,7 @@
 namespace App\Adapter\Outbound;
 
 use App\Application\Port\Outbound\LocationApiPort;
+use App\Domain\Entity\Province;
 
 class LocationApiAdapter implements LocationApiPort {
     private string $baseUrl = "https://tinhthanhpho.com/api/v1/new-provinces";
@@ -23,24 +24,28 @@ class LocationApiAdapter implements LocationApiPort {
     curl_close($ch);
 
     // decode JSON
-   $decoded = json_decode($res, true); 
-    return $decoded['data'] ?? [];
-}
+    $decoded = json_decode($res, true); 
+        return $decoded['data'] ?? [];  
+    }
     
 
   public function getWardsByProvince(int $provinceCode): array {
-    // Chuẩn hóa URL
-    $url = rtrim($this->baseUrl, '/') . '/' .  $provinceCode . '/wards';
+        // Chuẩn hóa URL
+        $url = rtrim($this->baseUrl, '/') . '/' .  $provinceCode . '/wards';
 
-    // Gọi API
-    $res = @file_get_contents($url);
-    if ($res === false) {
-        error_log("Failed to fetch wards from URL: $url");
-        return [];
+        // Gọi API
+        $res = @file_get_contents($url);
+        if ($res === false) {
+            error_log("Failed to fetch wards from URL: $url");
+            return [];
+        }
+
+        $decoded = json_decode($res, true);
+        return $decoded['data'] ?? $decoded ?? [];
     }
 
-    $decoded = json_decode($res, true);
-    return $decoded['data'] ?? $decoded ?? [];
-}
+    public function createProvince(Province $province, array $imgs){
+        
+    }
 
 }
