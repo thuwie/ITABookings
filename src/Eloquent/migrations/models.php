@@ -326,12 +326,16 @@ $tables = [
         $table->foreign('id_booking')->references('id')->on('bookings')->onDelete('cascade');
     },
 
-    'provinces' => function($table) {
-        $table->increments('id');        // Primary key (auto increment)
-        $table->string('code')->unique();          // Mã tỉnh / thành phố
-        $table->string('name');          // Tên tỉnh / thành phố
-        $table->string('type');          // Loại (Tỉnh / Thành phố)
-        $table->timestamps();            // created_at, updated_at
+   'provinces' => function($table) {
+    $table->increments('id');         // Primary key (auto increment)
+    $table->string('code')->unique(); // Mã tỉnh / thành phố
+    $table->string('name');           // Tên tỉnh / thành phố (cho phép dấu)
+    $table->string('type');           // Loại (Tỉnh / Thành phố)
+    $table->timestamps();             // created_at, updated_at
+
+    // ✅ Thêm charset & collation hỗ trợ tiếng Việt có dấu
+    $table->charset = 'utf8mb4';
+    $table->collation = 'utf8mb4_unicode_ci';
     },
 
     'province_images' => function($table) {
@@ -348,6 +352,7 @@ $tables = [
     'wards' => function($table) {
         $table->increments('id');              // Primary key (auto increment)
         $table->unsignedInteger('ward_id');    // ID lấy từ API
+        $table->string('name');                // Loại (Phường/Xã/Thị trấn)
         $table->string('code');                // Mã ward
         $table->string('type');                // Loại (Phường/Xã/Thị trấn)
         $table->string('province_code');       // Mã tỉnh (tham chiếu provinces.code)
@@ -363,6 +368,9 @@ $tables = [
 
         $table->timestamps();                  // created_at, updated_at
         $table->foreign('province_code')->references('code')->on('provinces')->onDelete('cascade');
+         // ✅ Thêm charset & collation hỗ trợ tiếng Việt có dấu
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
     },
 
     'ward_images' => function($table) {

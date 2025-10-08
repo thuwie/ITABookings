@@ -17,7 +17,8 @@ return function(App $app, $twig) {
        $body = $request->getParsedBody();        
        $uploadedFiles = $request->getUploadedFiles(); 
 
-        $province = $service->createProvince($body, $uploadedFiles);
+        $imgs = $uploadedFiles['images'] ?? [];
+        $province = $service->createProvince($body, $imgs);
 
         $response->getBody()->write(json_encode([
             'status' => 'success',

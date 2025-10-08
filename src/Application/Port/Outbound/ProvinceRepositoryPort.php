@@ -4,5 +4,6 @@ use App\Domain\Entity\Province;
 
 interface ProvinceRepositoryPort {
     public function save(Province $province): array;
-    public function saveProvinceImages(array $imgs): array;
+    public function saveProvinceImages(array $imgs, $newProvince ): array;
+    public function saveManyProvinceImages(array $imgs): bool;
 }
