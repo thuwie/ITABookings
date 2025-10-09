@@ -18,13 +18,17 @@ return function(App $app, $twig) {
        $uploadedFiles = $request->getUploadedFiles(); 
 
         $imgs = $uploadedFiles['images'] ?? [];
-        $province = $service->createProvince($body, $imgs);
+        $result = $service->createProvince($body, $imgs);
 
-        $response->getBody()->write(json_encode([
-            'status' => 'success',
-        ]));
+        // Trả về JSON đúng với dữ liệu service trả
+    
+    
+    
+                                             $response->getBody()->write(json_encode($result)); 
 
-        return $response->withHeader('Content-Type', 'application/json');
+
+    // Đặt header Content-Type cho chuẩn REST
+    return $response->withHeader('Content-Type', 'application/json');
     });
 
 };

@@ -26,6 +26,7 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 // Load routes
+require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/home.php')($app, $twig);
 (require __DIR__ . '/../src/routes/locations.php')($app, $twig);
 (require __DIR__ . '/../src/routes/provinces.php')($app, $twig);
