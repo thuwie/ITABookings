@@ -22,13 +22,10 @@ return function(App $app, $twig) {
 
         // Trả về JSON đúng với dữ liệu service trả
     
-    
-    
-                                             $response->getBody()->write(json_encode($result)); 
-
-
-    // Đặt header Content-Type cho chuẩn REST
-    return $response->withHeader('Content-Type', 'application/json');
+         $response->getBody()->write(json_encode($result)); 
+         
+        // Đặt header Content-Type cho chuẩn REST
+        return $response->withHeader('Content-Type', 'application/json');
     });
 
 };

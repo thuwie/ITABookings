@@ -13,6 +13,7 @@ class ProvinceRepository implements ProvinceRepositoryPort {
         'code'       => $province->getCode(),
         'name'       => $province->getName(),
         'type'       => $province->getType(),
+        'type_display' => $province->getTypeDisplay(),
         'created_at' => $province->getCreatedAt() ??  Carbon::now(),
         'updated_at' => $province->getUpdatedAt() ??  Carbon::now(),
     ]);

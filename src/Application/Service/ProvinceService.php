@@ -6,6 +6,7 @@ use App\Application\Port\Outbound\ProvinceRepositoryPort;
 use App\Domain\Entity\Province;
 use App\Domain\Entity\ProvinceImages;
 use Illuminate\Support\Carbon;
+use App\Helper\FileHelper;
 
 class ProvinceService implements ProvinceServicePort {
        private ProvinceRepositoryPort $provinceRepositoryPort;
@@ -15,10 +16,13 @@ class ProvinceService implements ProvinceServicePort {
     }
 
     public function createProvince($province, array $imgs) {
+
+        $normalizeType = FileHelper::sanitizeFolderName($province["type"],);
         $newProvince = new Province(
             0,
             $province["code"],
             $province["name"],
+            $normalizeType,
             $province["type"],
         );
         

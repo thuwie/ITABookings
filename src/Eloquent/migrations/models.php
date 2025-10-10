@@ -331,6 +331,7 @@ $tables = [
     $table->string('code')->unique(); // Mã tỉnh / thành phố
     $table->string('name');           // Tên tỉnh / thành phố (cho phép dấu)
     $table->string('type');           // Loại (Tỉnh / Thành phố)
+    $table->string('type_display');   // Loại (Tỉnh / Thành phố) hiển thị trên UI
     $table->timestamps();             // created_at, updated_at
 
     // ✅ Thêm charset & collation hỗ trợ tiếng Việt có dấu
@@ -355,6 +356,7 @@ $tables = [
         $table->string('name');                // Loại (Phường/Xã/Thị trấn)
         $table->string('code');                // Mã ward
         $table->string('type');                // Loại (Phường/Xã/Thị trấn)
+        $table->string('type_display');        // Loại (Phường/Xã/Thị trấn) hiển thị trên UI
         $table->string('province_code');       // Mã tỉnh (tham chiếu provinces.code)
 
         $table->float('average_rate')->nullable();  // Điểm đánh giá trung bình
