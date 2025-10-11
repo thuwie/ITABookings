@@ -10,6 +10,11 @@ return function(App $app, $twig) {
         return $response;
     });
 
+    $app->get('/province/detail', function ($request, $response, $args) use ($twig) {
+        $response->getBody()->write($twig->render('pages/location/province-detail.html.twig'));
+        return $response;
+    });
+
     $app->post('/province/create', function ($request, $response, $args) use ($twig) {
 
        $service = $this->get(ProvinceServicePort::class); 
