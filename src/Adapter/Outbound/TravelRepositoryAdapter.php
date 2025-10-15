@@ -2,46 +2,54 @@
 namespace App\Adapter\Outbound;
 
 use Illuminate\Database\Capsule\Manager as DB;
-use App\Application\Port\Outbound\ProvinceRepositoryPort;
-use App\Domain\Entity\Province;
+use App\Application\Port\Outbound\TravelSpotRepositoryPort;
+use App\Domain\Entity\TravelSpot;
 use App\Helper\FileHelper;
 use Illuminate\Support\Carbon;
 
-class ProvinceRepository implements ProvinceRepositoryPort {
-    public function getProvinces():array {
-    $results = DB::table('provinces')->get(); // Lấy toàn bộ dữ liệu
-        $provinces = [];
-        foreach ($results as $row) {
-            $province = new Province(
-                id:          $row->id,
-                code:        $row->code,
-                name:        $row->name,
-                type:        $row->type,
-                description: $row->description,
-               createdAt: $row->created_at ? new \DateTimeImmutable($row->created_at) : null,
-               updatedAt: $row->updated_at ? new \DateTimeImmutable($row->updated_at) : null
-            );
+class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
+    // public function getProvinces():array {
+    // $results = DB::table('provinces')->get(); // Lấy toàn bộ dữ liệu
+    //     $provinces = [];
+    //     foreach ($results as $row) {
+    //         $province = new Province(
+    //             id:          $row->id,
+    //             code:        $row->code,
+    //             name:        $row->name,
+    //             type:        $row->type,
+    //             description: $row->description,
+    //            createdAt: $row->created_at ? new \DateTimeImmutable($row->created_at) : null,
+    //            updatedAt: $row->updated_at ? new \DateTimeImmutable($row->updated_at) : null
+    //         );
 
-            $provinces[] = $province;
-        }
+    //         $provinces[] = $province;
+    //     }
 
-        return $provinces;
-    }
-    public function save(Province $province): array {
-       $id = DB::table('provinces')->insertGetId([
-        'code'       => $province->getCode(),
-        'name'       => $province->getName(),
-        'type'       => $province->getType(),
-        'description' => $province->getDescription(),
-        'created_at' => $province->getCreatedAt() ??  Carbon::now(),
-        'updated_at' => $province->getUpdatedAt() ??  Carbon::now(),
+    //     return $provinces;
+    // }
+   public function save(TravelSpot $travelSpot): array
+{
+    $id = DB::table('travel_spots')->insertGetId([
+        'name'         => $travelSpot->getName(),
+        'description'  => $travelSpot->getDescription(),
+        'province_id'  => $travelSpot->getProvinceId(),
+        'open_time'    => $travelSpot->getOpenTime(),
+        'close_time'   => $travelSpot->getCloseTime(),
+        'average_rate' => $travelSpot->getAverageRate(),
+        'price_from'   => $travelSpot->getPriceFrom(),
+        'price_to'     => $travelSpot->getPriceTo(),
+        'total_rates'  => $travelSpot->getTotalRates(),
+        'full_address' => $travelSpot->getFullAddress(),
+        'created_at'   => $travelSpot->getCreatedAt() ?? Carbon::now(),
+        'updated_at'   => $travelSpot->getUpdatedAt() ?? Carbon::now(),
     ]);
 
-    $provinceArray = $province->toArray();
-    $provinceArray['id'] = $id;
+    $travelSpotArray = $travelSpot->toArray();
+    $travelSpotArray['id'] = $id;
 
-    return $provinceArray;
-    }
+    return $travelSpotArray;
+}
+
 
     //Hàm này mới chỉ để lưu ảnh vào folder, nơi cất giữ ảnh thật
     public function saveProvinceImages(array $imgs, $newProvince): array

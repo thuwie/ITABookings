@@ -1,6 +1,10 @@
 # PHP mới nhất (tag 'php:apache' luôn là bản stable/latest)
 FROM php:apache
 
+# Cài Xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+    
 # Cài extension cho MySQL (Eloquent cần)
 RUN docker-php-ext-install pdo pdo_mysql
 

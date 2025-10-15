@@ -7,7 +7,7 @@ class Province
     private string $code;
     private string $name;
     private string $type;
-    private string $type_display;
+    private string $description;
     private ?\DateTimeImmutable $createdAt;
     private ?\DateTimeImmutable $updatedAt;
 
@@ -17,7 +17,7 @@ class Province
         string $code,
         string $name,
         string $type,
-        string $type_display,
+        string $description,
         ?\DateTimeImmutable $createdAt = null,
         ?\DateTimeImmutable $updatedAt = null
     ) {
@@ -25,9 +25,9 @@ class Province
         $this->code = $code;
         $this->name = $name;
         $this->type = $type;
+        $this->description = $description;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
-        $this->type_display = $type_display;
     }
 
     // --- Getters ---
@@ -35,7 +35,7 @@ class Province
     public function getCode(): string { return $this->code; }
     public function getName(): string { return $this->name; }
     public function getType(): string { return $this->type; }
-     public function getTypeDisplay(): string { return $this->type_display; }
+    public function getDescription(): string { return $this->description; }
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
 
@@ -43,7 +43,7 @@ class Province
     public function setCode(string $code): void { $this->code = $code; }
     public function setName(string $name): void { $this->name = $name; }
     public function setType(string $type): void { $this->type = $type; }
-    public function setTypeDisplay(string $typeDisplay): void { $this->type_display = $typeDisplay; }
+    public function setDescription(string $description): void { $this->description = $description; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): void { $this->createdAt = $createdAt; }
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): void { $this->updatedAt = $updatedAt; }
 
@@ -54,7 +54,7 @@ class Province
             'code'       => $this->code,
             'name'       => $this->name,
             'type'       => $this->type,
-            'type_display' => $this->type_display,
+            'description'  => $this->description,
             'created_at' => $this->createdAt ?? (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt ?? (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];

@@ -7,6 +7,8 @@ services:
     volumes:
       - ./:/var/www/html
       - ./apache.conf:/etc/apache2/sites-available/000-default.conf
+      # Mount file xdebug.ini để bật Xdebug
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     ports:
       - "8080:80"
     environment:
@@ -19,7 +21,7 @@ services:
       DB_PASSWORD: 02468
     depends_on:
       - mysql
-      - redis   # ✅ Thêm dòng này để đảm bảo php chạy sau redis
+      - redis
     networks:
       - app_network
 

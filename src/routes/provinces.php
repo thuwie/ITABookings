@@ -33,4 +33,22 @@ return function(App $app, $twig) {
         return $response->withHeader('Content-Type', 'application/json');
     });
 
+    $app->get('/provinces', function ($request, $response, $args) use ($twig) {
+
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $provinces = $service->getProvinces();
+
+        // Render Twig, truyền dữ liệu
+        $response->getBody()->write($twig->render(
+            'pages/travel_spot/create.travel.spot.html.twig',
+            [
+                'provinces' => $provinces,
+            ]
+        ));
+
+        return $response;
+    });
+
 };

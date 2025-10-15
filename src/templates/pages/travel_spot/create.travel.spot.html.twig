@@ -1,0 +1,34 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Tạo mới địa điểm du lịch tại các tỉnh{% endblock %}
+
+{% block body %}
+
+<form action="/travel-spot/create" method="POST" enctype="multipart/form-data">
+    <label for="province_id">Chọn tỉnh/thành:</label>
+    <select name="province_id" id="province_id" required>
+        {% for province in provinces %}
+        <option value="{{ province.id }}">{{ province.name }}</option>
+        {% endfor %}
+    </select>
+    <br>
+
+    <label for="name">Tên địa điểm:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+
+    <label for="description">Mô tả:</label>
+    <textarea id="description" name="description"></textarea>
+    <br>
+
+    <label for="images">Hình ảnh:</label>
+    <input type="file" id="images" name="images[]" multiple>
+    <br>
+
+    <button type="submit">Create travel spot</button>
+</form>
+
+
+
+{% endblock %}

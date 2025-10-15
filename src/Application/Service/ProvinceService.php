@@ -4,12 +4,10 @@ namespace App\Application\Service;
 use App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Outbound\ProvinceRepositoryPort;
 use App\Domain\Entity\Province;
-use App\Domain\Entity\ProvinceImages;
 use Illuminate\Support\Carbon;
-use App\Helper\FileHelper;
 
 class ProvinceService implements ProvinceServicePort {
-       private ProvinceRepositoryPort $provinceRepositoryPort;
+    private ProvinceRepositoryPort $provinceRepositoryPort;
 
     public function __construct(ProvinceRepositoryPort $provinceRepositoryPort) {
         $this->provinceRepositoryPort = $provinceRepositoryPort;
@@ -17,13 +15,13 @@ class ProvinceService implements ProvinceServicePort {
 
     public function createProvince($province, array $imgs) {
 
-        $normalizeType = FileHelper::sanitizeFolderName($province["type"],);
+      
         $newProvince = new Province(
             0,
             $province["code"],
             $province["name"],
-            $normalizeType,
             $province["type"],
+            $province["description"],
         );
         
        $addedEntity = $this->provinceRepositoryPort->save($newProvince);
@@ -47,7 +45,10 @@ class ProvinceService implements ProvinceServicePort {
         : ['status' => 'failed', 'message' => 'Province and images saved unsuccessfully'];
     }
 
-   
+    public function getProvinces():array {
+        $result  = $this->provinceRepositoryPort->getProvinces();
+        return $result;
+    }
 
 
 }
