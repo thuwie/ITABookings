@@ -88,5 +88,26 @@ class ProvinceRepository implements ProvinceRepositoryPort {
     //Hàm này sẽ lưu các url đã lưu ảnh ở đâu folder nào xuống DB
     public function saveManyProvinceImages(array $imgs): bool {
      return DB::table('province_images')->insert($imgs);
-}
+    }
+
+   public function findById(int $id): ?array
+        {
+            $row = DB::table('provinces')->where('id', $id)->first();
+            if (!$row) {
+                return null;
+            }
+
+            $user = new Province(
+                id: $row->id,
+                code: $row->code,
+                name: $row->name,
+                type: $row->type,
+                description: $row->description,
+                createdAt: $row->created_at ? new \DateTimeImmutable($row->created_at) : null,
+                updatedAt: $row->updated_at ? new \DateTimeImmutable($row->updated_at) : null
+            );
+
+            return $user->toArray();
+        }
+
 }

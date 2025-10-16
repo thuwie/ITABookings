@@ -29,7 +29,6 @@ $app = AppFactory::create();
 require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/travel.spot.php')($app, $twig);
 (require __DIR__ . '/../src/routes/home.php')($app, $twig);
-(require __DIR__ . '/../src/routes/locations.php')($app, $twig);
 (require __DIR__ . '/../src/routes/provinces.php')($app, $twig);
 (require __DIR__ . '/../src/routes/users.php')($app);
 

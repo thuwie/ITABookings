@@ -1,7 +1,9 @@
 <?php
 
-$app->get('/files/{folder}/{fileName}', function ($request, $response, $args) {
-    $filePath = __DIR__ . '/../../uploads/provinces/' . $args['folder'] .'/'. $args['fileName'];
+$app->get('/uploads/{category}/{folder}/{fileName}', function ($request, $response, $args) {
+    // category có thể là travel-spots, provinces, etc.
+    $baseDir = __DIR__ . '/../../uploads/';
+    $filePath = $baseDir . $args['category'] . '/' . $args['folder'] . '/' . $args['fileName'];
 
     if (!file_exists($filePath)) {
         throw new \Slim\Exception\HttpNotFoundException($request);
@@ -12,5 +14,7 @@ $app->get('/files/{folder}/{fileName}', function ($request, $response, $args) {
 
     return $response
         ->withHeader('Content-Type', $mimeType)
+        ->withHeader('Content-Disposition', 'inline; filename="' . $args['fileName'] . '"')
         ->withBody($stream);
 });
+

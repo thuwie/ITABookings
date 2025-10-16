@@ -52,13 +52,13 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
 
 
     //Hàm này mới chỉ để lưu ảnh vào folder, nơi cất giữ ảnh thật
-    public function saveProvinceImages(array $imgs, $newProvince): array
+    public function saveTravelSpotImages(array $imgs, $newTravelSpot): array
     {
         $savedFiles = [];
-        $folderName = FileHelper::sanitizeFolderName($newProvince['name']);
+        $folderName = FileHelper::sanitizeFolderName($newTravelSpot['name']);
         
         // Đặt thư mục upload tương đối (trong src/uploads/provinces)
-        $uploadDir = __DIR__ . "/../../../uploads/provinces/{$folderName}/";
+        $uploadDir = __DIR__ . "/../../../uploads/travel-spots/{$folderName}/";
 
         // Tạo thư mục nếu chưa có
         if (!is_dir($uploadDir)) {
@@ -72,7 +72,7 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
                 $originalName = $img->getClientFilename();
 
                 // Tạo tên file an toàn + duy nhất
-                $safeName = uniqid('province_', true) . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
+                $safeName = uniqid('travel_spot_', true) . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName);
 
                 // Đường dẫn đầy đủ
                 $filePath = $uploadDir . $safeName;
@@ -85,7 +85,7 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
                     'original_name' => $originalName,
                     'file_name'     => $safeName,
                     'file_path'     => $filePath,
-                    'url'           => "/uploads/provinces/{$folderName}/" . $safeName,
+                    'url'           => "/uploads/travel-spots/{$folderName}/" . $safeName,
                 ];
             }
         }
@@ -94,7 +94,22 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
     }
 
     //Hàm này sẽ lưu các url đã lưu ảnh ở đâu folder nào xuống DB
-    public function saveManyProvinceImages(array $imgs): bool {
-     return DB::table('province_images')->insert($imgs);
-}
+    public function saveManyTravelSpotImages(array $imgs): bool {
+        return DB::table('travel_imgs')->insert($imgs);
+    }
+
+     public function getTravelSpotsByProvinceIds(array $provinceIds): array {
+         return DB::table('travel_spots')
+        ->whereIn('province_id', $provinceIds)
+        ->get()
+        ->toArray();
+     }
+
+    public function getTravelSpotImagesByTravelSpotIds(array $travelSpotIds): array {
+        return DB::table('travel_imgs')
+        ->whereIn('id_travel_spot', $travelSpotIds)
+        ->get()
+        ->toArray();
+    }
+
 }

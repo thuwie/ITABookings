@@ -57,37 +57,46 @@
         </button>
     </div>
 
-    {% for province in provinces %}
-    {% if province.wards is defined and province.wards | length > 0 %}
-    <div>
+    {% for item in provincesWithTravelSpots %}
+    {% set province = item.province %}
+    {% set travelSpots = item.travelSpots %} {# dùng travelSpots cho giữ layout cũ #}
+
+    {% if travelSpots is defined and travelSpots | length > 0 %}
+    <div class="mb-5">
         <span class="d-flex gap-2 align-items-center mb-3">
-            <div>
-                🌍
-            </div>
-            <h3>
-                {{ province.name }}
-            </h3>
+            <div>🌍</div>
+            <h3>{{ province.name }}</h3>
         </span>
 
         <div class="d-flex flex-row flex-wrap gap-3">
-            {% for ward in province.wards | slice(0, 5) %}
-            <a href="#" class="col text-decoration-none text-reset">
+            {% for travelSpot in travelSpots | slice(0, 5) %}
+            <a href="#" class="col text-decoration-none text-reset" style="max-width: 300px;">
                 <article class="pointer-hover-col border rounded-2" style="border-color: #000;">
-                    <div class="w-100 rounded-top-2" style="background-image: url('../images/banner.jpg'); 
-                                           height: 180px; 
-                                           background-size: cover; 
-                                           background-position: center; 
-                                           background-repeat: no-repeat;">
+                    {% set bgImg = '../images/banner.jpg' %}
+
+                    {% if travelSpot.images is defined and travelSpot.images|length > 0 and travelSpot.images[0].url is
+                    defined %}
+                    {% set bgImg = travelSpot.images[0].url %}
+                    {% endif %}
+
+                    <div class="w-100 rounded-top-2" style="
+                        background-image: url('{{ bgImg }}'); 
+                        height: 180px; 
+                        background-size: cover; 
+                        background-position: center; 
+                        background-repeat: no-repeat;">
                     </div>
+
+
                     <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
-                        <span class="text-center"> <strong class="fs-5">{{ ward.name }}</strong></span>
+                        <span class="text-center"><strong class="fs-5">{{ travelSpot.name }}</strong></span>
                         <div class="d-flex gap-2 align-items-center justify-content-center" style="color: #9E9E9E">
                             <i class="bi bi-star-fill text-warning"></i>
-                            <span>4.8</span>
-                            <span>(2345 đánh giá)</span>
+                            <span>{{ travelSpot.averageRate ?? '0' }}</span>
+                            <span>({{ travelSpot.totalRates ?? '0' }} đánh giá)</span>
                         </div>
                         <p class="clamp-2" style="max-width: 300px;">
-                            {{ item.desc }}
+                            {{ travelSpot.description ?? '' }}
                         </p>
                         <button class="btn w-100 text-center rounded-2 btn-primary">
                             <span class="btn-view-detail">Xem chi tiết</span>
@@ -100,6 +109,7 @@
     </div>
     {% endif %}
     {% endfor %}
+
 </div>
 
 

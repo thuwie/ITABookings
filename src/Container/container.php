@@ -1,9 +1,6 @@
 <?php
 namespace App\Container;
 
-use App\Application\Service\LocationService;
-use App\Adapter\Outbound\LocationApiAdapter;
-use App\Adapter\Outbound\RedisCacheAdapter;
 use App\Adapter\Outbound\ProvinceRepository;
 use App\Application\Service\ProvinceService;
 use App\Application\Service\TravelSpotService;
@@ -18,11 +15,6 @@ use DI\Container;
 return function (): Container {
     
     $container = new Container();
-    $container->set(LocationService::class, function() {
-        $cache = new RedisCacheAdapter();
-        $apiPort = new LocationApiAdapter();
-        return new LocationService($apiPort, $cache);
-    });
 
         //Province Service
 
@@ -33,7 +25,9 @@ return function (): Container {
 
         //Inbound Port Binding
         $container->set(ProvinceServicePort::class, function() use ($container) {
-            return new ProvinceService($container->get(ProvinceRepositoryPort::class));
+            return new ProvinceService($container->get(ProvinceRepositoryPort::class),
+            $container->get(TravelSpotRepositoryPort::class)
+        );
         });
 
 

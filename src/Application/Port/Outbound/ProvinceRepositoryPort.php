@@ -7,4 +7,5 @@ interface ProvinceRepositoryPort {
     public function save(Province $province): array;
     public function saveProvinceImages(array $imgs, $newProvince ): array;
     public function saveManyProvinceImages(array $imgs): bool;
+    public function findById(int $id): ?array;
 }
