@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 $tables = [
     'provinces' => function ($table) {
         $table->increments('id');
-        $table->string('code', 50);
+        $table->string('code', 50)->unique();
         $table->string('name');
         $table->string('type')->nullable();
         $table->text('description')->nullable();
