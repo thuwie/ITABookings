@@ -9,15 +9,17 @@ use App\Application\Port\Inbound\TravelSpotPort;
 use App\Application\Port\Outbound\ProvinceRepositoryPort;
 use App\Application\Port\Outbound\TravelSpotRepositoryPort;
 use App\Adapter\Outbound\TravelRepositoryAdapter;
+use App\Application\Port\Outbound\FoodCourtRepositoryPort;
+use App\Adapter\Outbound\FoodCourtRepository;
+use App\Application\Service\FoodCourtService;
+use App\Application\Port\Inbound\FoodCourtServicePort;
 
 use DI\Container;
 
 return function (): Container {
     
     $container = new Container();
-
-        //Province Service
-
+        //PROVINCE SERVICES
         // Outbound Port Binding
         $container->set(ProvinceRepositoryPort::class, function() {
             return new ProvinceRepository();
@@ -31,7 +33,7 @@ return function (): Container {
         });
 
 
-        //Travel spot service
+        //TRAVEL SPOT SERVICES
          // Outbound Port Binding
         $container->set(TravelSpotRepositoryPort::class, function() {
             return new TravelRepositoryAdapter();
@@ -41,5 +43,19 @@ return function (): Container {
         $container->set(TravelSpotPort::class, function() use ($container) {
             return new TravelSpotService($container->get(TravelSpotRepositoryPort::class));
         });
+
+
+        //FOOD COURT SERVICES
+         // Outbound Port Binding
+        $container->set(FoodCourtRepositoryPort::class, function() {
+            return new FoodCourtRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(FoodCourtServicePort::class, function() use ($container) {
+            return new FoodCourtService($container->get(FoodCourtRepositoryPort::class));
+        });
+
+        
      return $container;
 };

@@ -72,6 +72,46 @@ $tables = [
         $table->charset = 'utf8mb4';
         $table->collation = 'utf8mb4_unicode_ci';
     },
+    'food_courts' => function ($table) {
+        $table->increments('id');                        // PK
+        $table->string('name');                          // Tên khu ăn uống
+        $table->text('description')->nullable();         // Mô tả
+        $table->string('address')->nullable();           // Địa chỉ cụ thể
+        $table->unsignedInteger('province_id');          // FK tới provinces
+        $table->unsignedInteger('travel_spot_id');       
+        $table->time('open_time')->nullable();           // Giờ mở
+        $table->time('close_time')->nullable();          // Giờ đóng
+        $table->decimal('average_star', 3, 2)->default(0);  // Điểm trung bình
+        $table->unsignedInteger('total_rates')->default(0); // Tổng đánh giá
+        $table->decimal('price_from', 10, 2)->nullable();    // Giá từ
+        $table->decimal('price_to', 10, 2)->nullable();      // Giá đến
+        $table->timestamps();
+
+        $table->foreign('province_id')
+            ->references('id')
+            ->on('provinces')
+            ->onDelete('cascade');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+    'food_court_images' => function ($table) {
+        $table->increments('id');                     // PK
+        $table->unsignedInteger('food_court_id');          // FK tới food_courts
+        $table->string('url');                       // Đường dẫn file
+        $table->string('public_url')->nullable();    // Link public (nếu có)
+        $table->timestamps();
+
+        $table->foreign('food_court_id')
+            ->references('id')
+            ->on('food_courts')
+            ->onDelete('cascade');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
 ];
 
 

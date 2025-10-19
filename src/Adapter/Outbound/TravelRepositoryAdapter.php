@@ -112,4 +112,30 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
         ->toArray();
     }
 
+    public function getTravelSpots(): array {
+         $results = DB::table('travel_spots')->get(); // Lấy toàn bộ dữ liệu
+        $travelSpots = [];
+       foreach ($results as $row) {
+        $travelSpot = new TravelSpot(
+            id:          $row->id,
+            name:        $row->name,
+            description: $row->description,
+            provinceId:  $row->province_id,
+            openTime:    $row->open_time ?? null,
+            closeTime:   $row->close_time ?? null,
+            averageRate: $row->average_rate ?? null,
+            priceFrom:   $row->price_from ?? null,
+            priceTo:     $row->price_to ?? null,
+            totalRates:  $row->total_rates ?? null,
+            fullAddress: $row->full_address ?? null,
+            createdAt:   $row->created_at ? new \DateTimeImmutable($row->created_at) : null,
+            updatedAt:   $row->updated_at ? new \DateTimeImmutable($row->updated_at) : null
+        );
+
+        $travelSpots[] = $travelSpot->toArray();
+    }
+
+        return $travelSpots;
+    }
+
 }

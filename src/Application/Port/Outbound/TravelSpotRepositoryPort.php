@@ -8,5 +8,5 @@ interface TravelSpotRepositoryPort {
      public function saveManyTravelSpotImages(array $imgs): bool;
      public function getTravelSpotsByProvinceIds(array $provinceIds): array;
      public function getTravelSpotImagesByTravelSpotIds(array $travelSpotIds): array;
-
+     public function getTravelSpots(): array;
 }

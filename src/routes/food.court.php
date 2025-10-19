@@ -2,41 +2,63 @@
 use Slim\App;
 use App\Application\Port\Inbound\TravelSpotPort;
 use  App\Application\Port\Inbound\ProvinceServicePort;
+use App\Application\Port\Inbound\FoodCourtServicePort;
 
 return function(App $app, $twig) {
 
     $app->get('/food-court/create', function ($request, $response, $args) use ($twig) {
          // Lấy service
     $service = $this->get(ProvinceServicePort::class);
+    $servicesTravelSpot = $this->get(TravelSpotPort::class);
+
 
     // Lấy danh sách provinces
     $provinces = $service->getProvinces();
+    $travelSpots = $servicesTravelSpot->getTravelSpots();
 
     // Render và truyền dữ liệu vào Twig
     $response->getBody()->write(
         $twig->render('pages/food_court/create.food.court.html.twig', [
-            'provinces' => $provinces
+            'provinces' => $provinces,
+            'travelSpots' =>$travelSpots,
         ])
     );
 
     return $response;
     });
 
-    //  $app->post('/travel-spot/create', function ($request, $response, $args) use ($twig) {
+    $app->post('/food-court/create', function ($request, $response, $args) use ($twig) {
 
-    //    $service = $this->get(TravelSpotPort::class); 
+        /** @var FoodCourtServicePort $service */
+        $service = $this->get(FoodCourtServicePort::class);
 
-    //    $body = $request->getParsedBody();        
-    //    $uploadedFiles = $request->getUploadedFiles(); 
+        // Lấy dữ liệu từ form
+        $body = $request->getParsedBody();
 
-    //     $imgs = $uploadedFiles['images'] ?? [];
-    //     $result = $service->createTravelSpot($body, $imgs);
+        // Ép kiểu và chuẩn hóa dữ liệu
+        $data = [
+            'name'          => $body['name'] ?? '',
+            'description'   => $body['description'] ?? null,
+            'address'       => $body['address'] ?? null,
+            'province_id'   => isset($body['province_id']) && $body['province_id'] !== '' ? (int)$body['province_id'] : 0,
+            'travel_spot_id'=> isset($body['travel_spot_id']) && $body['travel_spot_id'] !== '' ? (int)$body['travel_spot_id'] : 0,
+            'open_time'     => $body['open_time'] ?? null,
+            'close_time'    => $body['close_time'] ?? null,
+            'price_from'    => isset($body['price_from']) ? (float)$body['price_from'] : null,
+            'price_to'      => isset($body['price_to']) ? (float)$body['price_to'] : null,
+        ];
 
-    //     // Trả về JSON đúng với dữ liệu service trả
-    
-    //      $response->getBody()->write(json_encode($result)); 
-         
-    //     // Đặt header Content-Type cho chuẩn REST
-    //     return $response->withHeader('Content-Type', 'application/json');
-    // });
+        // Lấy file upload
+        $uploadedFiles = $request->getUploadedFiles();
+        $imgs = $uploadedFiles['images'] ?? [];
+
+        // Gọi service tạo food court
+        $result = $service->createFoodCourt($data, $imgs); // chú ý đổi tên hàm cho đúng
+
+        // Trả về JSON
+        $response->getBody()->write(json_encode($result));
+
+        return $response->withHeader('Content-Type', 'application/json');
+    });
+
 };

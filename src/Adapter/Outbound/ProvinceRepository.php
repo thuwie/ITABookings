@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 
 class ProvinceRepository implements ProvinceRepositoryPort {
     public function getProvinces():array {
-    $results = DB::table('provinces')->get(); // Lấy toàn bộ dữ liệu
+         $results = DB::table('provinces')->get(); // Lấy toàn bộ dữ liệu
         $provinces = [];
         foreach ($results as $row) {
             $province = new Province(
