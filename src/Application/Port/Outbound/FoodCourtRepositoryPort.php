@@ -6,4 +6,5 @@ interface FoodCourtRepositoryPort {
     public function save(FoodCourt $foodCourt): array;
     public function saveManyFoodCourtImages(array $imgs): bool;
     public function saveFoodCourtImages(array $imgs, $newFoodCourt): array;
+    public function getFoodCourtsWithImages():array;
 }

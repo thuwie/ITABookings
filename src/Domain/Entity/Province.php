@@ -39,6 +39,8 @@ class Province
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
     public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
 
+    /** @var ProvinceImage[] */
+    public array $images = [];
     // --- Setters ---
     public function setCode(string $code): void { $this->code = $code; }
     public function setName(string $name): void { $this->name = $name; }

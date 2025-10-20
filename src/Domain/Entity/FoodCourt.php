@@ -50,6 +50,9 @@ class FoodCourt
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
     }
+    
+    /** @var FoodCourtImages[] */
+    public array $images = [];
 
     // --- Getters ---
     public function getId(): int { return $this->id; }

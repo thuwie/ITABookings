@@ -55,5 +55,10 @@ class FoodCourtService implements FoodCourtServicePort {
             ? ['status' => 'success', 'message' => 'Food court and images saved successfully']
             : ['status' => 'failed', 'message' => 'Food court and images saved unsuccessfully'];
       }
+
+      public function getFoodCourtsWithImages():array {
+        $result = $this->foodCourtRepositoryPort->getFoodCourtsWithImages();
+        return $result;
+      }
 }
 

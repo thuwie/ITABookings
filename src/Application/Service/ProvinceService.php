@@ -54,7 +54,7 @@ class ProvinceService implements ProvinceServicePort {
     }
 
   public function getProvincesWithTravelSports(): array
-{
+  {
     $provinces  = $this->provinceRepositoryPort->getProvinces();
     $provinceIds = array_map(fn($p) => $p->getId(), $provinces);
 
@@ -99,10 +99,18 @@ class ProvinceService implements ProvinceServicePort {
             'travelSpots' => $spotsWithImgs,
         ];
     }
+        return $result;
+    }
 
-    return $result;
-}
+    
+    public function getProvincesWithImages():array {
+        $result = $this->provinceRepositoryPort->getProvincesWithImages();
+        return $result;
+    }
 
-
+    public function getProvinceByIdWithImages($id) {
+        $result = $this->provinceRepositoryPort->getProvinceByIdWithImages($id);
+        return $result;
+    }
 
 }

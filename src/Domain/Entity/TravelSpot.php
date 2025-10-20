@@ -49,6 +49,9 @@ class TravelSpot
         $this->updatedAt = $updatedAt;
     }
 
+    /** @var TravelImage[] */
+    public array $images = [];
+
     // --- Getters ---
     public function getId(): ?int { return $this->id; }
     public function getName(): string { return $this->name; }

@@ -8,4 +8,6 @@ interface ProvinceRepositoryPort {
     public function saveProvinceImages(array $imgs, $newProvince ): array;
     public function saveManyProvinceImages(array $imgs): bool;
     public function findById(int $id): ?array;
+    public function getProvincesWithImages():array;
+    public function getProvinceByIdWithImages($id);
 }

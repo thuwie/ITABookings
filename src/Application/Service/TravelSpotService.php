@@ -60,5 +60,10 @@ class TravelSpotService implements TravelSpotPort {
         return $result;
     }
 
+    public function getTravelSpotsWithImages():array {
+        $result = $this->travelSpotRepositoryPort->getTravelSpotsWithImages();
+        return $result;
+    }
+
 }
 

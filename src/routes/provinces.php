@@ -10,10 +10,24 @@ return function(App $app, $twig) {
         return $response;
     });
 
-    $app->get('/province/detail', function ($request, $response, $args) use ($twig) {
-        $response->getBody()->write($twig->render('pages/province/province-detail.html.twig'));
+    $app->get('/province/{id}', function ($request, $response, $args) use ($twig) {
+        $id = $args['id'];
+
+        // Lấy service
+        $service = $this->get(ProvinceServicePort::class);
+
+        // Lấy province kèm images
+        $province = $service->getProvinceByIdWithImages($id);
+
+        // ✅ Viết đúng cú pháp render
+        $html = $twig->render('pages/province/province-detail.html.twig', [
+            'province' => $province
+        ]);
+
+        $response->getBody()->write($html);
         return $response;
     });
+
 
     $app->get('/provinces', function ($request, $response, $args) use ($twig) {
 
