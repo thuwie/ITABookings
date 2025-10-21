@@ -8,8 +8,11 @@ GRANT ALL PRIVILEGES ON booking.* TO 'backup'@'%';
 FLUSH PRIVILEGES;
 
 chạy lệnh này để export
-docker exec mysql_db sh -c "mysqldump -u backup -pbackup123 booking > /tmp/backup.sql"
-docker cp mysql_db:/tmp/backup.sql .\backup.sql
+GRANT SELECT, SHOW VIEW, LOCK TABLES, EVENT, TRIGGER, PROCESS ON *.* TO 'backup'@'%';
+FLUSH PRIVILEGES;
+EXIT;
+docker exec mysql_db sh -c "mysqldump -u backup -pbackup123 booking > /tmp/backup_21102025.sql"
+docker cp mysql_db:/tmp/backup_21102025.sql .\backup_21102025.sql
 
 //kiểm tra user backup tồn tại:
 docker exec -it mysql_db mysql -u root -p

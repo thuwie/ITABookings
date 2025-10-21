@@ -32,7 +32,7 @@ CREATE TABLE `food_court_images` (
   PRIMARY KEY (`id`),
   KEY `food_court_images_food_court_id_foreign` (`food_court_id`),
   CONSTRAINT `food_court_images_food_court_id_foreign` FOREIGN KEY (`food_court_id`) REFERENCES `food_courts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `food_court_images` (
 
 LOCK TABLES `food_court_images` WRITE;
 /*!40000 ALTER TABLE `food_court_images` DISABLE KEYS */;
-INSERT INTO `food_court_images` VALUES (1,1,'/uploads/food-court/bun-ca-long-xuyen/food-court_68f505755d32e4.10122862_download.jpg','download.jpg','2025-10-19 15:36:53','2025-10-19 15:36:53'),(2,1,'/uploads/food-court/bun-ca-long-xuyen/food-court_68f50575645250.17852601_download__4_.jpg','download (4).jpg','2025-10-19 15:36:53','2025-10-19 15:36:53');
+INSERT INTO `food_court_images` VALUES (1,1,'/uploads/food-court/bun-ca-long-xuyen/food-court_68f505755d32e4.10122862_download.jpg','download.jpg','2025-10-19 15:36:53','2025-10-19 15:36:53'),(2,1,'/uploads/food-court/bun-ca-long-xuyen/food-court_68f50575645250.17852601_download__4_.jpg','download (4).jpg','2025-10-19 15:36:53','2025-10-19 15:36:53'),(3,2,'/uploads/food-court/bun-ca-hieu-thuan-thanh-pho-long-xuyen/food-court_68f7a07cc9ad08.70165132_download__2_.jpg','download (2).jpg','2025-10-21 15:02:21','2025-10-21 15:02:21'),(4,2,'/uploads/food-court/bun-ca-hieu-thuan-thanh-pho-long-xuyen/food-court_68f7a07cd44f39.87258486_download.jpg','download.jpg','2025-10-21 15:02:21','2025-10-21 15:02:21'),(5,2,'/uploads/food-court/bun-ca-hieu-thuan-thanh-pho-long-xuyen/food-court_68f7a07cdc0326.50066432_download__1_.jpg','download (1).jpg','2025-10-21 15:02:21','2025-10-21 15:02:21');
 /*!40000 ALTER TABLE `food_court_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -71,7 +71,7 @@ CREATE TABLE `food_courts` (
   KEY `food_courts_province_id_foreign` (`province_id`),
   KEY `food_courts_travel_spot_id_foreign` (`travel_spot_id`),
   CONSTRAINT `food_courts_province_id_foreign` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `food_courts` (
 
 LOCK TABLES `food_courts` WRITE;
 /*!40000 ALTER TABLE `food_courts` DISABLE KEYS */;
-INSERT INTO `food_courts` VALUES (1,'Bún cá Long Xuyên','Là món ăn đầu tiên trong danh sách đặc sản An Giang muốn giới thiệu cho bạn món bún cá Long Xuyên. Đây là một món ăn khá quen thuộc và bình dị đối với dân địa phương, nó còn có tên gọi khác là bún nước lèo.\r\n\r\nVới hương vị nước lèo ngọt thanh, vị hơi nhạt, và đặc trưng là cá được ướp qua nghệ vàng ươm, giúp màu nước lèo vàng và có mùi thơm nghệ và khiến món bún cá thêm đậm đà hơn. Cá lóc hoặc cá kèo thường được chọn để nấu nước dùng, ngoài ra bạn cũng có thể ăn kèm với thịt heo, và không thể thiếu những món rau đặc trưng vùng sông nước như giá, bông điên điển, bắp chuối, rau răm,...','18/2A Lê Lợi, Mỹ Bình, Tp Long Xuyên',1,0,'09:30:00','22:02:00',0.00,0,15000.00,25000.00,'2025-10-19 15:36:13','2025-10-19 15:36:13');
+INSERT INTO `food_courts` VALUES (1,'Bún cá Long Xuyên','Là món ăn đầu tiên trong danh sách đặc sản An Giang muốn giới thiệu cho bạn món bún cá Long Xuyên. Đây là một món ăn khá quen thuộc và bình dị đối với dân địa phương, nó còn có tên gọi khác là bún nước lèo.\r\n\r\nVới hương vị nước lèo ngọt thanh, vị hơi nhạt, và đặc trưng là cá được ướp qua nghệ vàng ươm, giúp màu nước lèo vàng và có mùi thơm nghệ và khiến món bún cá thêm đậm đà hơn. Cá lóc hoặc cá kèo thường được chọn để nấu nước dùng, ngoài ra bạn cũng có thể ăn kèm với thịt heo, và không thể thiếu những món rau đặc trưng vùng sông nước như giá, bông điên điển, bắp chuối, rau răm,...','18/2A Lê Lợi, Mỹ Bình, Tp Long Xuyên',1,0,'09:30:00','22:02:00',0.00,0,15000.00,25000.00,'2025-10-19 15:36:13','2025-10-19 15:36:13'),(2,'Bún cá Hiếu Thuận (Thành phố Long Xuyên)','Khách du lịch đến với An Giang chắc chắn không thể bỏ qua món bún cá đặc sản. Bún cá ở đây nổi tiếng là do nước dùng đậm đà được nấu bằng ngải bún và nghệ tươi, thịt cá lóc chắc nịch, tươi ngon. Và một trong những quán bán bún cá trứ danh ở An Giang chính là bún cá Hiếu Thuận. Quán bún cá này đã duy trì ở đất An Giang đến 30 năm, trở thành “quán bún kỷ lục” trong lòng người địa phương.','18/2A Lê Lợi, P. Mỹ Bình, Thành phố Long Xuyên, An Giang, Việt Nam',1,0,'07:30:00','18:00:00',0.00,0,25000.00,35000.00,'2025-10-21 15:02:20','2025-10-21 15:02:20');
 /*!40000 ALTER TABLE `food_courts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -161,7 +161,7 @@ CREATE TABLE `travel_imgs` (
   PRIMARY KEY (`id`),
   KEY `travel_imgs_id_travel_spot_foreign` (`id_travel_spot`),
   CONSTRAINT `travel_imgs_id_travel_spot_foreign` FOREIGN KEY (`id_travel_spot`) REFERENCES `travel_spots` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +170,7 @@ CREATE TABLE `travel_imgs` (
 
 LOCK TABLES `travel_imgs` WRITE;
 /*!40000 ALTER TABLE `travel_imgs` DISABLE KEYS */;
-INSERT INTO `travel_imgs` VALUES (1,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b59976e973.44179453_download__2_.jpg','download (2).jpg','2025-10-18 15:43:21','2025-10-18 15:43:21'),(2,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b599874de2.89197200_download.jpg','download.jpg','2025-10-18 15:43:21','2025-10-18 15:43:21'),(3,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b599960165.44575558_download__1_.jpg','download (1).jpg','2025-10-18 15:43:21','2025-10-18 15:43:21');
+INSERT INTO `travel_imgs` VALUES (1,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b59976e973.44179453_download__2_.jpg','download (2).jpg','2025-10-18 15:43:21','2025-10-18 15:43:21'),(2,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b599874de2.89197200_download.jpg','download.jpg','2025-10-18 15:43:21','2025-10-18 15:43:21'),(3,1,'/uploads/travel-spots/rung-tram-tra-su-an-giang/travel_spot_68f3b599960165.44575558_download__1_.jpg','download (1).jpg','2025-10-18 15:43:21','2025-10-18 15:43:21'),(4,2,'/uploads/travel-spots/thot-not-trai-tim-an-giang/travel_spot_68f79e76305a02.01440812_download__2_.jpg','download (2).jpg','2025-10-21 14:53:42','2025-10-21 14:53:42'),(5,2,'/uploads/travel-spots/thot-not-trai-tim-an-giang/travel_spot_68f79e763fd5c8.35465781_download.jpg','download.jpg','2025-10-21 14:53:42','2025-10-21 14:53:42'),(6,2,'/uploads/travel-spots/thot-not-trai-tim-an-giang/travel_spot_68f79e7648b9c1.68096892_download__3_.jpg','download (3).jpg','2025-10-21 14:53:42','2025-10-21 14:53:42'),(7,3,'/uploads/travel-spots/bun-ca-hieu-thuan-thanh-pho-long-xuyen-an-giang/travel_spot_68f79ff73eed88.38077967_download__2_.jpg','download (2).jpg','2025-10-21 15:00:07','2025-10-21 15:00:07'),(8,3,'/uploads/travel-spots/bun-ca-hieu-thuan-thanh-pho-long-xuyen-an-giang/travel_spot_68f79ff74768d3.55209833_download.jpg','download.jpg','2025-10-21 15:00:07','2025-10-21 15:00:07'),(9,3,'/uploads/travel-spots/bun-ca-hieu-thuan-thanh-pho-long-xuyen-an-giang/travel_spot_68f79ff74fa312.96216901_download__1_.jpg','download (1).jpg','2025-10-21 15:00:07','2025-10-21 15:00:07');
 /*!40000 ALTER TABLE `travel_imgs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,7 +198,7 @@ CREATE TABLE `travel_spots` (
   PRIMARY KEY (`id`),
   KEY `travel_spots_province_id_foreign` (`province_id`),
   CONSTRAINT `travel_spots_province_id_foreign` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +207,7 @@ CREATE TABLE `travel_spots` (
 
 LOCK TABLES `travel_spots` WRITE;
 /*!40000 ALTER TABLE `travel_spots` DISABLE KEYS */;
-INSERT INTO `travel_spots` VALUES (1,'Rừng Tràm Trà Sư - An Giang','Được xem là khu rừng tràm đẹp nhất và nổi tiếng nhất Việt Nam, rừng tràm Trà Sư mang đến cho du khách một cái nhìn tuyệt vời về vùng sinh thái đặc trưng của đồng bằng sông Cửu Long. Khi mùa nước nổi về, hãy đến đây để hòa mình vào khung cảnh thiên nhiên tuyệt đẹp.',1,'07:30:00','16:30:00',0.00,150000.00,170000.00,0,'Xã Văn Giáo, huyện Tịnh Biên, Tỉnh An Giang','2025-10-18 15:43:21','2025-10-18 15:43:21');
+INSERT INTO `travel_spots` VALUES (1,'Rừng Tràm Trà Sư - An Giang','Được xem là khu rừng tràm đẹp nhất và nổi tiếng nhất Việt Nam, rừng tràm Trà Sư mang đến cho du khách một cái nhìn tuyệt vời về vùng sinh thái đặc trưng của đồng bằng sông Cửu Long. Khi mùa nước nổi về, hãy đến đây để hòa mình vào khung cảnh thiên nhiên tuyệt đẹp.',1,'07:30:00','16:30:00',0.00,150000.00,170000.00,0,'Xã Văn Giáo, huyện Tịnh Biên, Tỉnh An Giang','2025-10-18 15:43:21','2025-10-18 15:43:21'),(2,'Thốt Nốt Trái Tim - An Giang','Điểm nhấn độc đáo và không thể bỏ qua trên hành trình khám phá An Giang chính là cây thốt nốt trái tim. Đây là cụm cây thốt nốt mà phần thân và tán lá tạo thành hình trái tim tự nhiên vô cùng ấn tượng. Tọa lạc trên đoạn đường từ Hồ Tà Pạ đến Hồ Ô Thum, cây thốt nốt trái tim nổi bật giữa bức tranh thiên nhiên xanh mát với bầu trời trong xanh, đồng lúa mướt mát và hồ nước lung linh.',1,'07:30:00','17:00:00',0.00,120000.00,150000.00,0,' Xã An Tức, huyện Tri Tôn, Tỉnh An Giang','2025-10-21 14:53:42','2025-10-21 14:53:42'),(3,'Bún cá Hiếu Thuận (Thành phố Long Xuyên) - An Giang','Khách du lịch đến với An Giang chắc chắn không thể bỏ qua món bún cá đặc sản. Bún cá ở đây nổi tiếng là do nước dùng đậm đà được nấu bằng ngải bún và nghệ tươi, thịt cá lóc chắc nịch, tươi ngon. Và một trong những quán bán bún cá trứ danh ở An Giang chính là bún cá Hiếu Thuận. Quán bún cá này đã duy trì ở đất An Giang đến 30 năm, trở thành “quán bún kỷ lục” trong lòng người địa phương.',1,'07:30:00','18:00:00',0.00,30000.00,40000.00,0,'18/2A Lê Lợi, P. Mỹ Bình, Thành phố Long Xuyên, An Giang, Việt Nam, Tỉnh An Giang','2025-10-21 15:00:07','2025-10-21 15:00:07');
 /*!40000 ALTER TABLE `travel_spots` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -220,4 +220,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-20 15:37:01
+-- Dump completed on 2025-10-21 15:19:34
