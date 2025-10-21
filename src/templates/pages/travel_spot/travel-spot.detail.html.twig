@@ -1,0 +1,203 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Thông tin chi tiết {% endblock %}
+
+{% block body %}
+
+<div class="d-flex flex-column gap-5">
+    <div class="d-flex justify-content-end">
+        <div class="d-flex flex-row gap-2 p-2 rounded-5"
+            style="width: fit-content; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
+            <i class="bi bi-suit-heart-fill text-danger"></i>
+            <span>Danh sách yêu thích</span>
+        </div>
+    </div>
+
+    <div class="w-100 position-relative">
+        <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" alt="" class="w-100 rounded-5"
+            style="height: 500px; object-fit: cover;">
+        <!-- <h2 class="position-absolute top-50 start-50 translate-middle text-white">
+            Vịnh Hạ Long
+        </h2> -->
+    </div>
+
+    <div class="d-flex gap-3 rounded-3 flex-column p-3" style="box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
+        <div class="d-flex justify-content-center align-content-center ">
+            <button class="w-25 rounded-2 border-0 py-2" style="background-color: orange; color: white;
+             outline: none;
+            ">
+                Đặt xe ngay
+            </button>
+        </div>
+
+        <div class="d-flex flex-row gap-5 justify-content-center mt-3">
+            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
+                ">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span>4.8</span>
+                <span>(2345 đánh giá)</span>
+            </span>
+
+            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;">
+                <i>📍</i>
+                <span>{{province.name}}, Việt Nam</span>
+            </span>
+
+            <span class="d-flex flex-row gap-2 p-2 rounded-3 align-items-center" style="background-color: #F1F1F0;    
+                        ">
+                <i class="mb-1">💵</i>
+                <span>Vé: 200.000đ/người</span>
+            </span>
+
+            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
+                        ">
+                <i>⏰</i>
+                <span>7:00 - 18:00</span>
+            </span>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Giới thiệu</h3>
+            <p>
+                Lâm Đồng là một trong những điểm đến nổi tiếng nhất Việt Nam, được UNESCO công nhận là Di sản Thiên
+                nhiên
+                Thế giới.
+                Với hàng nghìn hòn đảo đá vôi kỳ vĩ, đây là địa điểm lý tưởng để du lịch, nghỉ dưỡng và khám phá văn
+                hóa.
+            </p>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Hình ảnh liên quan</h3>
+            <div class="d-flex flex-row gap-3">
+                <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" class="w-25 rounded-2"
+                    alt="">
+                <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg" class="w-25 rounded-2" alt="">
+                <img src="/files/lam-dong/province_68e9052c500d62.01999069_images.jpg" class="w-25 rounded-2" alt="">
+                <img src="/files/lai-chau/province_68e904e93ae418.63400375_dia-diem-du-lich-lai-chau_1755228424.jpg"
+                    class="w-25 rounded-2" alt="">
+            </div>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Ẩm thực tại Lâm Đồng</h3>
+            <div class="d-flex flex-row gap-3">
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/khanh-hoa/province_68e904a41f5841.11015819_download.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/khanh-hoa/province_68e904a4122b08.32949251_download__1_.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/khanh-hoa/province_68e904a42593a0.23070309_download__2_.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+
+                <div style="width: 200px; height: 230px; position: relative;">
+                    <img src="/files/hung-yen/province_68e90468be0fb9.09751686_download__1_.jpg"
+                        class="w-100 h-100 rounded-2" alt="">
+                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
+                                         background: rgba(0, 0, 0, 0.4);">
+                        <h4>Phở Thìn</h4>
+                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+            <h3 style="color: #1281B9;">Đánh giá</h3>
+            <div class="d-flex flex-column gap-2" style="margin-left: 30px;">
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-row gap-2">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrM_AQNJWhb5o2WW0fgyFYK5TjK1Ygy8yXsA&s"
+                            class="rounded-circle" style="width: 60px; height: 60px;" alt="portrait">
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <strong class="fs-5">Nguyễn An</strong>
+                            <span class="d-flex flex-row gap-2 text-warning ">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <p>Khung cảnh rất đẹp, đi thuyền ngắm đảo rất thích</p>
+                </div>
+
+                <hr>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-row gap-2">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgi-jj5Vb8PrZSVIbC1g9d8GI1QeqHCDCD_w&s"
+                            class="rounded-circle" style="width: 60px; height: 60px;" alt="portrait">
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <strong class="fs-5">Kim Chi</strong>
+                            <span class="d-flex flex-row gap-2 text-warning ">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <p>Rất đẹp nhưng hơi đông khách vào mùa hè</p>
+                </div>
+
+                <form class="d-flex flex-column gap-3">
+                    <span class="fs-5">Viết đánh giá của bạn</span>
+                    <textarea class="p-2 rounded-2" name="" id="">Chia sẻ cảm nhận....</textarea>
+                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

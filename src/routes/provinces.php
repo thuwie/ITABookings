@@ -1,14 +1,81 @@
 <?php
 use Slim\App;
 use  App\Application\Port\Inbound\ProvinceServicePort;
-
+use App\Application\Port\Inbound\TravelSpotPort;
+use App\Application\Port\Inbound\FoodCourtServicePort;
 
 return function(App $app, $twig) {
 
     $app->get('/province/create', function ($request, $response, $args) use ($twig) {
-        $response->getBody()->write($twig->render('pages/location/create-location.html.twig'));
+        $response->getBody()->write($twig->render('pages/province/create-province.html.twig'));
         return $response;
     });
+
+    $app->get('/province/{id}', function ($request, $response, $args) use ($twig) {
+        $id = $args['id'];
+
+        $service = $this->get(ProvinceServicePort::class);
+        $serviceTravelSpot = $this->get(TravelSpotPort::class);
+        $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
+
+
+        // Lấy province kèm images
+        $province = $service->getProvinceByIdWithImages($id);
+
+        //Lấy travel spot kèm images
+        $travelSpots =  $serviceTravelSpot->getTravelSpotsWithImagesByProvinceId($id);
+
+        //Lấy Food court kèm images
+        $foodCourts = $serviceFoodCourt->getFoodCourtsWithImagesByProvinceId($id);
+
+        $html = $twig->render('pages/province/province-detail.html.twig', [
+            'province' => $province,
+            'travelSpots' =>$travelSpots,
+            'foodCourts' =>$foodCourts
+        ]);
+
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+
+    $app->get('/provinces', function ($request, $response, $args) use ($twig) {
+
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $provinces = $service->getProvinces();
+
+        // Render Twig, truyền dữ liệu
+        $response->getBody()->write($twig->render(
+            'pages/travel_spot/create.travel.spot.html.twig',
+            [
+                'provinces' => $provinces,
+            ]
+        ));
+
+        return $response;
+    });
+
+    $app->get('/provinces-with-travel-spots', function ($request, $response, $args) use ($twig) {
+
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $data = $service->getProvincesWithTravelSports();
+
+        // Render Twig, truyền dữ liệu
+        $response->getBody()->write($twig->render(
+            'pages/province/provinces-with-travel-spots.html.twig',
+            [
+                'provincesWithTravelSpots' => $data,
+            ]
+        ));
+
+        return $response;
+    });
+
+
 
     $app->post('/province/create', function ($request, $response, $args) use ($twig) {
 
@@ -17,13 +84,17 @@ return function(App $app, $twig) {
        $body = $request->getParsedBody();        
        $uploadedFiles = $request->getUploadedFiles(); 
 
-        $province = $service->createProvince($body, $uploadedFiles);
+        $imgs = $uploadedFiles['images'] ?? [];
+        $result = $service->createProvince($body, $imgs);
 
-        $response->getBody()->write(json_encode([
-            'status' => 'success',
-        ]));
-
+        // Trả về JSON đúng với dữ liệu service trả
+    
+         $response->getBody()->write(json_encode($result)); 
+         
+        // Đặt header Content-Type cho chuẩn REST
         return $response->withHeader('Content-Type', 'application/json');
     });
+
+   
 
 };

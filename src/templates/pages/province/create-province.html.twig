@@ -1,0 +1,18 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Các tỉnh/thành phố{% endblock %}
+
+{% block body %}
+
+<form action="/province/create" method="POST" enctype="multipart/form-data">
+    <label>Code: <input type="text" name="code" required></label><br>
+    <label>Name: <input type="text" name="name" required></label><br>
+    <label>Type: <input type="text" name="type"></label><br>
+    <label>Description: <input type="text" name="description"></label><br>
+    <label>Images: <input type="file" name="images[]" multiple></label><br>
+    <button type="submit">Create Province</button>
+</form>
+
+
+{% endblock %}

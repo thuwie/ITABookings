@@ -1,0 +1,174 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Thông tin chi tiết {% endblock %}
+
+{% block body %}
+
+<div class="d-flex flex-column gap-5">
+    <div class="d-flex justify-content-end">
+        <div class="d-flex flex-row gap-2 p-2 rounded-5"
+            style="width: fit-content; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
+            <i class="bi bi-suit-heart-fill text-danger"></i>
+            <span>Danh sách yêu thích</span>
+        </div>
+    </div>
+
+    <div class="w-100 position-relative">
+        <h2 class="position-absolute top-0 text-black start-50" style="transform: translateX(-50%) translateY(-80px);">
+            {{province.name}}, Việt Nam
+        </h2>
+        <!-- <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" alt="" class="w-100 rounded-5"
+            style="height: 500px; object-fit: cover;"> -->
+        {% if province.images is not empty %}
+        <div id="provinceCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+                {# Lặp qua danh sách ảnh #}
+                {% for image in province.images %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ image.url ?: image.url }}" class="d-block w-100 rounded-5"
+                        alt="Ảnh của {{ province.name }}" style="height: 500px; object-fit: cover;">
+                </div>
+                {% endfor %}
+
+            </div>
+
+            <!-- Nút điều hướng -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#provinceCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#provinceCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Tiếp</span>
+            </button>
+        </div>
+        {% else %}
+        <div class="alert alert-warning text-center mt-4">Chưa có ảnh cho tỉnh này.</div>
+        {% endif %}
+    </div>
+
+    <div class="d-flex gap-3 rounded-3 flex-column p-3" style="box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
+        <div class="d-flex justify-content-center align-content-center ">
+            <button class="w-25 rounded-2 border-0 py-2" style="background-color: orange; color: white;
+             outline: none;
+            ">
+                Đặt xe ngay
+            </button>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Giới thiệu</h3>
+            <p class="fs-6">
+                {{province.description}}
+            </p>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Hình ảnh liên quan</h3>
+            <div class="d-flex flex-row gap-3">
+                {% for image in province.images %}
+                <img src="{{ image.url ?: image.url }}" class="w-25 rounded-2" alt="">
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Các địa điểm du lịch tại {{province.name}}</h3>
+            <div class="d-flex flex-row gap-3">
+                {% for travelSpot in travelSpots %}
+                <a href="/travel-spot/{{travelSpot.id}}" class="travel-card d-block rounded-2"
+                    style="width: 200px; height: 230px; position: relative; overflow: hidden;">
+
+                    <img src="{{ travelSpot.images[0].url ?: travelSpot.images[0].url }}"
+                        class="w-100 h-100 rounded-2 object-fit-cover travel-img" alt="{{travelSpot.name}}">
+
+                    <div class="position-absolute top-50 p-2 w-100 text-light"
+                        style="transform: translateY(-50%); background: rgba(0, 0, 0, 0.4);">
+                        <h4 class="clamp-2">{{travelSpot.name}}</h4>
+                        <p class="clamp-2">{{travelSpot.description}}</p>
+                    </div>
+                </a>
+
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Ẩm thực tại {{province.name}}</h3>
+            <div class="d-flex flex-row gap-3">
+                {% for foodCourt in foodCourts %}
+                <a href="/food-court/{{foodCourt.id}}" class="food-card d-block rounded-2"
+                    style="width: 200px; height: 230px; position: relative; overflow: hidden;">
+
+                    <img src="{{foodCourt.images[0].url}}" class="w-100 h-100 rounded-2 object-fit-cover food-img"
+                        alt="{{foodCourt.name}}" />
+
+                    <div class="position-absolute top-50 p-2 w-100 text-light"
+                        style="transform: translateY(-50%); background: rgba(0, 0, 0, 0.4);">
+                        <h4 class="clamp-2">{{foodCourt.name}}</h4>
+                        <p class="clamp-2">{{foodCourt.description}}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+            <h3 style="color: #1281B9;">Đánh giá</h3>
+            <div class="d-flex flex-column gap-2" style="margin-left: 30px;">
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-row gap-2">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrM_AQNJWhb5o2WW0fgyFYK5TjK1Ygy8yXsA&s"
+                            class="rounded-circle" style="width: 60px; height: 60px;" alt="portrait">
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <strong class="fs-5">Nguyễn An</strong>
+                            <span class="d-flex flex-row gap-2 text-warning ">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <p>Khung cảnh rất đẹp, đi thuyền ngắm đảo rất thích</p>
+                </div>
+
+                <hr>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-row gap-2">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgi-jj5Vb8PrZSVIbC1g9d8GI1QeqHCDCD_w&s"
+                            class="rounded-circle" style="width: 60px; height: 60px;" alt="portrait">
+
+                        <div class="d-flex flex-row gap-2 align-items-center">
+                            <strong class="fs-5">Kim Chi</strong>
+                            <span class="d-flex flex-row gap-2 text-warning ">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <p>Rất đẹp nhưng hơi đông khách vào mùa hè</p>
+                </div>
+
+                <form class="d-flex flex-column gap-3">
+                    <span class="fs-5">Viết đánh giá của bạn</span>
+                    <textarea class="p-2 rounded-2" name="" id="">Chia sẻ cảm nhận....</textarea>
+                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

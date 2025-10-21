@@ -72,3 +72,34 @@
     border-bottom-left-radius: 1rem;
     /* bo góc dưới bên trái */
 }
+
+.travel-card {
+    overflow: hidden;
+    /* Giữ ảnh không tràn */
+}
+
+.travel-img {
+    transition: transform 0.4s ease;
+    /* Hiệu ứng mượt */
+}
+
+.travel-card:hover .travel-img {
+    transform: scale(1.1);
+    /* Phóng to nhẹ */
+}
+
+
+.food-card {
+    overflow: hidden;
+    /* Giữ ảnh trong khung */
+}
+
+.food-img {
+    transition: transform 0.4s ease;
+    /* Mượt mà khi hover */
+}
+
+.food-card:hover .food-img {
+    transform: scale(1.1);
+    /* Phóng to nhẹ */
+}

@@ -25,10 +25,19 @@ $userController = new \App\Adapter\Inbound\UserController($userService);
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
+//Thêm UTF-8 mã hóa kí tự
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+});
+
 // Load routes
+require __DIR__ . '/../src/routes/files.php';
+(require __DIR__ . '/../src/routes/travel.spot.php')($app, $twig);
+(require __DIR__ . '/../src/routes/food.court.php')($app, $twig);
 (require __DIR__ . '/../src/routes/home.php')($app, $twig);
-(require __DIR__ . '/../src/routes/locations.php')($app, $twig);
 (require __DIR__ . '/../src/routes/provinces.php')($app, $twig);
 (require __DIR__ . '/../src/routes/users.php')($app);
+
 
 $app->run();

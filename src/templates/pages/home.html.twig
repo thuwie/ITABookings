@@ -83,77 +83,37 @@
         </div>
     </section>
 
-
-    {% set destinations = [
-    {
-    name: 'Phú Quốc',
-    rating: 4.8,
-    image: '../images/banner.jpg',
-    desc: 'Phú Quốc là 1 điểm đến mà bạn không thể bỏ lỡ trong dịp tới này'
-    },
-    {
-    name: 'Đà Nẵng',
-    rating: 4.6,
-    image: '../images/banner.jpg',
-    desc: 'Thành phố biển tuyệt đẹp với nhiều cảnh quan nổi tiếng'
-    },
-    {
-    name: 'Đà Lạt',
-    rating: 4.7,
-    image: '../images/banner.jpg',
-    desc: 'Thành phố ngàn hoa mộng mơ và khí hậu mát mẻ'
-    },
-    {
-    name: 'Nha Trang',
-    rating: 4.5,
-    image: '../images/banner.jpg',
-    desc: 'Thiên đường biển xanh và hải sản tươi sống'
-    }
-    ] %}
-
-
-    {% set tips = [
-    {
-    name: 'Phú Quốc',
-    rating: 4.8,
-    image: '../images/banner.jpg',
-    desc: 'Phú Quốc là 1 điểm đến mà bạn không thể bỏ lỡ trong dịp tới này'
-    },
-    {
-    name: 'Đà Nẵng',
-    rating: 4.6,
-    image: '../images/banner.jpg',
-    desc: 'Thành phố biển tuyệt đẹp với nhiều cảnh quan nổi tiếng'
-    },
-    {
-    name: 'Đà Lạt',
-    rating: 4.7,
-    image: '../images/banner.jpg',
-    desc: 'Thành phố ngàn hoa mộng mơ và khí hậu mát mẻ'
-    },
-    ] %}
-
     {# Địa điểm nổi bật #}
     <section>
         <h2 class="mb-3">Địa điểm nổi bật</h2>
 
         <div class="row row-cols-4 g-4">
-            {% for item in destinations %}
-            <a href="#" class="col text-decoration-none text-reset">
+            {% for item in provinces %}
+            <a href="/province/{{ item.id }}" class="col text-decoration-none text-reset">
                 <article class="pointer-hover-col border rounded-4" style="border-color: #000;">
-                    <div class="w-100 rounded-top-4" style="background-image: url('{{ item.image }}'); 
-                               height: 180px; 
-                               background-size: cover; 
-                               background-position: center; 
-                               background-repeat: no-repeat;">
+                    {% set img = item.images[0].url ?? '' %}
+
+                    <div class="w-100 rounded-top-4" style="
+                            background-image: url('{{ img }}');
+                            height: 180px;
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                         ">
                     </div>
+
                     <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
-                        <span>Điểm đến: <strong class="fs-5">{{ item.name }}</strong></span>
+                        <span>Điểm đến: <strong class="fs-5" style="
+                                display: -webkit-box;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                ">{{ item.name }}</strong></span>
                         <div>
-                            <i class="bi bi-star-fill text-warning"></i> <span>{{ item.rating }}</span>
+                            <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
                         </div>
                         <p class="clamp-2" style="max-width: 300px;">
-                            {{ item.desc }}
+                            {{ item.description }}
                         </p>
                         <div class="w-100 text-center">
                             <span class="btn-view-detail">[Xem chi tiết]</span>
@@ -162,43 +122,55 @@
                 </article>
             </a>
             {% endfor %}
-
         </div>
 
-        <a href="#" class="text-center">
+        <a href="/provinces-with-travel-spots" class="text-center">
             <div class="mx-auto mt-4">
                 <span>Xem tất cả</span>
             </div>
         </a>
     </section>
 
-    {# Các tips khi đi du lịch #}
+    {# Top các địa điểm HOT 2025 #}
     <section>
-        <h2 class="mb-3">Cập nhật xu hướng du lịch 2025</h2>
-        <div class="row row-cols-3 g-4">
-            {% for item in tips %}
-            <a href="#" class="col text-decoration-none text-reset">
-                <article class="pointer-hover-col rounded-3 d-flex flex-row"
-                    style="box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
-                    <div class="w-50 rounded-left-custom" style="background-image: url('{{ item.image }}'); 
-                                               height: 180px; 
-                                               background-size: cover; 
-                                               background-position: center; 
-                                               background-repeat: no-repeat;">
+        <h2 class="mb-3">Top địa điểm du lịch HOT 2025</h2>
+        <div class="row row-cols-4 g-4">
+            {% for spot in travelSpots %}
+            <a href="/travel-spot/{{ spot.id }}" class="col text-decoration-none text-reset">
+                <article class="pointer-hover-col border rounded-4" style="border-color: #000;">
+                    {% set img = spot.images[0].url ?? '' %}
+
+                    <div class="w-100 rounded-top-4" style="
+                        background-image: url('{{ img }}');
+                        height: 180px;
+                        background-size: cover;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                     ">
                     </div>
-                    <div class="p-3 w-50 position-relative">
-                        <h2 class="fs-6 position-absolute w-75" style="top:20% ;">Những Tips cần biết khi đi du lịch
-                        </h2>
-                        <p class="clamp-2 position-absolute lh-sm w-75" style=" top:45%">Một số dụng cụ cấp
-                            thiết
-                            trong
-                            quá trình bạn đi du
-                            lịch mà bạn không nên bỏ qua</p>
+
+                    <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
+                        <span>Địa điểm: <strong class="fs-5" style="
+                                display: -webkit-box;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                ">{{ spot.name }}</strong></span>
+                        <div>
+                            <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
+                        </div>
+                        <p class="clamp-2" style="max-width: 300px;">
+                            {{ spot.description }}
+                        </p>
+                        <div class="w-100 text-center">
+                            <span class="btn-view-detail">[Xem chi tiết]</span>
+                        </div>
                     </div>
                 </article>
             </a>
             {% endfor %}
         </div>
+
         <a href="#" class="text-center">
             <div class="mx-auto mt-4">
                 <span>Xem tất cả</span>
@@ -206,12 +178,58 @@
         </a>
     </section>
 
+    {# Top món ăn không thể bỏ qua khi đi du lịch #}
+    <section>
+        <h2 class="mb-3">Top địa điểm ăn uống không thể bỏ qua </h2>
+        <div class="row row-cols-4 g-4">
+            {% for food in foodCourts %}
+            <a href="/food-court/{{ food.id }}" class="col text-decoration-none text-reset">
+                <article class="pointer-hover-col border rounded-4" style="border-color: #000;">
+                    {% set img = food.images[0].url ?? '' %}
+
+                    <div class="w-100 rounded-top-4" style="
+                            background-image: url('{{ img }}');
+                            height: 180px;
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                         ">
+                    </div>
+
+                    <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
+                        <span>Địa điểm: <strong class="fs-5" style="
+                            display: -webkit-box;
+                            -webkit-line-clamp: 1;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            ">{{ food.name }}</strong></span>
+                        <div>
+                            <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
+                        </div>
+                        <p class="clamp-2" style="max-width: 300px;">
+                            {{ food.description }}
+                        </p>
+                        <div class="w-100 text-center">
+                            <span class="btn-view-detail">[Xem chi tiết]</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+            {% endfor %}
+        </div>
+
+        <a href="#" class="text-center">
+            <div class="mx-auto mt-4">
+                <span>Xem tất cả</span>
+            </div>
+        </a>
+    </section>
+
+
     {# Đánh giá từ người dùng #}
     <section>
         <h2 class="mb-3"> <i class="bi bi-star-fill text-warning"></i> Đánh giá từ người dùng <i
                 class="bi bi-star-fill text-warning"></i> </h2>
-
-
         <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
 
