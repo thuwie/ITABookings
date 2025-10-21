@@ -8,25 +8,6 @@ use App\Helper\FileHelper;
 use Illuminate\Support\Carbon;
 use App\Domain\Entity\TravelSpotImages;
 class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
-    // public function getProvinces():array {
-    // $results = DB::table('provinces')->get(); // Lấy toàn bộ dữ liệu
-    //     $provinces = [];
-    //     foreach ($results as $row) {
-    //         $province = new Province(
-    //             id:          $row->id,
-    //             code:        $row->code,
-    //             name:        $row->name,
-    //             type:        $row->type,
-    //             description: $row->description,
-    //            createdAt: $row->created_at ? new \DateTimeImmutable($row->created_at) : null,
-    //            updatedAt: $row->updated_at ? new \DateTimeImmutable($row->updated_at) : null
-    //         );
-
-    //         $provinces[] = $province;
-    //     }
-
-    //     return $provinces;
-    // }
    public function save(TravelSpot $travelSpot): array
 {
     $id = DB::table('travel_spots')->insertGetId([
@@ -204,7 +185,84 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
         }
     }
 
-    return array_values($travelSpots);
-}
+        return array_values($travelSpots);
+    }
+
+    public function getTravelSpotsWithImagesByProvinceId($idProvince):array
+    {
+        $results = DB::table('travel_spots')
+            ->leftJoin('travel_imgs', 'travel_spots.id', '=', 'travel_imgs.id_travel_spot')
+            ->select(
+                'travel_spots.id as travel_id',
+                'travel_spots.name',
+                'travel_spots.description',
+                'travel_spots.province_id',
+                'travel_spots.open_time',
+                'travel_spots.close_time',
+                'travel_spots.average_rate',
+                'travel_spots.price_from',
+                'travel_spots.price_to',
+                'travel_spots.total_rates',
+                'travel_spots.full_address',
+                'travel_spots.created_at as travel_created_at',
+                'travel_spots.updated_at as travel_updated_at',
+                'travel_imgs.id as image_id',
+                'travel_imgs.url',
+                'travel_imgs.publicUrl',
+                'travel_imgs.created_at as image_created_at',
+                'travel_imgs.updated_at as image_updated_at'
+            )
+            ->where('travel_spots.province_id', $idProvince)
+            ->get();
+
+        if ($results->isEmpty()) {
+            return [];
+        }
+
+        $travelSpots = [];
+
+        foreach ($results as $row) {
+            $travelId = $row->travel_id;
+
+            // Nếu travel spot chưa được thêm vào mảng
+            if (!isset($travelSpots[$travelId])) {
+                $travelSpot = new TravelSpot(
+                    id:             $row->travel_id,
+                    name:           $row->name,
+                    description:    $row->description,
+                    provinceId:     $row->province_id,
+                    openTime:       $row->open_time,
+                    closeTime:      $row->close_time,
+                    averageRate:    $row->average_rate,
+                    priceFrom:      $row->price_from,
+                    priceTo:        $row->price_to,
+                    totalRates:     $row->total_rates,
+                    fullAddress:    $row->full_address,
+                    createdAt:      $row->travel_created_at ? new \DateTimeImmutable($row->travel_created_at) : null,
+                    updatedAt:      $row->travel_updated_at ? new \DateTimeImmutable($row->travel_updated_at) : null
+                );
+
+                $travelSpot->images = [];
+                $travelSpots[$travelId] = $travelSpot;
+            }
+
+            // Nếu có ảnh, thêm vào mảng images
+            if ($row->image_id !== null) {
+                $image = new TravelSpotImages(
+                    id:            $row->image_id,
+                    travelSpotId:  $row->travel_id,
+                    url:           $row->url,
+                    publicUrl:     $row->publicUrl,
+                    createdAt:     $row->image_created_at ? new \DateTimeImmutable($row->image_created_at) : null,
+                    updatedAt:     $row->image_updated_at ? new \DateTimeImmutable($row->image_updated_at) : null
+                );
+
+                $travelSpots[$travelId]->images[] = $image;
+            }
+        }
+
+        // Trả về mảng các travel spot (reset key)
+        return array_values($travelSpots);
+    }
 
 }

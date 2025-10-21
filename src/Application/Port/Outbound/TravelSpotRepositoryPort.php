@@ -10,4 +10,5 @@ interface TravelSpotRepositoryPort {
      public function getTravelSpotImagesByTravelSpotIds(array $travelSpotIds): array;
      public function getTravelSpots(): array;
      public function getTravelSpotsWithImages():array;
+     public function getTravelSpotsWithImagesByProvinceId($idProvince):array;
 }

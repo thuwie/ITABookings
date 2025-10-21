@@ -1,7 +1,8 @@
 <?php
 use Slim\App;
 use  App\Application\Port\Inbound\ProvinceServicePort;
-
+use App\Application\Port\Inbound\TravelSpotPort;
+use App\Application\Port\Inbound\FoodCourtServicePort;
 
 return function(App $app, $twig) {
 
@@ -13,15 +14,24 @@ return function(App $app, $twig) {
     $app->get('/province/{id}', function ($request, $response, $args) use ($twig) {
         $id = $args['id'];
 
-        // Lấy service
         $service = $this->get(ProvinceServicePort::class);
+        $serviceTravelSpot = $this->get(TravelSpotPort::class);
+        $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
+
 
         // Lấy province kèm images
         $province = $service->getProvinceByIdWithImages($id);
 
-        // ✅ Viết đúng cú pháp render
+        //Lấy travel spot kèm images
+        $travelSpots =  $serviceTravelSpot->getTravelSpotsWithImagesByProvinceId($id);
+
+        //Lấy Food court kèm images
+        $foodCourts = $serviceFoodCourt->getFoodCourtsWithImagesByProvinceId($id);
+
         $html = $twig->render('pages/province/province-detail.html.twig', [
-            'province' => $province
+            'province' => $province,
+            'travelSpots' =>$travelSpots,
+            'foodCourts' =>$foodCourts
         ]);
 
         $response->getBody()->write($html);

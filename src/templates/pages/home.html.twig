@@ -103,7 +103,12 @@
                     </div>
 
                     <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
-                        <span>Điểm đến: <strong class="fs-5">{{ item.name }}</strong></span>
+                        <span>Điểm đến: <strong class="fs-5" style="
+                                display: -webkit-box;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                ">{{ item.name }}</strong></span>
                         <div>
                             <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
                         </div>
@@ -119,7 +124,7 @@
             {% endfor %}
         </div>
 
-        <a href="#" class="text-center">
+        <a href="/provinces-with-travel-spots" class="text-center">
             <div class="mx-auto mt-4">
                 <span>Xem tất cả</span>
             </div>
@@ -145,7 +150,12 @@
                     </div>
 
                     <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
-                        <span>Địa điểm: <strong class="fs-5">{{ spot.name }}</strong></span>
+                        <span>Địa điểm: <strong class="fs-5" style="
+                                display: -webkit-box;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                ">{{ spot.name }}</strong></span>
                         <div>
                             <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
                         </div>
@@ -170,7 +180,7 @@
 
     {# Top món ăn không thể bỏ qua khi đi du lịch #}
     <section>
-        <h2 class="mb-3">Top những món ăn khai vị không thể bỏ qua </h2>
+        <h2 class="mb-3">Top địa điểm ăn uống không thể bỏ qua </h2>
         <div class="row row-cols-4 g-4">
             {% for food in foodCourts %}
             <a href="/food-court/{{ food.id }}" class="col text-decoration-none text-reset">
@@ -187,7 +197,12 @@
                     </div>
 
                     <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column">
-                        <span>Địa điểm: <strong class="fs-5">{{ food.name }}</strong></span>
+                        <span>Địa điểm: <strong class="fs-5" style="
+                            display: -webkit-box;
+                            -webkit-line-clamp: 1;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                            ">{{ food.name }}</strong></span>
                         <div>
                             <i class="bi bi-star-fill text-warning"></i> <span>{{ 4.5 }}</span>
                         </div>

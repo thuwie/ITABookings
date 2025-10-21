@@ -25,6 +25,12 @@ $userController = new \App\Adapter\Inbound\UserController($userService);
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
+//Thêm UTF-8 mã hóa kí tự
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response->withHeader('Content-Type', 'text/html; charset=utf-8');
+});
+
 // Load routes
 require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/travel.spot.php')($app, $twig);

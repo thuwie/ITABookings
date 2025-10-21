@@ -15,11 +15,38 @@
     </div>
 
     <div class="w-100 position-relative">
-        <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" alt="" class="w-100 rounded-5"
-            style="height: 500px; object-fit: cover;">
-        <!-- <h2 class="position-absolute top-50 start-50 translate-middle text-white">
-            Vịnh Hạ Long
-        </h2> -->
+        <h2 class="position-absolute top-0 text-black start-50" style="transform: translateX(-50%) translateY(-80px);">
+            {{province.name}}, Việt Nam
+        </h2>
+        <!-- <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" alt="" class="w-100 rounded-5"
+            style="height: 500px; object-fit: cover;"> -->
+        {% if province.images is not empty %}
+        <div id="provinceCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+                {# Lặp qua danh sách ảnh #}
+                {% for image in province.images %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ image.url ?: image.url }}" class="d-block w-100 rounded-5"
+                        alt="Ảnh của {{ province.name }}" style="height: 500px; object-fit: cover;">
+                </div>
+                {% endfor %}
+
+            </div>
+
+            <!-- Nút điều hướng -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#provinceCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#provinceCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Tiếp</span>
+            </button>
+        </div>
+        {% else %}
+        <div class="alert alert-warning text-center mt-4">Chưa có ảnh cho tỉnh này.</div>
+        {% endif %}
     </div>
 
     <div class="d-flex gap-3 rounded-3 flex-column p-3" style="box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
@@ -31,117 +58,61 @@
             </button>
         </div>
 
-        <div class="d-flex flex-row gap-5 justify-content-center mt-3">
-            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
-                ">
-                <i class="bi bi-star-fill text-warning"></i>
-                <span>4.8</span>
-                <span>(2345 đánh giá)</span>
-            </span>
-
-            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;">
-                <i>📍</i>
-                <span>{{province.name}}, Việt Nam</span>
-            </span>
-
-            <span class="d-flex flex-row gap-2 p-2 rounded-3 align-items-center" style="background-color: #F1F1F0;    
-                        ">
-                <i class="mb-1">💵</i>
-                <span>Vé: 200.000đ/người</span>
-            </span>
-
-            <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
-                        ">
-                <i>⏰</i>
-                <span>7:00 - 18:00</span>
-            </span>
-        </div>
-
         <div class="d-flex flex-column gap-2">
             <h3 style="color: #1281B9;">Giới thiệu</h3>
-            <p>
-                Lâm Đồng là một trong những điểm đến nổi tiếng nhất Việt Nam, được UNESCO công nhận là Di sản Thiên
-                nhiên
-                Thế giới.
-                Với hàng nghìn hòn đảo đá vôi kỳ vĩ, đây là địa điểm lý tưởng để du lịch, nghỉ dưỡng và khám phá văn
-                hóa.
+            <p class="fs-6">
+                {{province.description}}
             </p>
         </div>
 
         <div class="d-flex flex-column gap-2">
             <h3 style="color: #1281B9;">Hình ảnh liên quan</h3>
             <div class="d-flex flex-row gap-3">
-                <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" class="w-25 rounded-2"
-                    alt="">
-                <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg" class="w-25 rounded-2" alt="">
-                <img src="/files/lam-dong/province_68e9052c500d62.01999069_images.jpg" class="w-25 rounded-2" alt="">
-                <img src="/files/lai-chau/province_68e904e93ae418.63400375_dia-diem-du-lich-lai-chau_1755228424.jpg"
-                    class="w-25 rounded-2" alt="">
+                {% for image in province.images %}
+                <img src="{{ image.url ?: image.url }}" class="w-25 rounded-2" alt="">
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="d-flex flex-column gap-2">
+            <h3 style="color: #1281B9;">Các địa điểm du lịch tại {{province.name}}</h3>
+            <div class="d-flex flex-row gap-3">
+                {% for travelSpot in travelSpots %}
+                <a href="/travel-spot/{{travelSpot.id}}" class="travel-card d-block rounded-2"
+                    style="width: 200px; height: 230px; position: relative; overflow: hidden;">
+
+                    <img src="{{ travelSpot.images[0].url ?: travelSpot.images[0].url }}"
+                        class="w-100 h-100 rounded-2 object-fit-cover travel-img" alt="{{travelSpot.name}}">
+
+                    <div class="position-absolute top-50 p-2 w-100 text-light"
+                        style="transform: translateY(-50%); background: rgba(0, 0, 0, 0.4);">
+                        <h4 class="clamp-2">{{travelSpot.name}}</h4>
+                        <p class="clamp-2">{{travelSpot.description}}</p>
+                    </div>
+                </a>
+
+                {% endfor %}
             </div>
         </div>
 
         <div class="d-flex flex-column gap-2">
-            <h3 style="color: #1281B9;">Ẩm thực tại Lâm Đồng</h3>
+            <h3 style="color: #1281B9;">Ẩm thực tại {{province.name}}</h3>
             <div class="d-flex flex-row gap-3">
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
-                    </div>
-                </div>
+                {% for foodCourt in foodCourts %}
+                <a href="/food-court/{{foodCourt.id}}" class="food-card d-block rounded-2"
+                    style="width: 200px; height: 230px; position: relative; overflow: hidden;">
 
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/lam-dong/province_68e9052c56bce6.06629108_download.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
-                    </div>
-                </div>
+                    <img src="{{foodCourt.images[0].url}}" class="w-100 h-100 rounded-2 object-fit-cover food-img"
+                        alt="{{foodCourt.name}}" />
 
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/khanh-hoa/province_68e904a41f5841.11015819_download.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
+                    <div class="position-absolute top-50 p-2 w-100 text-light"
+                        style="transform: translateY(-50%); background: rgba(0, 0, 0, 0.4);">
+                        <h4 class="clamp-2">{{foodCourt.name}}</h4>
+                        <p class="clamp-2">{{foodCourt.description}}</p>
                     </div>
-                </div>
-
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/khanh-hoa/province_68e904a4122b08.32949251_download__1_.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
-                    </div>
-                </div>
-
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/khanh-hoa/province_68e904a42593a0.23070309_download__2_.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
-                    </div>
-                </div>
-
-                <div style="width: 200px; height: 230px; position: relative;">
-                    <img src="/files/hung-yen/province_68e90468be0fb9.09751686_download__1_.jpg"
-                        class="w-100 h-100 rounded-2" alt="">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                                         background: rgba(0, 0, 0, 0.4);">
-                        <h4>Phở Thìn</h4>
-                        <p>Tại đây khách du lịch có thể thưởng thức món Phở với hương vị truyền thống</p>
-                    </div>
-                </div>
+                </a>
+                {% endfor %}
             </div>
         </div>
 

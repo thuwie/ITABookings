@@ -12,7 +12,7 @@ class TravelSpotImages
     private ?\DateTimeImmutable $updatedAt;
 
     public function __construct(
-        ?int $id = null,
+        ?int $id,
         int $travelSpotId,
         string $url,
         ?string $publicUrl = null,
