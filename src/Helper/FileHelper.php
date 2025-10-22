@@ -23,4 +23,20 @@ class FileHelper
 
         return $name;
     }
+
+    public static function formatCurrency(?float $amount): string
+    {
+        if ($amount === null) return '';
+        return number_format($amount, 0, ',', '.') . ' ₫';
+    }
+
+    public static function formatTimeRange(?string $open, ?string $close): string
+    {
+        if (!$open || !$close) return '';
+
+        $openFormatted  = date("g:i A", strtotime($open));
+        $closeFormatted = date("g:i A", strtotime($close));
+
+        return "{$openFormatted} - {$closeFormatted}";
+    }
 }

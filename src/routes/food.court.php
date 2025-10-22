@@ -4,24 +4,25 @@ use App\Application\Port\Inbound\TravelSpotPort;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
 
+
 return function(App $app, $twig) {
 
     $app->get('/food-court/create', function ($request, $response, $args) use ($twig) {
          // Lấy service
-    $service = $this->get(ProvinceServicePort::class);
-    $servicesTravelSpot = $this->get(TravelSpotPort::class);
+        $service = $this->get(ProvinceServicePort::class);
+        $servicesTravelSpot = $this->get(TravelSpotPort::class);
 
 
-    // Lấy danh sách provinces
-    $provinces = $service->getProvinces();
-    $travelSpots = $servicesTravelSpot->getTravelSpots();
+        // Lấy danh sách provinces
+        $provinces = $service->getProvinces();
+        $travelSpots = $servicesTravelSpot->getTravelSpots();
 
-    // Render và truyền dữ liệu vào Twig
-    $response->getBody()->write(
-        $twig->render('pages/food_court/create.food.court.html.twig', [
-            'provinces' => $provinces,
-            'travelSpots' =>$travelSpots,
-        ])
+        // Render và truyền dữ liệu vào Twig
+        $response->getBody()->write(
+            $twig->render('pages/food_court/create.food.court.html.twig', [
+                'provinces' => $provinces,
+                'travelSpots' =>$travelSpots,
+            ])
     );
 
     return $response;
@@ -60,5 +61,27 @@ return function(App $app, $twig) {
 
         return $response->withHeader('Content-Type', 'application/json');
     });
+
+     $app->get('/food-court/{id}', function ($request, $response, $args) use ($twig) {
+            $id = $args['id'];
+
+            $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
+
+            $foodCourt = $serviceFoodCourt->getById($id);
+
+        
+
+            // $anotherTravelSpotsWithSameIdProvince = $serviceTravelSpot->getTravelSpotsWithImagesByProvinceId($travelSpot['province_id']);
+            // $anotherTravelSpotsWithSameIdProvince = array_filter(
+            //         $anotherTravelSpotsWithSameIdProvince,
+            //         fn($spot) => $spot->getId() !== (int)$id
+            // );
+            $html = $twig->render('pages/travel_spot/travel-spot.detail.html.twig', [
+                'foodCourt' =>$foodCourt,
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
 
 };

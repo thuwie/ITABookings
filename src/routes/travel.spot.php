@@ -3,7 +3,7 @@ use Slim\App;
 use App\Application\Port\Inbound\TravelSpotPort;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
-
+use App\Helper\FileHelper;
 return function(App $app, $twig) {
 
     $app->get('/travel-spot/create', function ($request, $response, $args) use ($twig) {
@@ -32,14 +32,11 @@ return function(App $app, $twig) {
 
             if ($travelSpot) {
                 // Format giá
-                $travelSpot['price_from_formatted'] = number_format($travelSpot['price_from'], 0, ',', '.') . ' ₫';
-                $travelSpot['price_to_formatted']   = number_format($travelSpot['price_to'], 0, ',', '.') . ' ₫';
+                $travelSpot['price_from_formatted'] = FileHelper::formatCurrency($travelSpot['price_from']);
+                $travelSpot['price_to_formatted']   = FileHelper::formatCurrency($travelSpot['price_to']);
 
                 // Format giờ sang dạng 12h có AM/PM
-                $openTime  = date("g:i A", strtotime($travelSpot['open_time']));
-                $closeTime = date("g:i A", strtotime($travelSpot['close_time']));
-
-                $travelSpot['open_close'] = "{$openTime} - {$closeTime}";
+                $travelSpot['open_close'] = FileHelper::formatTimeRange($travelSpot['open_time'], $travelSpot['close_time']);
             }
 
             $anotherTravelSpotsWithSameIdProvince = $serviceTravelSpot->getTravelSpotsWithImagesByProvinceId($travelSpot['province_id']);
