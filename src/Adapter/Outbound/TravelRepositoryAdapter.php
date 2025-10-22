@@ -264,5 +264,76 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
         // Trả về mảng các travel spot (reset key)
         return array_values($travelSpots);
     }
+   
+
+    public function getById($idTravelSpot) {
+        $results = DB::table('travel_spots')
+            ->leftJoin('travel_imgs', 'travel_spots.id', '=', 'travel_imgs.id_travel_spot')
+            ->select(
+                'travel_spots.id as travel_id',
+                'travel_spots.name',
+                'travel_spots.description',
+                'travel_spots.province_id',
+                'travel_spots.open_time',
+                'travel_spots.close_time',
+                'travel_spots.average_rate',
+                'travel_spots.price_from',
+                'travel_spots.price_to',
+                'travel_spots.total_rates',
+                'travel_spots.full_address',
+                'travel_spots.created_at as travel_created_at',
+                'travel_spots.updated_at as travel_updated_at',
+                'travel_imgs.id as image_id',
+                'travel_imgs.url',
+                'travel_imgs.publicUrl',
+                'travel_imgs.created_at as image_created_at',
+                'travel_imgs.updated_at as image_updated_at'
+            )
+            ->where('travel_spots.id', $idTravelSpot)   // ✅ lọc theo ID của travel spot
+            ->get();
+
+        if ($results->isEmpty()) {
+            return null; // vì lấy 1 travel spot duy nhất nên trả về null thay vì mảng rỗng
+        }
+
+        // Lấy row đầu tiên để tạo đối tượng chính
+        $first = $results->first();
+
+        $travelSpot = new TravelSpot(
+            id:             $first->travel_id,
+            name:           $first->name,
+            description:    $first->description,
+            provinceId:     $first->province_id,
+            openTime:       $first->open_time,
+            closeTime:      $first->close_time,
+            averageRate:    $first->average_rate,
+            priceFrom:      $first->price_from,
+            priceTo:        $first->price_to,
+            totalRates:     $first->total_rates,
+            fullAddress:    $first->full_address,
+            createdAt:      $first->travel_created_at ? new \DateTimeImmutable($first->travel_created_at) : null,
+            updatedAt:      $first->travel_updated_at ? new \DateTimeImmutable($first->travel_updated_at) : null
+        );
+
+        // Gắn danh sách ảnh (nếu có)
+        $travelSpot->images = [];
+
+        foreach ($results as $row) {
+            if ($row->image_id !== null) {
+                $image = new TravelSpotImages(
+                    id:            $row->image_id,
+                    travelSpotId:  $row->travel_id,
+                    url:           $row->url,
+                    publicUrl:     $row->publicUrl,
+                    createdAt:     $row->image_created_at ? new \DateTimeImmutable($row->image_created_at) : null,
+                    updatedAt:     $row->image_updated_at ? new \DateTimeImmutable($row->image_updated_at) : null
+                );
+
+                $travelSpot->images[] = $image;
+            }
+        }
+
+        return $travelSpot->toArray();
+    }
 
 }

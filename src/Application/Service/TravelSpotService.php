@@ -70,5 +70,10 @@ class TravelSpotService implements TravelSpotPort {
       return $result;
     }
 
+    public function getById($idTravelSPot) {
+      $result = $this->travelSpotRepositoryPort->getById($idTravelSPot);
+      return $result;
+    }
+
 }
 

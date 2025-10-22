@@ -229,4 +229,83 @@ class FoodCourtRepository implements FoodCourtRepositoryPort {
         return array_values($foodCourts);
     }
 
+    public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot): array
+    {
+        $results = DB::table('food_courts')
+            ->leftJoin('food_court_images', 'food_courts.id', '=', 'food_court_images.food_court_id')
+            ->select(
+                'food_courts.id as food_court_id',
+                'food_courts.name',
+                'food_courts.description',
+                'food_courts.address',
+                'food_courts.province_id',
+                'food_courts.travel_spot_id',
+                'food_courts.open_time',
+                'food_courts.close_time',
+                'food_courts.average_star',
+                'food_courts.total_rates',
+                'food_courts.price_from',
+                'food_courts.price_to',
+                'food_courts.created_at as food_court_created_at',
+                'food_courts.updated_at as food_court_updated_at',
+                'food_court_images.id as image_id',
+                'food_court_images.url',
+                'food_court_images.public_url',
+                'food_court_images.created_at as image_created_at',
+                'food_court_images.updated_at as image_updated_at'
+            )
+            ->where('food_courts.travel_spot_id', $idTravelSpot)
+            ->get();
+
+        if ($results->isEmpty()) {
+            return [];
+        }
+
+        $foodCourts = [];
+
+        foreach ($results as $row) {
+            $foodCourtId = $row->food_court_id;
+
+            // Nếu chưa tồn tại thì khởi tạo mới
+            if (!isset($foodCourts[$foodCourtId])) {
+                $foodCourt = new FoodCourt(
+                    id:             $row->food_court_id,
+                    name:           $row->name,
+                    description:    $row->description,
+                    address:        $row->address,
+                    provinceId:     $row->province_id,
+                    travelSpotId:   $row->travel_spot_id,
+                    openTime:       $row->open_time,
+                    closeTime:      $row->close_time,
+                    averageStar:    $row->average_star,
+                    totalRates:     $row->total_rates,
+                    priceFrom:      $row->price_from,
+                    priceTo:        $row->price_to,
+                    createdAt:      $row->food_court_created_at ? new \DateTimeImmutable($row->food_court_created_at) : null,
+                    updatedAt:      $row->food_court_updated_at ? new \DateTimeImmutable($row->food_court_updated_at) : null
+                );
+
+                $foodCourt->images = [];
+                $foodCourts[$foodCourtId] = $foodCourt;
+            }
+
+            // Nếu có ảnh thì thêm vào mảng images
+            if ($row->image_id !== null) {
+                $image = new FoodCourtImage(
+                    id:           $row->image_id,
+                    foodCourtId:  $row->food_court_id,
+                    url:          $row->url,
+                    publicUrl:    $row->public_url,
+                    createdAt:    $row->image_created_at ? new \DateTimeImmutable($row->image_created_at) : null,
+                    updatedAt:    $row->image_updated_at ? new \DateTimeImmutable($row->image_updated_at) : null
+                );
+
+                $foodCourts[$foodCourtId]->images[] = $image;
+            }
+        }
+
+        // Reset key để trả về dạng mảng liên tục
+        return array_values($foodCourts);
+    }
+
 }

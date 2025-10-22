@@ -7,4 +7,5 @@ interface TravelSpotPort {
    public function getTravelSpots():array;
    public function getTravelSpotsWithImages():array;
    public function getTravelSpotsWithImagesByProvinceId($idProvince):array;
+   public function getById($idTravelSPot);
 }
