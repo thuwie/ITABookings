@@ -102,6 +102,11 @@ class FoodCourt
             'price_to' => $this->priceTo,
             'created_at' => $this->createdAt?->format('Y-m-d H:i:s') ?? (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt?->format('Y-m-d H:i:s') ?? (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            'images' => array_map(fn($img) => [
+                'id' => $img->getId(),
+                'url' => $img->getUrl(),
+                'publicUrl' => $img->getPublicUrl(),
+            ], $this->images),
         ];
     }
 }

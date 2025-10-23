@@ -9,4 +9,5 @@ interface ProvinceServicePort {
    public function getProvincesWithTravelSports():array;
    public function getProvincesWithImages():array;
    public function getProvinceByIdWithImages($id);
+   public function getFoodCourtsBelongTpProvince():array;
 }

@@ -1,0 +1,130 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Các tỉnh/thành phố{% endblock %}
+
+{% block body %}
+
+{# banner searching #}
+<h2 class="text-center">Địa điểm nổi bật</h2>
+
+<div class="d-flex flex-column gap-5 mt-4">
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+            <!-- ITEM 1 -->
+            <div class="carousel-item active" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b3fdf29.85037701_download.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEM 2 -->
+            <div class="carousel-item" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b39bca3.79820301_images.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEM 3 -->
+            <div class="carousel-item" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b47a0b7.32815062_download__1_.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Nút điều hướng (tuỳ chọn) -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    {% for item in provincesWithFoodCourts %}
+    {% set province = item.province %}
+    {% set foodCourts = item.foodCourts %}
+
+    {% if foodCourts is defined and foodCourts | length > 0 %}
+    <div class="mb-5">
+        <span class="d-flex gap-2 align-items-center mb-3">
+            <div>🌍</div>
+            <h3>{{ province.name }}</h3>
+        </span>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+            {% for foodCourt in foodCourts %}
+            <div class="col">
+                <a href="#" class="text-decoration-none text-reset">
+                    <article class="pointer-hover-col border rounded-2 h-100" style="border-color: #000;">
+                        {% set bgImg = '../images/banner.jpg' %}
+
+                        {% if foodCourt.images is defined and foodCourt.images|length > 0 and foodCourt.images[0].url is
+                        defined %}
+                        {% set bgImg = foodCourt.images[0].url %}
+                        {% endif %}
+
+                        <div class="w-100 rounded-top-2" style="
+                                background-image: url('{{ bgImg }}'); 
+                                height: 180px; 
+                                background-size: cover; 
+                                background-position: center; 
+                                background-repeat: no-repeat;">
+                        </div>
+
+                        <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="text-center d-block">
+                                    <strong class="fs-5" style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 1;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                ">{{ foodCourt.name }}</strong>
+                                </span>
+                                <div class="d-flex gap-2 align-items-center justify-content-center"
+                                    style="color: #9E9E9E">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <span>{{ foodCourt.average_star ?? '0' }}</span>
+                                    <span>({{ foodCourt.total_rates ?? '0' }} đánh giá)</span>
+                                </div>
+                                <p class="clamp-2 text-center" style="max-width: 300px; margin: 0 auto;">
+                                    {{ foodCourt.description ?? '' }}
+                                </p>
+                            </div>
+                            <a href="/food-court/{{foodCourt.id}}">
+                                <button class="btn w-100 text-center rounded-2 btn-primary mt-3">
+                                    <span class="btn-view-detail">Xem chi tiết</span>
+                                </button>
+                            </a>
+                        </div>
+                    </article>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+</div>
+
+
+{% endblock %}

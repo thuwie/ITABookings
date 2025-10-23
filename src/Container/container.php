@@ -27,8 +27,10 @@ return function (): Container {
 
         //Inbound Port Binding
         $container->set(ProvinceServicePort::class, function() use ($container) {
-            return new ProvinceService($container->get(ProvinceRepositoryPort::class),
-            $container->get(TravelSpotRepositoryPort::class)
+            return new ProvinceService(
+            $container->get(ProvinceRepositoryPort::class),
+            $container->get(TravelSpotRepositoryPort::class),
+             $container->get(FoodCourtRepositoryPort::class)
         );
         });
 

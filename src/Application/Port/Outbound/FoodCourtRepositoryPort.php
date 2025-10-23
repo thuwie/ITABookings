@@ -8,5 +8,6 @@ interface FoodCourtRepositoryPort {
     public function saveFoodCourtImages(array $imgs, $newFoodCourt): array;
     public function getFoodCourtsWithImages():array;
     public function getFoodCourtsWithImagesByProvinceId($provinceId):array;
-     public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot):array;
+    public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot):array;
+    public function getFoodCourtById($id);
 }

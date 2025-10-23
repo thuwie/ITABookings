@@ -7,4 +7,5 @@ interface FoodCourtServicePort {
    public function getFoodCourtsWithImages();
    public function getFoodCourtsWithImagesByProvinceId($idProvince):array;
    public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot):array;
+   public function getFoodCourtById($id);
 }

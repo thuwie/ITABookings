@@ -3,7 +3,7 @@ use Slim\App;
 use App\Application\Port\Inbound\TravelSpotPort;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
-
+use App\Helper\FileHelper;
 
 return function(App $app, $twig) {
 
@@ -22,10 +22,9 @@ return function(App $app, $twig) {
             $twig->render('pages/food_court/create.food.court.html.twig', [
                 'provinces' => $provinces,
                 'travelSpots' =>$travelSpots,
-            ])
-    );
+            ]));
 
-    return $response;
+        return $response;
     });
 
     $app->post('/food-court/create', function ($request, $response, $args) use ($twig) {
@@ -62,26 +61,36 @@ return function(App $app, $twig) {
         return $response->withHeader('Content-Type', 'application/json');
     });
 
-     $app->get('/food-court/{id}', function ($request, $response, $args) use ($twig) {
-            $id = $args['id'];
+    $app->get('/food-court/{id}', function ($request, $response, $args) use ($twig) {
+        $id = $args['id'];
 
-            $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
+        $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
 
-            $foodCourt = $serviceFoodCourt->getById($id);
+        $foodCourt = $serviceFoodCourt->getFoodCourtById($id);
+            if ($foodCourt ) {
+            // Format giá
+            $foodCourt['price_from_formatted'] = FileHelper::formatCurrency($foodCourt['price_from']);
+            $foodCourt['price_to_formatted']   = FileHelper::formatCurrency($foodCourt['price_to']);
 
-        
+            // Format giờ sang dạng 12h có AM/PM
+            $foodCourt['open_close'] = FileHelper::formatTimeRange($foodCourt['open_time'], $foodCourt['close_time']);
+        }
 
-            // $anotherTravelSpotsWithSameIdProvince = $serviceTravelSpot->getTravelSpotsWithImagesByProvinceId($travelSpot['province_id']);
-            // $anotherTravelSpotsWithSameIdProvince = array_filter(
-            //         $anotherTravelSpotsWithSameIdProvince,
-            //         fn($spot) => $spot->getId() !== (int)$id
-            // );
-            $html = $twig->render('pages/travel_spot/travel-spot.detail.html.twig', [
-                'foodCourt' =>$foodCourt,
-            ]);
 
-            $response->getBody()->write($html);
-            return $response;
-        });
+        $provinceId= $foodCourt['province_id'];
+        $relatedFoodCourts = $serviceFoodCourt->getFoodCourtsWithImagesByProvinceId($provinceId);
+        $relatedFoodCourts = array_filter(
+                    $relatedFoodCourts ,
+                    fn($spot) => $spot->getId() !== (int)$id
+            );
 
-};
+        $html = $twig->render('pages/food_court/food-court-detail.html.twig', [
+            'foodCourt' =>$foodCourt,
+            'relatedFoodCourts' =>$relatedFoodCourts
+        ]);
+
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+    };

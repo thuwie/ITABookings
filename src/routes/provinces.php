@@ -44,11 +44,11 @@ return function(App $app, $twig) {
         $service = $this->get(ProvinceServicePort::class); 
 
         //  Lấy dữ liệu
-        $provinces = $service->getProvinces();
+        $provinces = $service->getProvincesWithImages();
 
         // Render Twig, truyền dữ liệu
         $response->getBody()->write($twig->render(
-            'pages/travel_spot/create.travel.spot.html.twig',
+            'pages/province/get.all.provinces.html.twig',
             [
                 'provinces' => $provinces,
             ]
@@ -75,8 +75,6 @@ return function(App $app, $twig) {
         return $response;
     });
 
-
-
     $app->post('/province/create', function ($request, $response, $args) use ($twig) {
 
        $service = $this->get(ProvinceServicePort::class); 
@@ -95,6 +93,22 @@ return function(App $app, $twig) {
         return $response->withHeader('Content-Type', 'application/json');
     });
 
-   
+   $app->get('/food-courts-belong-provinces', function ($request, $response, $args) use ($twig) {
+
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $data = $service->getFoodCourtsBelongTpProvince();
+
+        // Render Twig, truyền dữ liệu
+        $response->getBody()->write($twig->render(
+            'pages/province/provinces.with.food.courts.html.twig',
+            [
+                'provincesWithFoodCourts' => $data,
+            ]
+        ));
+
+        return $response;
+    });
 
 };

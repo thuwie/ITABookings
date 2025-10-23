@@ -4,18 +4,22 @@ namespace App\Application\Service;
 use App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Outbound\ProvinceRepositoryPort;
 use App\Application\Port\Outbound\TravelSpotRepositoryPort;
+use  App\Application\Port\Outbound\FoodCourtRepositoryPort;
 use App\Domain\Entity\Province;
 use Illuminate\Support\Carbon;
 
 class ProvinceService implements ProvinceServicePort {
     private ProvinceRepositoryPort $provinceRepositoryPort;
     private TravelSpotRepositoryPort $travelSportRepositoryPort;
+    private FoodCourtRepositoryPort $foodCourtRepositoryPort;
 
     public function __construct(ProvinceRepositoryPort $provinceRepositoryPort,
-    TravelSpotRepositoryPort $travelSportRepositoryPort
+    TravelSpotRepositoryPort $travelSportRepositoryPort,
+    FoodCourtRepositoryPort $foodCourtRepositoryPort
     ) {
         $this->provinceRepositoryPort = $provinceRepositoryPort;
         $this->travelSportRepositoryPort = $travelSportRepositoryPort;
+        $this->foodCourtRepositoryPort = $foodCourtRepositoryPort;
     }
 
     public function createProvince($province, array $imgs) {
@@ -55,51 +59,51 @@ class ProvinceService implements ProvinceServicePort {
 
   public function getProvincesWithTravelSports(): array
   {
-    $provinces  = $this->provinceRepositoryPort->getProvinces();
-    $provinceIds = array_map(fn($p) => $p->getId(), $provinces);
+        $provinces  = $this->provinceRepositoryPort->getProvinces();
+        $provinceIds = array_map(fn($p) => $p->getId(), $provinces);
 
-    // Lấy travel spots
-    $travelSpots = $this->travelSportRepositoryPort->getTravelSpotsByProvinceIds($provinceIds);
+        // Lấy travel spots
+        $travelSpots = $this->travelSportRepositoryPort->getTravelSpotsByProvinceIds($provinceIds);
 
-    // Lấy tất cả ảnh của các travel spots
-    $travelSpotIds = array_map(fn($spot) => is_object($spot) ? $spot->id : $spot['id'], $travelSpots);
+        // Lấy tất cả ảnh của các travel spots
+        $travelSpotIds = array_map(fn($spot) => is_object($spot) ? $spot->id : $spot['id'], $travelSpots);
 
-    $travelImgs = $this->travelSportRepositoryPort->getTravelSpotImagesByTravelSpotIds($travelSpotIds);
+        $travelImgs = $this->travelSportRepositoryPort->getTravelSpotImagesByTravelSpotIds($travelSpotIds);
 
-    // Nhóm ảnh theo id_travel_spot
-    $imgsBySpot = [];
-    foreach ($travelImgs as $img) {
-        $id = $img->id_travel_spot;
-        if (!isset($imgsBySpot[$id])) {
-            $imgsBySpot[$id] = [];
+        // Nhóm ảnh theo id_travel_spot
+        $imgsBySpot = [];
+        foreach ($travelImgs as $img) {
+            $id = $img->id_travel_spot;
+            if (!isset($imgsBySpot[$id])) {
+                $imgsBySpot[$id] = [];
+            }
+            $imgsBySpot[$id][] = $img;
         }
-        $imgsBySpot[$id][] = $img;
-    }
 
-    $result = [];
+        $result = [];
 
-    foreach ($provinces as $province) {
-        $provinceId = (int)$province->getId();
+        foreach ($provinces as $province) {
+            $provinceId = (int)$province->getId();
 
-        // Lọc các travelSpot thuộc province này
-        $spotsForProvince = array_filter($travelSpots, function ($spot) use ($provinceId) {
-            $spotProvinceId = is_object($spot) ? (int)$spot->province_id : (int)$spot['province_id'];
-            return $spotProvinceId === $provinceId;
-        });
+            // Lọc các travelSpot thuộc province này
+            $spotsForProvince = array_filter($travelSpots, function ($spot) use ($provinceId) {
+                $spotProvinceId = is_object($spot) ? (int)$spot->province_id : (int)$spot['province_id'];
+                return $spotProvinceId === $provinceId;
+            });
 
-        // Gán ảnh cho từng travel spot
-        $spotsWithImgs = array_map(function ($spot) use ($imgsBySpot) {
-            $spotId = is_object($spot) ? $spot->id : $spot['id'];
-            $spot->images = $imgsBySpot[$spotId] ?? [];
-            return $spot;
-        }, array_values($spotsForProvince));
+            // Gán ảnh cho từng travel spot
+            $spotsWithImgs = array_map(function ($spot) use ($imgsBySpot) {
+                $spotId = is_object($spot) ? $spot->id : $spot['id'];
+                $spot->images = $imgsBySpot[$spotId] ?? [];
+                return $spot;
+            }, array_values($spotsForProvince));
 
-        $result[] = [
-            'province'    => $province,
-            'travelSpots' => $spotsWithImgs,
-        ];
-    }
-        return $result;
+            $result[] = [
+                'province'    => $province,
+                'travelSpots' => $spotsWithImgs,
+            ];
+            }
+            return $result;
     }
 
     
@@ -113,4 +117,21 @@ class ProvinceService implements ProvinceServicePort {
         return $result;
     }
 
+    public function getFoodCourtsBelongTpProvince(): array
+    {
+        $provinces = $this->getProvinces();
+        $result = [];
+
+        foreach ($provinces as $province) {
+            $result[] = [
+                'province'    => $province->toArray(),
+                'foodCourts'  => $this->foodCourtRepositoryPort
+                    ->getFoodCourtsWithImagesByProvinceId($province->getId())
+            ];
+        }
+
+        return $result;
+    }
+
+    
 }
