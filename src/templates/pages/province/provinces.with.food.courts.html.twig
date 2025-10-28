@@ -104,9 +104,17 @@
                                     <span>{{ foodCourt.average_star ?? '0' }}</span>
                                     <span>({{ foodCourt.total_rates ?? '0' }} đánh giá)</span>
                                 </div>
-                                <p class="clamp-2 text-center" style="max-width: 300px; margin: 0 auto;">
-                                    {{ foodCourt.description ?? '' }}
-                                </p>
+                                <span class="d-flex flex-row gap-2 p-2 rounded-3 align-items-center">
+
+                                    <i class="mb-1">💵</i>
+                                    <span>{{foodCourt['price_from_formatted']}} -
+                                        {{foodCourt['price_to_formatted']}}</span>
+                                </span>
+                                <span class="d-flex flex-row gap-2 p-2 rounded-3">
+
+                                    <i>⏰</i>
+                                    <span>{{foodCourt['open_close']}}</span>
+                                </span>
                             </div>
                             <a href="/food-court/{{foodCourt.id}}">
                                 <button class="btn w-100 text-center rounded-2 btn-primary mt-3">

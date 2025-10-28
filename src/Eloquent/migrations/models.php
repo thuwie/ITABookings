@@ -33,6 +33,22 @@ $tables = [
         $table->charset = 'utf8mb4';
         $table->collation = 'utf8mb4_unicode_ci';
     },
+
+    'province_ratings' => function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('province_id');
+        $table->time('open_time')->nullable();
+        $table->time('close_time')->nullable();
+        $table->decimal('average_rating', 3, 2)->default(0); 
+        $table->unsignedInteger('total_rates')->default(0);
+        $table->decimal('price_from', 12, 2)->nullable();
+        $table->decimal('price_to', 12, 2)->nullable();
+        $table->timestamps();
+        // Charset & Collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
     
      'travel_spots' => function ($table) {
         $table->increments('id');                  // PK
