@@ -21,7 +21,6 @@ return function(App $app, $twig) {
         'provinces' => $provinces,
         'travelSpots' =>  $travelSpots,
         'foodCourts' => $foodCourts,
-        'register_url' => 'pages/auth/register.html.twig',
     ]);
 
     $response->getBody()->write($html);
@@ -30,15 +29,30 @@ return function(App $app, $twig) {
 
 // Form đăng ký
     $app->get('/register', function ($request, $response, $args) use ($twig) {
-        $html = $twig->render('pages/register.html.twig', [
-            'register_url' => '/register', // dùng trong header
+        
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $provinces = $service->getProvinces();
+
+        $html = $twig->render('pages/auth/register.html.twig', [
+            'provinces' => $provinces,
+        ]);
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+    // Form dangnhap
+    $app->get('/login', function ($request, $response, $args) use ($twig) {
+        $html = $twig->render('pages/auth/login.html.twig', [
+            
         ]);
         $response->getBody()->write($html);
         return $response;
     });
 
     // Xử lý form POST đăng ký
-    $app->post('/register', function ($request, $response, $args) {
+    $app->post('/login', function ($request, $response, $args) {
         $data = $request->getParsedBody();
         // TODO: lưu dữ liệu user vào DB
 

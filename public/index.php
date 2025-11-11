@@ -37,7 +37,7 @@ require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/food.court.php')($app, $twig);
 (require __DIR__ . '/../src/routes/home.php')($app, $twig);
 (require __DIR__ . '/../src/routes/provinces.php')($app, $twig);
-(require __DIR__ . '/../src/routes/users.php')($app);
+(require __DIR__ . '/../src/routes/users.php')($app, $twig);
 
 
 $app->run();

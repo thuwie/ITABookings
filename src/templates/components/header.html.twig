@@ -1,30 +1,3 @@
-<style>
-    .btn {
-        padding: 6px 14px;
-        border: none;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        color: #fff;
-        transition: 0.2s;
-    }
-
-    .btn-login {
-        background-color: #004080;
-    }
-
-    .btn-login:hover {
-        background-color: #002b5c;
-    }
-
-    .btn-register {
-        background-color: #0066cc;
-    }
-
-    .btn-register:hover {
-        background-color: #004d99;
-    }
-</style>
 <header>
     <div>
         <div class="bg-black">
@@ -32,8 +5,8 @@
                 <div class="flex-row d-flex justify-content-between p-3 align-items-center">
                     <div class="text-white fs-3"><i><b>ITA BOOKINGS</b></i></div>
                     <div class="flex-row gap-4 d-flex">
-                        <span class="text-white pointer-hover hover-shadow">Đăng nhập</span>
-                        <button class="btn btn-register" onclick="window.location.href='{{ register_url }}'">Đăng ký</button>
+                        <a class="text-white pointer-hover hover-shadow" href="/login">Đăng nhập</a>
+                        <a class="text-white pointer-hover hover-shadow" href="/register">Đăng ký</a>
                     </div>
                 </div>
             </div>

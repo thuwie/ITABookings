@@ -15,23 +15,23 @@ class UserService implements UserServicePort {
         $this->userRepositoryPort = $userRepository;
     }
 
-    public function createUser(
-        string $firstName,
-        string $lastName,
-        string $plainPassword,
-        string $email,
-        ?string $phoneNumber = null,
-        ?string $portrait = null,
-        string $gender = 'male',
-        ?string $dateOfBirth = null,
-        ?string $cccd = null,
-        ?string $address = null,
-        ?int $provinceId = null,
-        int $roleId = 4
-    ): array {
+    public function createUser($user): array {
+        $firstName = $user['first_name'];
+        $lastName = $user['last_name'];
+        $gender = $user['gender'];
+        $cccd = $user['cccd'];
+        $address = $user['address'];
+        $provinceId = $user['province_id'];
+        $portrait = '';
+        $roleId = $user['role_id'];
+        $email = $user['email'];
+        $password = $user['password'];
+        $phoneNumber = $user['phone_number'];
+        $dateOfBirth = $user['date_of_birth'];
+
         // Validations
         $emailVO = new Email($email);
-        $passwordVO = Password::fromPlain($plainPassword);
+        $passwordVO = Password::fromPlain($password);
         $phoneNumberVO = $phoneNumber ? new PhoneNumber($phoneNumber) : null;
 
         if ($this->userRepositoryPort->existsByEmail($emailVO)) {
@@ -42,8 +42,7 @@ class UserService implements UserServicePort {
         $dob = null;
         if ($dateOfBirth) {
             try {
-                $dobObj = new \DateTimeImmutable($dateOfBirth);
-                $dob = $dobObj->format('Y-m-d'); // chuyển thành string
+                $dob = new \DateTimeImmutable($dateOfBirth);
             } catch (\Exception $e) {
                 throw new \DomainException("Ngày sinh không hợp lệ");
             }
@@ -57,18 +56,20 @@ class UserService implements UserServicePort {
             $passwordVO->getHash(),
             $emailVO->value(),
             $phoneNumberVO ? $phoneNumberVO->getValue() : null, // PHP <8 dùng cách này
+            $portrait,
             $gender,
             $dob,
             $cccd,
             $address,
             $provinceId,
             $roleId,
-            $portrait
         );
 
         // save user
-        $this->userRepositoryPort->save($user);
+        $result = $this->userRepositoryPort->save($user);
 
-        return $user->toArray();
+        return $result
+        ? ['status' => 'success', 'message' => 'Province and images saved successfully']
+        : ['status' => 'failed', 'message' => 'Province and images saved unsuccessfully'];
     }
 }

@@ -13,6 +13,10 @@ use App\Application\Port\Outbound\FoodCourtRepositoryPort;
 use App\Adapter\Outbound\FoodCourtRepository;
 use App\Application\Service\FoodCourtService;
 use App\Application\Port\Inbound\FoodCourtServicePort;
+use App\Application\Port\Outbound\UserRepositoryPort;
+use App\Application\Port\Inbound\UserServicePort;
+use App\Application\Service\UserService;
+use App\Adapter\Outbound\UserRepository;
 
 use DI\Container;
 
@@ -56,6 +60,16 @@ return function (): Container {
             return new FoodCourtService($container->get(FoodCourtRepositoryPort::class));
         });
 
+        //USERS
+        // Outbound Port Binding
+        $container->set(UserRepositoryPort::class, function() {
+            return new UserRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(UserServicePort::class, function() use ($container) {
+            return new UserService($container->get(UserRepositoryPort::class));
+        });
         
      return $container;
 };
