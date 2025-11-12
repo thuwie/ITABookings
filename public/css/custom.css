@@ -103,3 +103,20 @@
     transform: scale(1.1);
     /* Phóng to nhẹ */
 }
+
+.searching-btn-29-10:hover {
+    opacity: 0.8 !important;
+}
+
+#carouselLimousine .card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+#carouselLimousine .card {
+    transition: transform .25s ease;
+}
+
+#carouselLimousine .card:hover {
+    transform: translateY(-6px);
+}

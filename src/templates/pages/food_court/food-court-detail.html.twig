@@ -1,4 +1,4 @@
-{% extends 'layouts/travel.spot.html.twig' %}
+{% extends 'layouts/food.court.html.twig' %}
 
 
 {% block title %}Thông tin chi tiết {% endblock %}
@@ -16,15 +16,16 @@
 
     <div class="w-100 position-relative">
         <h2 class="position-absolute top-0 text-black start-50" style="transform: translateX(-50%) translateY(-80px);
-         display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
-            {{travelSpot.name}}, Việt Nam
+         display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+        ">
+            {{foodCourt.name}}, Việt Nam
         </h2>
-        {% if travelSpot.images is not empty %}
-        <div id="provinceCarousel" class="carousel slide" data-bs-ride="carousel">
+        {% if foodCourt.images is not empty %}
+        <div id="foodCourtCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
 
                 {# Lặp qua danh sách ảnh #}
-                {% for image in travelSpot.images %}
+                {% for image in foodCourt.images %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
                     <img src="{{ image.url ?: image.url }}" class="d-block w-100 rounded-5"
                         alt="Ảnh của {{ province.name }}" style="height: 500px; object-fit: cover;">
@@ -34,17 +35,19 @@
             </div>
 
             <!-- Nút điều hướng -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#provinceCarousel" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#foodCourtCarousel"
+                data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Trước</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#provinceCarousel" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#foodCourtCarousel"
+                data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Tiếp</span>
             </button>
         </div>
         {% else %}
-        <div class="alert alert-warning text-center mt-4">Chưa có ảnh cho địa điểm này.</div>
+        <div class="alert alert-warning text-center mt-4">Chưa có ảnh cho tỉnh này.</div>
         {% endif %}
     </div>
 
@@ -59,63 +62,68 @@
 
         <div class="d-flex flex-row gap-5 justify-content-center mt-3">
             <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
-                ">
+                        ">
                 <i class="bi bi-star-fill text-warning"></i>
-                <span>{{travelSpot.average_rate}}</span>
-                <span>({{travelSpot.total_rates}} đánh giá)</span>
+                <span>{{foodCourt.average_rate}}</span>
+                <span>({{foodCourt.total_rates}} đánh giá)</span>
             </span>
 
             <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;">
                 <i>📍</i>
-                <span>{{travelSpot.name}}, Việt Nam</span>
+                <span>{{foodCourt.name}}, Việt Nam</span>
             </span>
 
             <span class="d-flex flex-row gap-2 p-2 rounded-3 align-items-center" style="background-color: #F1F1F0;    
-                        ">
+                                ">
                 <i class="mb-1">💵</i>
-                <span>Vé: {{travelSpot['price_from_formatted']}} - {{travelSpot['price_to_formatted']}}/người</span>
+                <span>Vé: {{foodCourt['price_from_formatted']}} - {{foodCourt['price_to_formatted']}}/người</span>
             </span>
 
             <span class="d-flex flex-row gap-2 p-2 rounded-3" style="background-color: #F1F1F0;    
-                        ">
+                                ">
                 <i>⏰</i>
-                <span>{{travelSpot['open_close']}}</span>
+                <span>{{foodCourt['open_close']}}</span>
             </span>
         </div>
 
         <div class="d-flex flex-column gap-2">
             <h3 style="color: #1281B9;">Giới thiệu</h3>
-            <p>
-                {{travelSpot.description}}
+            <p class="fs-6">
+                {{foodCourt.description}}
             </p>
         </div>
 
         <div class="d-flex flex-column gap-2">
             <h3 style="color: #1281B9;">Hình ảnh liên quan</h3>
             <div class="d-flex flex-row gap-3">
-                {% for image in travelSpot.images %}
+                {% for image in foodCourt.images %}
                 <img src="{{ image.url ?: image.url }}" class="w-25 rounded-2" style="height: 200px;">
                 {% endfor %}
             </div>
         </div>
 
+
         <div class="d-flex flex-column gap-2">
-            <h3 style="color: #1281B9;">Các địa điểm khác</h3>
+            <h3 style="color: #1281B9;">Các địa điểm ăn uống khác </h3>
             <div class="d-flex flex-row gap-3">
-                {% for relatedSpot in anotherTravelSpotsWithSameIdProvince%}
-                <a class="travel-card d-block rounded-2" href="/travel-spot/{{relatedSpot.id}}"
+                {% for foodCourt in relatedFoodCourts %}
+                <a href="/food-court/{{foodCourt.id}}" class="travel-card d-block rounded-2"
                     style="width: 200px; height: 230px; position: relative; overflow: hidden;">
-                    <img src="{{relatedSpot.images[0].url}}" class="w-100 h-100 rounded-2 object-fit-cover travel-img"
-                        alt="{{relatedSpot.name}}">
-                    <div class="position-absolute top-50 p-2 w-100 text-light" style="transform: translateY(-50%);
-                         background: rgba(0, 0, 0, 0.4);">
-                        <h4 class="clamp-2">{{relatedSpot.name}}</h4>
-                        <p class="clamp-2">{{relatedSpot.description}}</p>
+
+                    <img src="{{ foodCourt.images[0].url ?: foodCourt.images[0].url }}"
+                        class="w-100 h-100 rounded-2 object-fit-cover travel-img" alt="{{travelSpot.name}}">
+
+                    <div class="position-absolute top-50 p-2 w-100 text-light"
+                        style="transform: translateY(-50%); background: rgba(0, 0, 0, 0.4);">
+                        <h4 class="clamp-2">{{foodCourt.name}}</h4>
+                        <p class="clamp-2">{{foodCourt.description}}</p>
                     </div>
                 </a>
+
                 {% endfor %}
             </div>
         </div>
+
 
         <div class="d-flex flex-column gap-4">
             <h3 style="color: #1281B9;">Đánh giá</h3>

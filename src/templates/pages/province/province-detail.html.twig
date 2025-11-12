@@ -15,11 +15,11 @@
     </div>
 
     <div class="w-100 position-relative">
-        <h2 class="position-absolute top-0 text-black start-50" style="transform: translateX(-50%) translateY(-80px);">
+        <h2 class="position-absolute top-0 text-black start-50" style="transform: translateX(-50%) translateY(-80px);
+         display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+        ">
             {{province.name}}, Việt Nam
         </h2>
-        <!-- <img src="/files/lam-dong/province_68e9052c5b2ce7.46462967_download__1_.jpg" alt="" class="w-100 rounded-5"
-            style="height: 500px; object-fit: cover;"> -->
         {% if province.images is not empty %}
         <div id="provinceCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">

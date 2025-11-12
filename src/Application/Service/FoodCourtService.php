@@ -65,5 +65,15 @@ class FoodCourtService implements FoodCourtServicePort {
         $result = $this->foodCourtRepositoryPort->getFoodCourtsWithImagesByProvinceId($provinceId);
         return $result;
       }
+
+    public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot):array {
+        $result = $this->foodCourtRepositoryPort->getFoodCourtsWithImagesByTravelSpotId($idTravelSpot);
+        return $result;
+    }
+
+     public function getFoodCourtById($id) {
+        $result = $this->foodCourtRepositoryPort->getFoodCourtById($id);
+        return $result;
+     }
 }
 

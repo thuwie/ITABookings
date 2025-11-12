@@ -1,0 +1,104 @@
+{% extends 'layouts/location.html.twig' %}
+
+
+{% block title %}Các tỉnh/thành phố{% endblock %}
+
+{% block body %}
+
+{# banner searching #}
+<h2 class="text-center">Địa điểm nổi bật</h2>
+
+<div class="d-flex flex-column gap-5 mt-4">
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+            <!-- ITEM 1 -->
+            <div class="carousel-item active" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b3fdf29.85037701_download.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEM 2 -->
+            <div class="carousel-item" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b39bca3.79820301_images.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITEM 3 -->
+            <div class="carousel-item" data-bs-interval="3000">
+                <div class="d-flex justify-content-center align-items-center p-4" style="min-height: 250px;">
+                    <div class="w-100">
+                        <img src="/files/dak-lak/province_68e9018b47a0b7.32815062_download__1_.jpg"
+                            class="w-100 object-fit-contain object-fit-cover rounded-2" style="height: 300px;" alt="">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Nút điều hướng (tuỳ chọn) -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="mb-5">
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
+            {% for province in provinces %}
+            <div class="col">
+                <a href="#" class="text-decoration-none text-reset">
+                    <article class="pointer-hover-col border rounded-2 h-100" style="border-color: #000;">
+                        <div class="w-100 rounded-top-2" style="
+                            background-image: url('{{ province.images[0].url }}');
+                            height: 180px;
+                            background-size: cover;
+                            background-position: center;
+                            background-repeat: no-repeat;">
+                        </div>
+
+                        <div class="w-100 rounded-bottom-2 p-3 d-flex flex-column justify-content-between ">
+                            <div>
+                                <span class="text-center d-block mb-2">
+                                    <strong class="fs-5 clamp-2">
+                                        <span>🌍</span> {{ province.name }}
+                                    </strong>
+                                </span>
+
+                                <p class="clamp-2 text-center">
+                                    {{ province.description }}
+                                </p>
+                            </div>
+
+                            <a href="/province/{{province.id}}"
+                                class="btn w-100 text-center rounded-2 btn-primary mt-auto">
+                                <span class="btn-view-detail">Xem chi tiết</span>
+                            </a>
+                        </div>
+                    </article>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

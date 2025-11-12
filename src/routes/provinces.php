@@ -3,6 +3,7 @@ use Slim\App;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\TravelSpotPort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
+use App\Helper\FileHelper;
 
 return function(App $app, $twig) {
 
@@ -44,11 +45,11 @@ return function(App $app, $twig) {
         $service = $this->get(ProvinceServicePort::class); 
 
         //  Lấy dữ liệu
-        $provinces = $service->getProvinces();
+        $provinces = $service->getProvincesWithImages();
 
         // Render Twig, truyền dữ liệu
         $response->getBody()->write($twig->render(
-            'pages/travel_spot/create.travel.spot.html.twig',
+            'pages/province/get.all.provinces.html.twig',
             [
                 'provinces' => $provinces,
             ]
@@ -75,8 +76,6 @@ return function(App $app, $twig) {
         return $response;
     });
 
-
-
     $app->post('/province/create', function ($request, $response, $args) use ($twig) {
 
        $service = $this->get(ProvinceServicePort::class); 
@@ -95,6 +94,35 @@ return function(App $app, $twig) {
         return $response->withHeader('Content-Type', 'application/json');
     });
 
-   
+   $app->get('/food-courts-belong-provinces', function ($request, $response, $args) use ($twig) {
+
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $data = $service->getFoodCourtsBelongTpProvince();
+        foreach ($data as &$item) {
+            $foodCourts = $item['foodCourts'] ?? [];
+
+            $item['foodCourts'] = array_map(function ($foodCourt) {
+                // Convert entity to array
+                $foodCourtArray = $foodCourt->toArray();
+
+                $foodCourtArray['price_from_formatted'] = FileHelper::formatCurrency($foodCourtArray['price_from']);
+                $foodCourtArray['price_to_formatted']   = FileHelper::formatCurrency($foodCourtArray['price_to']);
+                $foodCourtArray['open_close'] = FileHelper::formatTimeRange($foodCourtArray['open_time'], $foodCourtArray['close_time']);
+
+                return $foodCourtArray;
+            }, $foodCourts);
+        }
+        // Render Twig, truyền dữ liệu
+        $response->getBody()->write($twig->render(
+            'pages/province/provinces.with.food.courts.html.twig',
+            [
+                'provincesWithFoodCourts' => $data,
+            ]
+        ));
+
+        return $response;
+    });
 
 };
