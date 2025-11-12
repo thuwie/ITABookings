@@ -20,11 +20,43 @@ return function(App $app, $twig) {
     $html = $twig->render('pages/home.html.twig', [
         'provinces' => $provinces,
         'travelSpots' =>  $travelSpots,
-         'foodCourts' => $foodCourts
+        'foodCourts' => $foodCourts,
     ]);
 
     $response->getBody()->write($html);
     return $response;
 });
 
+// Form đăng ký
+    $app->get('/register', function ($request, $response, $args) use ($twig) {
+        
+        $service = $this->get(ProvinceServicePort::class); 
+
+        //  Lấy dữ liệu
+        $provinces = $service->getProvinces();
+
+        $html = $twig->render('pages/auth/register.html.twig', [
+            'provinces' => $provinces,
+        ]);
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+    // Form dangnhap
+    $app->get('/login', function ($request, $response, $args) use ($twig) {
+        $html = $twig->render('pages/auth/login.html.twig', [
+            
+        ]);
+        $response->getBody()->write($html);
+        return $response;
+    });
+
+    // Xử lý form POST đăng ký
+    $app->post('/login', function ($request, $response, $args) {
+        $data = $request->getParsedBody();
+        // TODO: lưu dữ liệu user vào DB
+
+        $response->getBody()->write(json_encode(['success' => true]));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
 };

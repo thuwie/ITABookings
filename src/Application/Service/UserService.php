@@ -15,29 +15,61 @@ class UserService implements UserServicePort {
         $this->userRepositoryPort = $userRepository;
     }
 
-    public function createUser($firstName, $lastName, $plainPassword, $email, $phoneNumber, $portrait):array {
-        //valid use
-         $emailVO = new Email($email);
-         $passwordVO = Password::fromPlain($plainPassword);
-         $phoneNumberVO = new PhoneNumber($phoneNumber);
+    public function createUser($user): array {
+        $firstName = $user['first_name'];
+        $lastName = $user['last_name'];
+        $gender = $user['gender'];
+        $cccd = $user['cccd'];
+        $address = $user['address'];
+        $provinceId = $user['province_id'];
+        $portrait = '';
+        $roleId = $user['role_id'];
+        $email = $user['email'];
+        $password = $user['password'];
+        $phoneNumber = $user['phone_number'];
+        $dateOfBirth = $user['date_of_birth'];
 
-         if($this->userRepositoryPort->existsByEmail($emailVO)) {
-             throw new \DomainException("Email already registered");
-         }
+        // Validations
+        $emailVO = new Email($email);
+        $passwordVO = Password::fromPlain($password);
+        $phoneNumberVO = $phoneNumber ? new PhoneNumber($phoneNumber) : null;
 
-         //init user
+        if ($this->userRepositoryPort->existsByEmail($emailVO)) {
+            throw new \DomainException("Email already registered");
+        }
+
+        // Xử lý ngày sinh
+        $dob = null;
+        if ($dateOfBirth) {
+            try {
+                $dob = new \DateTimeImmutable($dateOfBirth);
+            } catch (\Exception $e) {
+                throw new \DomainException("Ngày sinh không hợp lệ");
+            }
+        }
+
+        // init user
         $user = new User(
-            0, 
+            0,
             $firstName,
             $lastName,
             $passwordVO->getHash(),
             $emailVO->value(),
-            $phoneNumber,
-            $portrait
+            $phoneNumberVO ? $phoneNumberVO->getValue() : null, // PHP <8 dùng cách này
+            $portrait,
+            $gender,
+            $dob,
+            $cccd,
+            $address,
+            $provinceId,
+            $roleId,
         );
 
-        //save user
-        $this->userRepositoryPort->save($user);
-        return $user->toArray();
+        // save user
+        $result = $this->userRepositoryPort->save($user);
+
+        return $result
+        ? ['status' => 'success', 'message' => 'Province and images saved successfully']
+        : ['status' => 'failed', 'message' => 'Province and images saved unsuccessfully'];
     }
 }

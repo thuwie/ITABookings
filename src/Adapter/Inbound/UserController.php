@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Application\Port\Inbound\UserServicePort;
 
 class UserController {
-     private UserServicePort $service;
+    private UserServicePort $service;
 
     public function __construct(UserServicePort $service) {
         $this->service = $service;
@@ -15,21 +15,38 @@ class UserController {
     public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
         $data = json_decode($request->getBody()->getContents(), true);
 
-        $firstName   = $data['firstName'] ?? '';
-        $lastName    = $data['lastName'] ?? '';
-        $password    = $data['password'] ?? '';
-        $email       = $data['email'] ?? '';
-        $phoneNumber = $data['phoneNumber'] ?? null;
-        $portrait    = $data['portrait'] ?? null;
+        $firstName    = $data['first_name'] ?? '';
+        $lastName     = $data['last_name'] ?? '';
+        $password     = $data['password'] ?? '';
+        $email        = $data['email'] ?? '';
+        $phoneNumber  = $data['phone_number'] ?? null;
+        $gender       = $data['gender'] ?? 'male';
+        $dateOfBirth  = $data['date_of_birth'] ?? null;
+        $cccd         = $data['cccd'] ?? null;
+        $address      = $data['address'] ?? null;
+        $provinceCode = $data['province'] ?? null;
+        $roleId       = 4; // Mặc định 'user'
 
         try {
+            // Nếu cần, convert provinceCode thành province_id (bạn có thể gọi repository)
+            $provinceId = null;
+            if ($provinceCode) {
+                // Giả sử service có hàm getProvinceIdByCode()
+                $provinceId = $provinceCode;
+            }
+            
             $result = $this->service->createUser(
                 $firstName,
                 $lastName,
-                $password,
+                $password,       // Service sẽ hash password
                 $email,
                 $phoneNumber,
-                $portrait
+                $gender,
+                $dateOfBirth,
+                $cccd,
+                $address,
+                $provinceId,
+                $roleId
             );
 
             $response->getBody()->write(json_encode($result));

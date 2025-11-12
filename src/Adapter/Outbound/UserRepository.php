@@ -8,8 +8,9 @@ use App\Domain\ValueObject\Email;
 use Illuminate\Database\Capsule\Manager as DB;
 
 class UserRepository implements UserRepositoryPort {
-    public function save(User $user): void {
-        DB::table('users')->insert($user->toArray());
+    public function save(User $user) {
+        $newUser = DB::table('users')->insert($user->toArray());
+        return $newUser;
     }
 
     public function existsByEmail(Email $email): bool {

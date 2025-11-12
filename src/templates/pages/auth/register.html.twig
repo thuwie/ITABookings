@@ -1,0 +1,183 @@
+{% block body %}
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #eef2f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  form {
+    max-width: 600px;
+    width: 100%;
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  }
+
+  h2 {
+    text-align: center;
+    color: #002b5c;
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input, select, button {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: #004080;
+    box-shadow: 0 0 3px rgba(0, 64, 128, 0.3);
+  }
+
+  button {
+    background-color: #002b5c;
+    color: #fff;
+    border: none;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  button:hover {
+    background-color: #004080;
+  }
+
+  .error {
+    color: red;
+    font-size: 13px;
+    margin-top: 3px;
+  }
+
+  .success {
+    text-align: center;
+    color: green;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  .row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .row .field {
+    flex: 1;
+  }
+
+  .field-single {
+    margin-bottom: 15px;
+  }
+
+  select {
+    background-color: #fff;
+  }
+</style>
+
+<form id="registerForm" method="POST" action="/register">
+  <h2>Đăng ký tài khoản</h2>
+
+  <!-- Họ và tên -->
+  <div class="row">
+    <div class="field">
+      <label>Họ</label>
+      <input type="text" name="last_name" placeholder="Nhập họ" required />
+    </div>
+    <div class="field">
+      <label>Tên</label>
+      <input type="text" name="first_name" placeholder="Nhập tên" required />
+    </div>
+  </div>
+
+  <!-- Email và số điện thoại -->
+  <div class="row">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" name="email" placeholder="Nhập email" required />
+    </div>
+    <div class="field">
+      <label>Số điện thoại</label>
+      <input type="tel" name="phone_number" placeholder="Nhập số điện thoại" required />
+    </div>
+  </div>
+
+  <!-- Giới tính và ngày sinh -->
+  <div class="row">
+    <div class="field">
+      <label>Giới tính</label>
+      <select name="gender" required>
+        <option value="">-- Chọn giới tính --</option>
+        <option value="male">Nam</option>
+        <option value="female">Nữ</option>
+        <option value="other">Khác</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Ngày sinh</label>
+      <input type="date" name="date_of_birth" required />
+    </div>
+  </div>
+
+  <!-- CCCD và Địa chỉ -->
+  <div class="row">
+    <div class="field">
+      <label>Số CCCD</label>
+      <input type="text" name="cccd" placeholder="Nhập số CCCD" required />
+    </div>
+    <div class="field">
+      <label>Địa chỉ</label>
+      <input type="text" name="address" placeholder="Nhập địa chỉ" required />
+    </div>
+  </div>
+
+  <!-- Tỉnh / Thành phố -->
+  <div class="field-single">
+    <label for="province_id">Chọn tỉnh/thành:</label>
+    <select name="province_id" id="province_id" required>
+        {% for province in provinces %}
+        <option value="{{ province.id }}">{{ province.name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+
+  <!-- Mật khẩu và xác nhận -->
+  <div class="row">
+    <div class="field">
+      <label>Mật khẩu</label>
+      <input type="password" name="password" placeholder="Nhập mật khẩu" required />
+    </div>
+    <div class="field">
+      <label>Xác nhận mật khẩu</label>
+      <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu" required />
+    </div>
+  </div>
+  <div id="passwordError" class="error"></div>
+
+  <input type="hidden" name="role_id" value=4 />
+
+  <button type="submit">Đăng ký</button>
+</form>
+
+{% endblock %}
