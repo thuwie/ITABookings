@@ -127,6 +127,21 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'routes' => function ($table) {
+        $table->increments('id');
+        $table->string('from_location_code', 50);
+        $table->string('destination_code', 50);
+        $table->string('name');
+        $table->integer('distance_km')->unsigned()->nullable();
+        $table->integer('duration_min')->unsigned()->nullable();
+        $table->timestamps();
+
+        // Thiết lập charset & collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
 
 ];
 

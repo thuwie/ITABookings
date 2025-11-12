@@ -1,0 +1,35 @@
+<form action="/route" method="POST" class="p-4 border rounded shadow-sm bg-light">
+
+    <h4 class="mb-3">Thêm tuyến đường mới</h4>
+
+    <div class="mb-3">
+        <label for="from_location_code" class="form-label">Mã địa điểm xuất phát</label>
+        <input type="text" name="from_location_code" id="from_location_code" class="form-control" placeholder="VD: HNI"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="destination_code" class="form-label">Mã địa điểm đích</label>
+        <input type="text" name="destination_code" id="destination_code" class="form-control" placeholder="VD: DNG"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Tên tuyến đường</label>
+        <input type="text" name="name" id="name" class="form-control" placeholder="VD: Hà Nội - Đà Nẵng" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="distance_km" class="form-label">Quãng đường (km)</label>
+        <input type="number" name="distance_km" id="distance_km" class="form-control" placeholder="VD: 767" min="1"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="duration_min" class="form-label">Thời gian (phút)</label>
+        <input type="number" name="duration_min" id="duration_min" class="form-control" placeholder="VD: 870" min="1"
+            required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu tuyến đường</button>
+</form>

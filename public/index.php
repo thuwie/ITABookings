@@ -33,7 +33,7 @@ $app->add(function ($request, $handler) {
 
 // Load routes
 require __DIR__ . '/../src/routes/files.php';
-(require __DIR__ . '/../src/routes/searching.route.php')($app, $twig);
+(require __DIR__ . '/../src/routes/route.php')($app, $twig);
 (require __DIR__ . '/../src/routes/travel.spot.php')($app, $twig);
 (require __DIR__ . '/../src/routes/food.court.php')($app, $twig);
 (require __DIR__ . '/../src/routes/home.php')($app, $twig);
