@@ -1,0 +1,272 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký doanh nghiệp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    form {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #002b5c;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color:#002b5c; 
+      margin-top:25px; 
+      border-bottom:2px solid #c0c0c0; 
+      padding-bottom:5px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select, button, textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #004080;
+      box-shadow: 0 0 3px rgba(0, 64, 128, 0.3);
+    }
+
+    button {
+      background-color: #002b5c;
+      color: #fff;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #004080;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .success {
+      text-align: center;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .row .field {
+      flex: 1;
+    }
+
+    .field-single {
+      margin-bottom: 15px;
+    }
+
+    select {
+      background-color: #fff;
+    }
+
+    .representative {
+      background-color: #f3f7ff;
+      padding: 10px;
+      border-left: 4px solid #004080;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      color: #002b5c;
+      font-weight: bold;
+    }
+
+    .note {
+      font-style: italic;
+      font-size: 14px;
+      color: #ba3636;
+      margin-top: -5px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="businessForm">
+    <h2>Đăng Ký Doanh Nghiệp</h2>
+
+    <!-- Thông tin doanh nghiệp -->
+    <h3>Thông tin doanh nghiệp</h3>
+    <div class="field-single">
+      <label for="name">Tên doanh nghiệp</label>
+      <input type="text" id="name" name="name" placeholder="Nhập tên doanh nghiệp" required>
+    </div>
+
+    <div class="field-single">
+      <label for="logo">Logo doanh nghiệp</label>
+      <input type="file" id="logo" name="logo" accept="image/*">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="example@company.com" required>
+      </div>
+      <div class="field">
+        <label for="phone_number">Số điện thoại</label>
+        <input type="tel" id="phone_number" name="phone_number" placeholder="0123 456 789" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="address">Địa chỉ</label>
+        <input type="text" id="address" name="address" placeholder="Số nhà, đường, quận/huyện..." required>
+      </div>
+      <div class="field">
+        <label for="province_id">Tỉnh/Thành phố</label>
+        <select id="province_id" name="province_id" required>
+          <option value="">-- Chọn tỉnh/thành phố --</option>
+          <option value="1">Hà Nội</option>
+          <option value="2">TP. Hồ Chí Minh</option>
+          <option value="3">Đà Nẵng</option>
+          <option value="4">Cần Thơ</option>
+          <option value="5">Khác...</option>
+      </select>
+      </div>
+    </div>
+
+    <div class="field-single">
+      <label for="description">Mô tả</label>
+      <textarea id="description" name="description" rows="3" placeholder="Giới thiệu ngắn về doanh nghiệp..."></textarea>
+    </div>
+
+    <!-- Thông tin thanh toán -->
+    <h3>Thông tin thanh toán</h3>
+
+    <div class="field-single">
+      <label for="bank_name">Ngân hàng</label>
+      <select id="bank_name" name="bank_name" required>
+        <option value="">-- Chọn ngân hàng --</option>
+        <option value="VCB">Vietcombank</option>
+        <option value="ACB">ACB</option>
+        <option value="TPB">TPBank</option>
+        <option value="MB">MB Bank</option>
+        <option value="BIDV">BIDV</option>
+        <option value="VPB">VPBank</option>
+      </select>
+    </div>
+
+    <div class="field-single">
+      <label for="account_number">Số tài khoản</label>
+      <input type="text" id="account_number" name="account_number" placeholder="Nhập số tài khoản ngân hàng" required>
+    </div>
+
+    <div class="field-single">
+      <label for="qr_image">Tải ảnh QR thanh toán</label>
+      <input type="file" id="qr_image" name="qr_image" accept="image/*">
+      <div class="qr-preview" id="qrPreview" style="display:none;">
+        <p>Xem trước mã QR:</p>
+        <img id="qrImagePreview" src="" alt="QR Preview">
+      </div>
+    </div>
+
+    <p class="note">
+      *Người quản trị hệ thống sẽ thanh toán cho doanh nghiệp sau khi chuyến đi hoàn thành.*
+    </p>
+
+    <!-- Thông tin người đại diện -->
+    <div class="representative" id="representative">
+      Ông/Bà <span id="repName">Nguyễn Văn A</span> là đại diện của công ty này.
+    </div>
+
+    <!-- Nộp đơn -->
+    <button type="submit">Nộp đơn đăng ký doanh nghiệp</button>
+
+    <div class="success" id="successMessage" style="display:none;">
+      ✅ Gửi đơn thành công!
+    </div>
+  </form>
+
+  <script>
+    // Giả lập thông tin user hiện tại
+    const currentUser = {
+      id: 101,
+      fullName: "Nguyễn Văn A"
+    };
+
+    // Gán tên người đại diện vào form
+    document.getElementById("repName").textContent = currentUser.fullName;
+
+    // Xem trước ảnh QR
+    const qrInput = document.getElementById("qr_image");
+    const qrPreview = document.getElementById("qrPreview");
+    const qrImg = document.getElementById("qrImagePreview");
+
+    qrInput.addEventListener("change", function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          qrImg.src = e.target.result;
+          qrPreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        qrPreview.style.display = "none";
+      }
+    });
+
+    // Xử lý submit form
+    document.getElementById("businessForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.getElementById("successMessage").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("successMessage").style.display = "none";
+        this.reset();
+      }, 3000);
+    });
+  </script>
+
+</body>
+</html>
+
+{% endblock %}

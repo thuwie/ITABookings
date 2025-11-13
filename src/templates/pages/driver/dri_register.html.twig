@@ -1,0 +1,324 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký tài xế</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    form {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #002b5c;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color:#002b5c; 
+      margin-top:25px; 
+      border-bottom:2px solid #c0c0c0; 
+      padding-bottom:5px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #004080;
+      box-shadow: 0 0 3px rgba(0, 64, 128, 0.3);
+    }
+
+    button {
+      background-color: #002b5c;
+      color: #fff;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #004080;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .row .field {
+      flex: 1;
+    }
+
+    .field-single {
+      margin-bottom: 15px;
+    }
+
+    select {
+      background-color: #fff;
+    }
+
+    .note {
+      font-style: italic;
+      font-size: 14px;
+      color: #ba3636;
+      margin-top: -5px;
+      margin-bottom: 1px;
+      text-align: center;
+    }
+
+    .representative {
+      background-color: #f3f7ff;
+      padding: 10px;
+      border-left: 4px solid #004080;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      color: #002b5c;
+      font-weight: bold;
+    }
+
+    .success {
+      text-align: center;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .qr-preview {
+      margin-top: 10px;
+    }
+
+    .qr-preview img {
+      max-width: 150px;
+      display: block;
+      margin: 5px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="driverForm">
+    <h2>Đăng Ký Tài Xế</h2>
+
+    <!-- Thông tin cá nhân -->
+    <h3>Thông tin cá nhân</h3>
+    <div class="row">
+      <div class="field">
+        <label>Họ</label>
+        <input type="text" name="last_name" placeholder="Nhập họ" required />
+      </div>
+      <div class="field">
+        <label>Tên</label>
+        <input type="text" name="first_name" placeholder="Nhập tên" required />
+      </div>
+    </div>
+
+    <!-- Giới tính và ngày sinh -->
+    <div class="row">
+      <div class="field">
+        <label>Giới tính</label>
+        <select name="gender" required>
+          <option value="">-- Chọn giới tính --</option>
+          <option value="male">Nam</option>
+          <option value="female">Nữ</option>
+          <option value="other">Khác</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ngày sinh</label>
+        <input type="date" name="date_of_birth" required />
+      </div>
+    </div>
+
+    <!-- Email và số điện thoại -->
+    <div class="row">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Nhập email" required />
+      </div>
+      <div class="field">
+        <label>Số điện thoại</label>
+        <input type="tel" name="phone_number" placeholder="Nhập số điện thoại" required />
+      </div>
+    </div>
+
+    <!-- CCCD và Địa chỉ -->
+    <div class="row">
+      <div class="field">
+        <label>Số CCCD</label>
+        <input type="text" name="cccd" placeholder="Nhập số CCCD" required />
+      </div>
+      <div class="field">
+        <label>Địa chỉ</label>
+        <input type="text" name="address" placeholder="Nhập địa chỉ" required />
+      </div>
+    </div>
+
+    <!-- Tỉnh / Thành phố -->
+    <div class="field-single">
+      <label for="province_id">Chọn tỉnh/thành:</label>
+      <select name="province_id" id="province_id" required>
+          <option value="">-- Chọn tỉnh/thành phố --</option>
+          <option value="1">Hà Nội</option>
+          <option value="2">TP. Hồ Chí Minh</option>
+          <option value="3">Đà Nẵng</option>
+          <option value="4">Cần Thơ</option>
+          <option value="5">Khác...</option>
+      </select>
+    </div>
+
+    <!-- Thông tin GPLX -->
+    <h3>Thông tin giấy phép lái xe</h3>
+
+    <div class="row">
+      <div class="field">
+        <label for="license_number">Số GPLX</label>
+        <input type="text" id="license_number" placeholder="Nhập số giấy phép lái xe" required>
+      </div>
+      <div class="field">
+        <label for="license_class">Loại bằng</label>
+        <select id="license_class" required>
+          <option value="">-- Chọn loại bằng --</option>
+          <option>B1</option><option>B2</option><option>C</option><option>D</option><option>E</option><option>F</option>
+        </select>
+      </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="license_issue_date">Ngày cấp GPLX</label>
+        <input type="date" id="license_issue_date" required>
+      </div>
+      <div class="field">
+        <label for="license_expiry_date">Ngày hết hạn GPLX</label>
+        <input type="date" id="license_expiry_date" required>
+      </div>
+    </div>
+
+    <div class="field-single">
+      <label for="status">Tình trạng GPLX</label>
+      <select id="status" required>
+          <option value="">-- Chọn tình trạng --</option>
+          <option>Còn hiệu lực</option>
+          <option>Hết hạn</option>
+          <option>Bị tạm giữ</option>
+        </select>
+    </div>
+
+    <!-- Thông tin thanh toán -->
+    <h3>Thông tin thanh toán</h3>
+
+    <div class="field-single">
+      <label for="bank_name">Ngân hàng</label>
+      <select id="bank_name" name="bank_name" required>
+        <option value="">-- Chọn ngân hàng --</option>
+        <option value="VCB">Vietcombank</option>
+        <option value="ACB">ACB</option>
+        <option value="TPB">TPBank</option>
+        <option value="MB">MB Bank</option>
+        <option value="BIDV">BIDV</option>
+        <option value="VPB">VPBank</option>
+      </select>
+    </div>
+
+    <div class="field-single">
+      <label for="account_number">Số tài khoản</label>
+      <input type="text" id="account_number" name="account_number" placeholder="Nhập số tài khoản ngân hàng" required>
+    </div>
+
+    <div class="field-single">
+      <label for="qr_image">Tải ảnh QR để nhận thanh toán</label>
+      <input type="file" id="qr_image" name="qr_image" accept="image/*">
+      <div class="qr-preview" id="qrPreview" style="display:none;">
+        <p>Xem trước mã QR:</p>
+        <img id="qrImagePreview" src="" alt="QR Preview">
+      </div>
+    </div>
+
+    <p class="note">
+      *Nhà cung cấp sẽ thanh toán cho tài xế sau khi chuyến đi hoàn thành.*
+    </p>
+
+    <!-- Gửi đơn -->
+    <button type="submit">Gửi đơn đăng ký</button>
+
+    <div class="success" id="successMessage" style="display:none;">
+      ✅ Gửi đơn thành công!
+    </div>
+  </form>
+
+  <script>
+    // Xem trước ảnh QR
+    const qrInput = document.getElementById("qr_image");
+    const qrPreview = document.getElementById("qrPreview");
+    const qrImg = document.getElementById("qrImagePreview");
+
+    qrInput.addEventListener("change", function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          qrImg.src = e.target.result;
+          qrPreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        qrPreview.style.display = "none";
+      }
+    });
+
+    // Submit form
+    document.getElementById("driverForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      document.getElementById("successMessage").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("successMessage").style.display = "none";
+        this.reset();
+      }, 3000);
+    });
+  </script>
+
+</body>
+</html>
+
+{% endblock %}
