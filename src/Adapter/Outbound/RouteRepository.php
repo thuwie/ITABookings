@@ -23,4 +23,25 @@ class RouteRepository implements RouteRepositoryPort {
         
         return $routeToArray;
      }
+
+     public function getRoute(string $from, string $to): ?array {
+
+       $sql = "SELECT *
+        FROM routes
+        WHERE (from_location_code = ? AND destination_code = ?)
+           OR (from_location_code = ? AND destination_code = ?)
+        LIMIT 1";
+
+        $route = DB::selectOne($sql, [$from, $to, $to, $from]); 
+
+        if (!$route) {
+            return null; // no route found
+        }
+
+        // Convert stdClass to array
+        $routeArray = (array) $route;
+
+        return $routeArray;
+    }
+
 }

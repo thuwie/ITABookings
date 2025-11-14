@@ -26,6 +26,11 @@ use App\Application\Port\Inbound\RouteServicePort;
 use App\Application\Service\RouteService;
 use App\Adapter\Outbound\RouteRepository;
 
+use App\Adapter\Outbound\SessionManager;
+use App\Application\Port\Outbound\SessionManagerInterfacePort;
+use App\Application\Service\LoginUserUseCaseService;
+use App\Application\Port\Inbound\LoginUserUseCasePort;
+
 use DI\Container;
 
 return function (): Container {
@@ -70,6 +75,7 @@ return function (): Container {
             return new FoodCourtService($container->get(FoodCourtRepositoryPort::class));
         });
 
+
         //USERS
         // Outbound Port Binding
         $container->set(UserRepositoryPort::class, function() {
@@ -81,6 +87,7 @@ return function (): Container {
             return new UserService($container->get(UserRepositoryPort::class));
         });
 
+
         //ROUTE
         // Outbound Port Binding
         $container->set(RouteRepositoryPort::class, function() {
@@ -90,6 +97,21 @@ return function (): Container {
         //Inbound Port Binding
         $container->set(RouteServicePort::class, function() use ($container) {
             return new RouteService($container->get(RouteRepositoryPort::class));
+        });
+
+
+        //AUTH LOGIN
+        // Outbound Port Binding
+        $container->set(SessionManagerInterfacePort::class, function() {
+            return new SessionManager();
+        });
+
+        //Inbound Port Binding
+        $container->set(LoginUserUseCasePort::class, function() use ($container) {
+            return new LoginUserUseCaseService(
+                $container->get(UserRepositoryPort::class),
+                $container->get(SessionManagerInterfacePort::class)
+        );
         });
         
      return $container;

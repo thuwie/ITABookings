@@ -31,5 +31,12 @@ class RouteService implements RouteServicePort {
         ? ['status' => 'success', 'message' => 'Route saved successfully']
         : ['status' => 'failed', 'message' => 'Route saved unsuccessfully'];
     }
+
+    public function findRoutes(string $from, string $to) {
+        $route = $this->routeRepositoryPort->getRoute($from, $to);
+        return $route
+        ? ['status' => 'success', 'data' => $route, 'message' => 'Route found successfully']
+        : ['status' => 'failed', 'message' => 'Route not found'];
+    }
     
 }

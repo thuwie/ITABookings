@@ -11,17 +11,31 @@ use App\Adapter\Outbound\UserRepository;
 return function (App $app, $twig) {
     $app->post('/register', function ($request, $response, $args) use ($twig) {
 
-       $service = $this->get(UserServicePort::class); 
+    $rawBody = $request->getBody()->getContents();
+    // Decode JSON
+    $data = json_decode($rawBody, true);
 
-       $user = $request->getParsedBody();        
-       
-        $result = $service->createUser($user);
+    try {
+        $service = $this->get(UserServicePort::class); 
 
-        // Trả về JSON đúng với dữ liệu service trả
-    
-         $response->getBody()->write(json_encode($result)); 
-         
-        // Đặt header Content-Type cho chuẩn REST
-        return $response->withHeader('Content-Type', 'application/json');
+        
+        $result = $service->createUser($data);
+        // Trả về JSON khi đăng ký thành công
+        $result = [
+            'status' => 'success',
+            'message' => 'Đăng ký thành công',
+            'redirect' => '/login'  // JS sẽ xử lý chuyển trang
+        ];
+
+    } catch (\Exception $e) {
+        $result = [
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ];
+    }
+
+    $response->getBody()->write(json_encode($result));
+    return $response->withHeader('Content-Type', 'application/json');
     });
+
 };

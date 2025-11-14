@@ -15,6 +15,7 @@ return function(App $app, $twig) {
     $app->get('/province/{id}', function ($request, $response, $args) use ($twig) {
         $id = $args['id'];
 
+        $provinces = $this->get(ProvinceServicePort::class)->getProvinces();
         $service = $this->get(ProvinceServicePort::class);
         $serviceTravelSpot = $this->get(TravelSpotPort::class);
         $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
@@ -32,7 +33,8 @@ return function(App $app, $twig) {
         $html = $twig->render('pages/province/province-detail.html.twig', [
             'province' => $province,
             'travelSpots' =>$travelSpots,
-            'foodCourts' =>$foodCourts
+            'foodCourts' => $foodCourts,
+            'provinces' => $provinces
         ]);
 
         $response->getBody()->write($html);
