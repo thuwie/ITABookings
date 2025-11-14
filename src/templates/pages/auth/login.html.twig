@@ -1,10 +1,12 @@
-{% block body %}
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Đăng Nhập</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,6 +15,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
 
     form {
@@ -21,7 +24,7 @@
       background: #fff;
       padding: 25px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     }
 
     h2 {
@@ -37,7 +40,8 @@
       color: #333;
     }
 
-    input, button {
+    input,
+    button {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -66,18 +70,6 @@
       background-color: #004080;
     }
 
-    .error {
-      color: red;
-      font-size: 13px;
-      margin-top: 3px;
-    }
-
-    .success {
-      color: green;
-      text-align: center;
-      margin-top: 10px;
-    }
-
     .register-link {
       text-align: center;
       margin-top: 15px;
@@ -87,8 +79,35 @@
       color: #004080;
       text-decoration: none;
     }
+
+    /* Toast container góc trên phải */
+    #messageContainer {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1080;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      /* màn hình tối */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      /* cao hơn toast và form */
+    }
   </style>
 </head>
+
 <body>
   <form id="loginForm">
     <h2>Đăng nhập</h2>
@@ -99,9 +118,6 @@
     <label>Mật khẩu</label>
     <input type="password" name="password" placeholder="Nhập mật khẩu" required />
 
-    <div id="errorMsg" class="error"></div>
-    <div id="successMsg" class="success"></div>
-
     <button type="submit">Đăng nhập</button>
 
     <div class="register-link">
@@ -109,47 +125,19 @@
     </div>
   </form>
 
-  <script>
-    const form = document.getElementById('loginForm');
-    const errorEl = document.getElementById('errorMsg');
-    const successEl = document.getElementById('successMsg');
+  <!-- Toast message container -->
+  <div id="messageContainer"></div>
 
-    // Lấy tham số redirect từ URL (nếu có)
-    const params = new URLSearchParams(window.location.search);
-    const redirectUrl = params.get('redirect');
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="display:none;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
 
-      const email = form.email.value.trim();
-      const password = form.password.value.trim();
-
-      // ✅ Giả lập xác thực (ở thực tế bạn sẽ gọi API)
-      if (email === "" || password === "") {
-        errorEl.textContent = "Vui lòng nhập đầy đủ thông tin!";
-        return;
-      }
-
-      // Ví dụ giả lập kiểm tra thành công:
-      if (email === "user@example.com" && password === "123456") {
-        errorEl.textContent = "";
-        successEl.textContent = "🎉 Đăng nhập thành công!";
-
-        // Chuyển hướng sau 1.5s
-        setTimeout(() => {
-          if (redirectUrl) {
-            window.location.href = redirectUrl; // Quay lại trang trước
-          } else {
-            window.location.href = "index.html"; // Trang chủ
-          }
-        }, 1500);
-      } else {
-        errorEl.textContent = "❌ Email hoặc mật khẩu không đúng!";
-        successEl.textContent = "";
-      }
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/login-handle.js"></script>
 </body>
-</html>
 
-{% endblock %}
+</html>

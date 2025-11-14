@@ -5,12 +5,18 @@ use App\Application\Port\Inbound\RouteServicePort;
 return function(App $app, $twig) {
     $app->get('/searching-routes', function ($request, $response, $args) use ($twig) {
 
+        $params = $request->getQueryParams();
+        $from = $params['from'] ?? null;
+        $to = $params['to'] ?? null;
+
         $service = $this->get(ProvinceServicePort::class); 
 
         $provinces = $service->getProvinces();
 
         $html = $twig->render('pages/routes/searching.html.twig', [
             'provinces' => $provinces,
+            'from' => $from,
+            'to' => $to,
         ]);
 
         $response->getBody()->write($html);

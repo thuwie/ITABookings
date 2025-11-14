@@ -36,7 +36,8 @@
                                                     class="w-100 rounded-2">
                                                     <option value="">Chọn nơi xuất phát</option>
                                                     {% for item in provinces %}
-                                                    <option value="{{item.code}}">{{item.name}}</option>
+                                                    <option value="{{item.id}}" {% if from is defined and from==item.id
+                                                        %} selected {% endif %}>{{item.name}}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -49,7 +50,8 @@
                                                     class="w-100 rounded-2">
                                                     <option value="">Chọn điểm đến</option>
                                                     {% for item in provinces %}
-                                                    <option value="{{item.code}}">{{item.name}}</option>
+                                                    <option value="{{item.id}}" {% if to is defined and to==item.id %}
+                                                        selected {% endif %}>{{item.name}}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -57,7 +59,7 @@
                                         <div class="col-2 my-auto">
                                             <button id="searching-btn" type="submit"
                                                 class=" rounded-2 border w-100 p-2 mt-4">
-                                                Vui lòng chọn địa điểm
+                                                Tìm kiếm
                                             </button>
                                         </div>
                                     </div>

@@ -24,14 +24,12 @@ const RouteSearch = {
             if (toLocationSelect.value != "" && fromLocationSelect.value != "" &&
                 toLocationSelect.value !== fromLocationSelect.value) {
                 searchingBtn.disabled = false;
-                searchingBtn.innerHTML = "Tìm kiếm";
                 searchingBtn.classList.toggle('searching-btn-29-10');
                 searchingBtn.classList.toggle('border-dark');
                 from = fromLocationSelect.value;
                 to = toLocationSelect.value;
             } else {
                 searchingBtn.disabled = true;
-                searchingBtn.innerHTML = "Vui lòng chọn địa điểm";
                 searchingBtn.classList.remove('searching-btn-29-10');
                 searchingBtn.classList.remove('border-dark');
             };
@@ -43,14 +41,12 @@ const RouteSearch = {
                 toLocationSelect.value !== fromLocationSelect.value
             ) {
                 searchingBtn.disabled = false;
-                searchingBtn.innerHTML = "Tìm kiếm";
                 searchingBtn.classList.toggle('searching-btn-29-10');
                 searchingBtn.classList.toggle('border-dark');
                 from = fromLocationSelect.value;
                 to = toLocationSelect.value;
             } else {
                 searchingBtn.disabled = true;
-                searchingBtn.innerHTML = "Vui lòng chọn địa điểm";
                 searchingBtn.classList.remove('searching-btn-29-10');
                 searchingBtn.classList.remove('border-dark');
             };

@@ -50,13 +50,4 @@ return function(App $app, $twig) {
         $response->getBody()->write($html);
         return $response;
     });
-
-    // Xử lý form POST đăng ký
-    $app->post('/login', function ($request, $response, $args) {
-        $data = $request->getParsedBody();
-        // TODO: lưu dữ liệu user vào DB
-
-        $response->getBody()->write(json_encode(['success' => true]));
-        return $response->withHeader('Content-Type', 'application/json');
-    });
 };
