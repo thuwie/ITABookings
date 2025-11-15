@@ -1,0 +1,40 @@
+<?php
+// src/Infrastructure/Adapters/Persistence/UserRepository.php
+namespace App\Adapter\Outbound;
+
+use App\Application\Port\Outbound\InformationPaymentPort;
+use App\Domain\Entity\InformationPayment;
+use Illuminate\Database\Capsule\Manager as DB;
+
+class InformationPaymentRepository implements InformationPaymentPort {
+    public function save(InformationPayment $informationPayment): InformationPayment
+    {
+        $id = DB::table('information_payments')->insertGetId($informationPayment->toInsertArray());
+        
+        // Tạo lại entity với ID vừa sinh ra
+        return new InformationPayment(
+            id: $id,
+            userId: $informationPayment->getUserId(),
+            fullName:  $informationPayment->getFullName(),
+            accountNumber: $informationPayment->getAccountNumber(),
+            bankName: $informationPayment->getBankName(),
+            qrCode: $informationPayment->getQrCode(),
+            createdAt: $informationPayment->getCreatedAt(),
+            updatedAt: $informationPayment->getUpdatedAt()
+        );
+    }
+
+    public function update(InformationPayment $informationPayment): bool
+    {
+        $data = $informationPayment->toInsertArray();
+        unset($data['created_at']); // không cập nhật created_at
+
+        $updated = DB::table('information_payments')
+            ->where('id', $informationPayment->getId()) // sử dụng getter lấy ID
+            ->update($data);
+
+        return $updated > 0; // true nếu có ít nhất 1 bản ghi bị update
+    }
+
+
+}

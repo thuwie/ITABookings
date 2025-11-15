@@ -217,6 +217,23 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'information_payments' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('user_id'); // Liên kết đến users.id
+        $table->string('full_name', 255);
+        $table->string('account_number', 50);
+        $table->string('bank_name', 100);
+        $table->string('qr_code', 255)->nullable();
+
+        // created_at & updated_at
+        $table->timestamps();
+
+        // Charset & collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+
+    },
 
 
 ];
