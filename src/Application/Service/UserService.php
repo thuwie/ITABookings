@@ -3,6 +3,7 @@ namespace App\Application\Service;
 
 use App\Application\Port\Inbound\UserServicePort;
 use App\Domain\Entity\User;
+use App\Domain\Entity\UserRole;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
 use App\Application\Port\Outbound\UserRepositoryPort;
@@ -23,7 +24,6 @@ class UserService implements UserServicePort {
         $address = $user['address'];
         $provinceId = $user['province_id'];
         $portrait = '';
-        $roleId = $user['role_id'];
         $email = $user['email'];
         $password = $user['password'];
         $phoneNumber = $user['phone_number'];
@@ -62,14 +62,17 @@ class UserService implements UserServicePort {
             $cccd,
             $address,
             $provinceId,
-            $roleId,
         );
 
         // save user
-        $result = $this->userRepositoryPort->save($user);
+        $newUser = $this->userRepositoryPort->save($user);
 
-        return $result
-        ? ['status' => 'success', 'message' => 'Province and images saved successfully']
-        : ['status' => 'failed', 'message' => 'Province and images saved unsuccessfully'];
+        $userId = $newUser->id;
+        $role = new  UserRole ($userId, 4);
+        $role_user = $this->userRepositoryPort->saveRole($role);
+
+        return $role_user
+        ? ['status' => 'success', 'message' => 'Đăng ký tài khoản thành công']
+        : ['status' => 'failed', 'message' => 'Đăng ký tài khoản thất bại'];
     }
 }

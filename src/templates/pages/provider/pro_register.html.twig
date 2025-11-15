@@ -1,6 +1,7 @@
 {% block body %}
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,7 @@
       background: #fff;
       padding: 25px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     }
 
     h2 {
@@ -32,10 +33,10 @@
     }
 
     h3 {
-      color:#002b5c; 
-      margin-top:25px; 
-      border-bottom:2px solid #c0c0c0; 
-      padding-bottom:5px;
+      color: #002b5c;
+      margin-top: 25px;
+      border-bottom: 2px solid #c0c0c0;
+      padding-bottom: 5px;
     }
 
     label {
@@ -45,7 +46,10 @@
       margin-bottom: 5px;
     }
 
-    input, select, button, textarea {
+    input,
+    select,
+    button,
+    textarea {
       width: 100%;
       padding: 8px;
       border-radius: 5px;
@@ -54,7 +58,9 @@
       box-sizing: border-box;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
       border-color: #004080;
       box-shadow: 0 0 3px rgba(0, 64, 128, 0.3);
@@ -128,6 +134,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <form id="businessForm">
@@ -163,20 +170,19 @@
       </div>
       <div class="field">
         <label for="province_id">Tỉnh/Thành phố</label>
-        <select id="province_id" name="province_id" required>
+        <select name="province_id" id="province_id" required>
           <option value="">-- Chọn tỉnh/thành phố --</option>
-          <option value="1">Hà Nội</option>
-          <option value="2">TP. Hồ Chí Minh</option>
-          <option value="3">Đà Nẵng</option>
-          <option value="4">Cần Thơ</option>
-          <option value="5">Khác...</option>
-      </select>
+          {% for province in provinces %}
+          <option value="{{ province.id }}">{{ province.name }}</option>
+          {% endfor %}
+        </select>
       </div>
     </div>
 
     <div class="field-single">
       <label for="description">Mô tả</label>
-      <textarea id="description" name="description" rows="3" placeholder="Giới thiệu ngắn về doanh nghiệp..."></textarea>
+      <textarea id="description" name="description" rows="3"
+        placeholder="Giới thiệu ngắn về doanh nghiệp..."></textarea>
     </div>
 
     <!-- Thông tin thanh toán -->
@@ -215,58 +221,15 @@
 
     <!-- Thông tin người đại diện -->
     <div class="representative" id="representative">
-      Ông/Bà <span id="repName">Nguyễn Văn A</span> là đại diện của công ty này.
+      {{ authUser.gender == 'female' ? 'Bà' : 'Ông' ?? 'Ông/Bà' }}
+      <span id="repName">{{ authUser.first_name }} {{
+        authUser.last_name}}</span> là đại diện của công ty này.
     </div>
-
     <!-- Nộp đơn -->
     <button type="submit">Nộp đơn đăng ký doanh nghiệp</button>
-
-    <div class="success" id="successMessage" style="display:none;">
-      ✅ Gửi đơn thành công!
-    </div>
   </form>
-
-  <script>
-    // Giả lập thông tin user hiện tại
-    const currentUser = {
-      id: 101,
-      fullName: "Nguyễn Văn A"
-    };
-
-    // Gán tên người đại diện vào form
-    document.getElementById("repName").textContent = currentUser.fullName;
-
-    // Xem trước ảnh QR
-    const qrInput = document.getElementById("qr_image");
-    const qrPreview = document.getElementById("qrPreview");
-    const qrImg = document.getElementById("qrImagePreview");
-
-    qrInput.addEventListener("change", function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          qrImg.src = e.target.result;
-          qrPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      } else {
-        qrPreview.style.display = "none";
-      }
-    });
-
-    // Xử lý submit form
-    document.getElementById("businessForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      document.getElementById("successMessage").style.display = "block";
-      setTimeout(() => {
-        document.getElementById("successMessage").style.display = "none";
-        this.reset();
-      }, 3000);
-    });
-  </script>
-
 </body>
+
 </html>
 
 {% endblock %}

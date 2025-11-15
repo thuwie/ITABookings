@@ -20,12 +20,11 @@ return function (App $app, $twig) {
 
         
         $result = $service->createUser($data);
-        // Trả về JSON khi đăng ký thành công
-        $result = [
-            'status' => 'success',
-            'message' => 'Đăng ký thành công',
-            'redirect' => '/login'  // JS sẽ xử lý chuyển trang
-        ];
+        
+         // Nếu là success → thêm redirect
+        if ($result['status'] === 'success') {
+            $result['redirect'] = '/login';
+        }
 
     } catch (\Exception $e) {
         $result = [

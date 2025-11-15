@@ -17,6 +17,7 @@ return function(App $app, $twig) {
     try {
         $user = $this->get(LoginUserUseCasePort::class)->login($email, $password);
 
+        $twig->addGlobal('authUser', $user);
         // Trả về JSON khi login thành công
         $result = [
             'status' => 'success',
@@ -33,5 +34,25 @@ return function(App $app, $twig) {
 
     $response->getBody()->write(json_encode($result));
     return $response->withHeader('Content-Type', 'application/json');
+    });
+
+    $app->get('/logout', function ($request, $response) {
+
+        // Start session nếu chưa chạy
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Xóa toàn bộ session
+        session_unset();
+        session_destroy();
+
+        // Tạo session mới để tránh lỗi
+        session_start();
+
+        // Redirect về trang chủ
+        return $response
+            ->withHeader('Location', '/')
+            ->withStatus(302);
     });
 };
