@@ -4,13 +4,15 @@ namespace App\Adapter\Outbound;
 
 use App\Application\Port\Outbound\UserRepositoryPort;
 use App\Domain\Entity\User;
+use App\Domain\Entity\UserRole;
 use App\Domain\ValueObject\Email;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Domain\Entity\UserAuth; 
 class UserRepository implements UserRepositoryPort {
     public function save(User $user) {
-        $newUser = DB::table('users')->insert($user->toArray());
-        return $newUser;
+        $id = DB::table('users')->insertGetId($user->toInsertArray());
+        $data = DB::table('users')->find($id);
+        return  $data;
     }
 
     public function existsByEmail(Email $email): bool {
@@ -27,7 +29,7 @@ class UserRepository implements UserRepositoryPort {
     public function findUserByEmail(Email $email):?UserAuth
     {
         $row = DB::table('users')
-            ->select(['id', 'email', 'password'])
+            ->select(['id', 'email', 'password', 'first_name', 'last_name', 'portrait', 'gender'])
             ->where('email', $email->value())
             ->first();
 
@@ -38,8 +40,17 @@ class UserRepository implements UserRepositoryPort {
         return new UserAuth(
             $row->id,
             $row->email,
-            $row->password
+            $row->password,
+            $row->first_name,
+            $row->last_name,
+            $row->portrait,
+            $row->gender
         ); 
+    }
+
+    public function saveRole(UserRole $role): UserRole {
+        DB::table('user_roles')->insert($role->toArray());
+        return $role;
     }
 
 }

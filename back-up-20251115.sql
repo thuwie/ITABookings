@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
 --
--- Host: localhost    Database: booking
+-- Host: 127.0.0.1    Database: booking
 -- ------------------------------------------------------
--- Server version	8.0.44
+-- Server version	8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,34 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `banned_providers`
+--
+
+DROP TABLE IF EXISTS `banned_providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `banned_providers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `provider_id` int unsigned NOT NULL,
+  `is_banned` tinyint NOT NULL DEFAULT '1',
+  `reason` text COLLATE utf8mb4_unicode_ci,
+  `banned_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `banned_providers`
+--
+
+LOCK TABLES `banned_providers` WRITE;
+/*!40000 ALTER TABLE `banned_providers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `banned_providers` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `food_court_images`
@@ -85,6 +113,42 @@ INSERT INTO `food_courts` VALUES (1,'B??n c?? Long Xuy??n','L?? m??n ??n ?????u 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `providers`
+--
+
+DROP TABLE IF EXISTS `providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `providers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone_number` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `province_id` int unsigned DEFAULT NULL,
+  `average_rates` decimal(10,2) DEFAULT NULL,
+  `rating_count` int unsigned NOT NULL DEFAULT '0',
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `providers_user_id_unique` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `providers`
+--
+
+LOCK TABLES `providers` WRITE;
+/*!40000 ALTER TABLE `providers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `providers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `province_images`
 --
 
@@ -112,6 +176,37 @@ LOCK TABLES `province_images` WRITE;
 /*!40000 ALTER TABLE `province_images` DISABLE KEYS */;
 INSERT INTO `province_images` VALUES (1,1,'/uploads/provinces/an-giang/province_68f3aced017187.16611289_an-giang-3.png','an-giang-3.png','2025-10-18 15:06:21','2025-10-18 15:06:21'),(2,1,'/uploads/provinces/an-giang/province_68f3aced1967c7.08573124_an-giang-2.jpg','an-giang-2.jpg','2025-10-18 15:06:21','2025-10-18 15:06:21'),(3,1,'/uploads/provinces/an-giang/province_68f3aced256f40.45934556_an-giang-1.jpg','an-giang-1.jpg','2025-10-18 15:06:21','2025-10-18 15:06:21'),(4,2,'/uploads/provinces/bac-ninh/province_68f3ad471b6531.22595087_bac-ninh-1-16077848708512064768942.jpg','bac-ninh-1-16077848708512064768942.jpg','2025-10-18 15:07:51','2025-10-18 15:07:51'),(5,2,'/uploads/provinces/bac-ninh/province_68f3ad472ce0d3.80455388_image-20200714225347-1.jpg','image-20200714225347-1.jpg','2025-10-18 15:07:51','2025-10-18 15:07:51'),(6,2,'/uploads/provinces/bac-ninh/province_68f3ad47480ab5.09200974_44d69adc-du-lich-bac-ninh-24.jpg','44d69adc-du-lich-bac-ninh-24.jpg','2025-10-18 15:07:51','2025-10-18 15:07:51'),(7,3,'/uploads/provinces/ca-mau/province_68f3adbeb70622.86873079_c__-mau2.jpg','c??-mau2.jpg','2025-10-18 15:09:51','2025-10-18 15:09:51'),(8,3,'/uploads/provinces/ca-mau/province_68f3adbed92c77.76033543_7C-1.jpg','7C-1.jpg','2025-10-18 15:09:51','2025-10-18 15:09:51'),(9,3,'/uploads/provinces/ca-mau/province_68f3adbeeac1f8.20467011_1737958354_muicamau-.jpg','1737958354_muicamau-.jpg','2025-10-18 15:09:51','2025-10-18 15:09:51'),(10,4,'/uploads/provinces/can-tho/province_68f3ae44e16945.03703688_download__2_.jpg','download (2).jpg','2025-10-18 15:12:05','2025-10-18 15:12:05'),(11,4,'/uploads/provinces/can-tho/province_68f3ae44f1cb87.97572118_download__1_.jpg','download (1).jpg','2025-10-18 15:12:05','2025-10-18 15:12:05'),(12,4,'/uploads/provinces/can-tho/province_68f3ae450878a5.92585839_download.jpg','download.jpg','2025-10-18 15:12:05','2025-10-18 15:12:05'),(13,5,'/uploads/provinces/cao-bang/province_68f3af021f81e1.66252542_du-lich-cao-bang-cam-nang-du-lich-va-18-dia-diem-nen-den-nhat-202305051452598981.jpg','du-lich-cao-bang-cam-nang-du-lich-va-18-dia-diem-nen-den-nhat-202305051452598981.jpg','2025-10-18 15:15:14','2025-10-18 15:15:14'),(14,5,'/uploads/provinces/cao-bang/province_68f3af023921b8.27022886_1.jpg','1.jpg','2025-10-18 15:15:14','2025-10-18 15:15:14'),(15,5,'/uploads/provinces/cao-bang/province_68f3af02484ae9.09007856_du-lich-cao-bang-ivivu-1.jpg','du-lich-cao-bang-ivivu-1.jpg','2025-10-18 15:15:14','2025-10-18 15:15:14'),(16,6,'/uploads/provinces/da-nang/province_68f3af5e3f7926.40587645_images.jpg','images.jpg','2025-10-18 15:16:46','2025-10-18 15:16:46'),(17,6,'/uploads/provinces/da-nang/province_68f3af5e4bcc37.55919266_download.jpg','download.jpg','2025-10-18 15:16:46','2025-10-18 15:16:46'),(18,6,'/uploads/provinces/da-nang/province_68f3af5e547086.96649837_download__3_.jpg','download (3).jpg','2025-10-18 15:16:46','2025-10-18 15:16:46'),(19,7,'/uploads/provinces/dak-lak/province_68f3afb5d622b9.43469631_images.jpg','images.jpg','2025-10-18 15:18:14','2025-10-18 15:18:14'),(20,7,'/uploads/provinces/dak-lak/province_68f3afb5f162a8.02094681_download.jpg','download.jpg','2025-10-18 15:18:14','2025-10-18 15:18:14'),(21,7,'/uploads/provinces/dak-lak/province_68f3afb60b4bb4.86372628_download__1_.jpg','download (1).jpg','2025-10-18 15:18:14','2025-10-18 15:18:14'),(22,8,'/uploads/provinces/dien-bien/province_68f3b0069de302.78007957_download__1_.jpg','download (1).jpg','2025-10-18 15:19:34','2025-10-18 15:19:34'),(23,8,'/uploads/provinces/dien-bien/province_68f3b006aff911.40903492_download.jpg','download.jpg','2025-10-18 15:19:34','2025-10-18 15:19:34'),(24,8,'/uploads/provinces/dien-bien/province_68f3b006be1555.30713157_download__2_.jpg','download (2).jpg','2025-10-18 15:19:34','2025-10-18 15:19:34'),(25,9,'/uploads/provinces/dong-nai/province_68f3b07f514559.90165532_download__1_.jpg','download (1).jpg','2025-10-18 15:21:35','2025-10-18 15:21:35'),(26,9,'/uploads/provinces/dong-nai/province_68f3b07f5c4c06.96717414_download.jpg','download.jpg','2025-10-18 15:21:35','2025-10-18 15:21:35'),(27,9,'/uploads/provinces/dong-nai/province_68f3b07f650b16.70601006_download__4_.jpg','download (4).jpg','2025-10-18 15:21:35','2025-10-18 15:21:35'),(28,10,'/uploads/provinces/dong-thap/province_68f3b0afabfe84.96662974_download__1_.jpg','download (1).jpg','2025-10-18 15:22:23','2025-10-18 15:22:23'),(29,10,'/uploads/provinces/dong-thap/province_68f3b0afbd96f4.05822191_download.jpg','download.jpg','2025-10-18 15:22:23','2025-10-18 15:22:23'),(30,10,'/uploads/provinces/dong-thap/province_68f3b0afd173b7.19602025_download__2_.jpg','download (2).jpg','2025-10-18 15:22:23','2025-10-18 15:22:23'),(31,11,'/uploads/provinces/gia-lai/province_68f3b0e72ff199.86695579_download__1_.jpg','download (1).jpg','2025-10-18 15:23:19','2025-10-18 15:23:19'),(32,11,'/uploads/provinces/gia-lai/province_68f3b0e73da3e9.19899296_download.jpg','download.jpg','2025-10-18 15:23:19','2025-10-18 15:23:19'),(33,11,'/uploads/provinces/gia-lai/province_68f3b0e74800b3.71964270_download__3_.jpg','download (3).jpg','2025-10-18 15:23:19','2025-10-18 15:23:19'),(34,12,'/uploads/provinces/ha-noi/province_68f3b163d9e800.47941628_images.jpg','images.jpg','2025-10-18 15:25:24','2025-10-18 15:25:24'),(35,12,'/uploads/provinces/ha-noi/province_68f3b163ef7cc1.36246898_download__1_.jpg','download (1).jpg','2025-10-18 15:25:24','2025-10-18 15:25:24'),(36,12,'/uploads/provinces/ha-noi/province_68f3b1640b7822.93758954_download.jpg','download.jpg','2025-10-18 15:25:24','2025-10-18 15:25:24'),(37,13,'/uploads/provinces/ha-tinh/province_68f3b1a1845829.96894592_images.jpg','images.jpg','2025-10-18 15:26:25','2025-10-18 15:26:25'),(38,13,'/uploads/provinces/ha-tinh/province_68f3b1a1925192.37891024_download.jpg','download.jpg','2025-10-18 15:26:25','2025-10-18 15:26:25'),(39,13,'/uploads/provinces/ha-tinh/province_68f3b1a19ac997.78958376_download__2_.jpg','download (2).jpg','2025-10-18 15:26:25','2025-10-18 15:26:25'),(40,14,'/uploads/provinces/hai-phong/province_68f3b1d59a01c3.06731740_download__2_.jpg','download (2).jpg','2025-10-18 15:27:17','2025-10-18 15:27:17'),(41,14,'/uploads/provinces/hai-phong/province_68f3b1d5a52274.42605686_download.jpg','download.jpg','2025-10-18 15:27:17','2025-10-18 15:27:17'),(42,14,'/uploads/provinces/hai-phong/province_68f3b1d5b2bbf8.62371780_download__1_.jpg','download (1).jpg','2025-10-18 15:27:17','2025-10-18 15:27:17'),(43,15,'/uploads/provinces/ho-chi-minh/province_68f3b267ab8951.10402278_download__1_.jpg','download (1).jpg','2025-10-18 15:29:43','2025-10-18 15:29:43'),(44,15,'/uploads/provinces/ho-chi-minh/province_68f3b267c19526.39984731_download.jpg','download.jpg','2025-10-18 15:29:43','2025-10-18 15:29:43'),(45,15,'/uploads/provinces/ho-chi-minh/province_68f3b267cf6572.37607170_download__3_.jpg','download (3).jpg','2025-10-18 15:29:43','2025-10-18 15:29:43'),(46,16,'/uploads/provinces/hue/province_68f3b29c0d3296.11720666_download__1_.jpg','download (1).jpg','2025-10-18 15:30:36','2025-10-18 15:30:36'),(47,16,'/uploads/provinces/hue/province_68f3b29c1c2973.82431739_download.jpg','download.jpg','2025-10-18 15:30:36','2025-10-18 15:30:36'),(48,16,'/uploads/provinces/hue/province_68f3b29c241886.41328638_download__2_.jpg','download (2).jpg','2025-10-18 15:30:36','2025-10-18 15:30:36'),(49,17,'/uploads/provinces/hung-yen/province_68f3b2cc829539.94581831_download__1_.jpg','download (1).jpg','2025-10-18 15:31:24','2025-10-18 15:31:24'),(50,17,'/uploads/provinces/hung-yen/province_68f3b2cc8b45b8.87848900_download.jpg','download.jpg','2025-10-18 15:31:24','2025-10-18 15:31:24'),(51,17,'/uploads/provinces/hung-yen/province_68f3b2cc98f909.33052999_download__3_.jpg','download (3).jpg','2025-10-18 15:31:24','2025-10-18 15:31:24'),(52,18,'/uploads/provinces/khanh-hoa/province_68f3b2fbb40ab3.94803740_download__1_.jpg','download (1).jpg','2025-10-18 15:32:11','2025-10-18 15:32:11'),(53,18,'/uploads/provinces/khanh-hoa/province_68f3b2fbc12fa9.29063590_download.jpg','download.jpg','2025-10-18 15:32:11','2025-10-18 15:32:11'),(54,18,'/uploads/provinces/khanh-hoa/province_68f3b2fbc9c2a6.11586965_download__2_.jpg','download (2).jpg','2025-10-18 15:32:11','2025-10-18 15:32:11'),(55,19,'/uploads/provinces/lai-chau/province_68f3b342599b26.96098952_download.jpg','download.jpg','2025-10-18 15:33:22','2025-10-18 15:33:22'),(56,19,'/uploads/provinces/lai-chau/province_68f3b3426adda7.56521137_dia-diem-du-lich-lai-chau_1755228424.jpg','dia-diem-du-lich-lai-chau_1755228424.jpg','2025-10-18 15:33:22','2025-10-18 15:33:22'),(57,19,'/uploads/provinces/lai-chau/province_68f3b34279d3e8.17817221_top-10-dia-diem-du-lich-lai-chau.jpg','top-10-dia-diem-du-lich-lai-chau.jpg','2025-10-18 15:33:22','2025-10-18 15:33:22'),(58,20,'/uploads/provinces/lam-dong/province_68f3b39c8f8c30.59793183_images.jpg','images.jpg','2025-10-18 15:34:52','2025-10-18 15:34:52'),(59,20,'/uploads/provinces/lam-dong/province_68f3b39c967276.94159883_download.jpg','download.jpg','2025-10-18 15:34:52','2025-10-18 15:34:52'),(60,20,'/uploads/provinces/lam-dong/province_68f3b39c9c15f1.96677257_download__1_.jpg','download (1).jpg','2025-10-18 15:34:52','2025-10-18 15:34:52');
 /*!40000 ALTER TABLE `province_images` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `province_ratings`
+--
+
+DROP TABLE IF EXISTS `province_ratings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `province_ratings` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `province_id` int unsigned NOT NULL,
+  `open_time` time DEFAULT NULL,
+  `close_time` time DEFAULT NULL,
+  `average_rating` decimal(3,2) NOT NULL DEFAULT '0.00',
+  `total_rates` int unsigned NOT NULL DEFAULT '0',
+  `price_from` decimal(12,2) DEFAULT NULL,
+  `price_to` decimal(12,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `province_ratings`
+--
+
+LOCK TABLES `province_ratings` WRITE;
+/*!40000 ALTER TABLE `province_ratings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `province_ratings` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -268,6 +363,32 @@ INSERT INTO `travel_spots` VALUES (1,'R???ng Tr??m Tr?? S?? - An Giang','???????
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_roles`
+--
+
+DROP TABLE IF EXISTS `user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_roles` (
+  `user_id` int unsigned NOT NULL,
+  `role_id` int unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  UNIQUE KEY `user_roles_user_id_role_id_unique` (`user_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_roles`
+--
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32');
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -276,25 +397,22 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `portrait` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `gender` enum('male','female','other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'male',
+  `first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone_number` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `portrait` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `gender` enum('male','female','other') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'male',
   `date_of_birth` date DEFAULT NULL,
-  `CCCD` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CCCD` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `province_id` int unsigned DEFAULT NULL,
-  `role_id` int unsigned NOT NULL DEFAULT '4',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `fk_users_role` (`role_id`),
-  CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +421,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Nguyen','Karen','Nthuw.665','karanguyen6605@gmail.com','0866197024',NULL,'female','2005-06-06','123456789','Hanoi',15,4,'2025-11-10 09:44:51','2025-11-10 09:44:51'),(2,'Phong','Nguyễn','$2y$12$jT1r0GFstkwxW.EecvFsieb6SMnGTt4cFxPd1Zdlsw9tE25.e5fyS','nguyenna@gmail.com','1234567891','','male','2025-11-08','123456789123','212 Ngô Mây',11,4,'2025-11-11 15:57:25','2025-11-11 15:57:25');
+INSERT INTO `users` VALUES (1,'Beckom','David','$2y$12$XI6qh/yth/XjYdBhtYjn3eKNzbUnDy.uxFT3abJlCRILE8bf3dfF6','phong@gmail.com','0387792293','','male','2025-11-06','1234564894','123 Tòa Nhà Tây Thạnh',17,'2025-11-15 08:44:14','2025-11-15 08:44:14');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -316,4 +434,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-13 18:04:43
+-- Dump completed on 2025-11-15 15:53:31

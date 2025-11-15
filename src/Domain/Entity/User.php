@@ -15,7 +15,6 @@ class User
     private ?string $cccd;
     private ?string $address;
     private ?int $provinceId;
-    private int $roleId;
     private \DateTimeImmutable $createdAt;
     private \DateTimeImmutable $updatedAt;
 
@@ -32,7 +31,6 @@ class User
         ?string $cccd = null,
         ?string $address = null,
         ?int $provinceId = null,
-        int $roleId = 4,
         ?\DateTimeImmutable $createdAt = null,
         ?\DateTimeImmutable $updatedAt = null
     ) {
@@ -48,7 +46,6 @@ class User
         $this->cccd        = $cccd;
         $this->address     = $address;
         $this->provinceId  = $provinceId;
-        $this->roleId      = $roleId;
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
         $this->updatedAt = $updatedAt ?? new \DateTimeImmutable();
     }
@@ -65,7 +62,6 @@ class User
     public function getCCCD(): ?string { return $this->cccd; }
     public function getAddress(): ?string { return $this->address; }
     public function getProvinceId(): ?int { return $this->provinceId; }
-    public function getRoleId(): int { return $this->roleId; }
 
     // ===== Domain Behaviors =====
     public function changePassword(string $newPassword): void {
@@ -83,7 +79,6 @@ class User
         ?string $cccd = null,
         ?string $address = null,
         ?int $provinceId = null,
-        ?int $roleId = null
     ): void {
         if ($firstName !== null) $this->firstName = $firstName;
         if ($lastName !== null) $this->lastName = $lastName;
@@ -94,7 +89,6 @@ class User
         if ($cccd !== null) $this->cccd = $cccd;
         if ($address !== null) $this->address = $address;
         if ($provinceId !== null) $this->provinceId = $provinceId;
-        if ($roleId !== null) $this->roleId = $roleId;
         $this->touch();
     }
 
@@ -117,7 +111,24 @@ class User
             'CCCD'         => $this->cccd,
             'address'      => $this->address,
             'province_id'  => $this->provinceId,
-            'role_id'      => $this->roleId,
+            'created_at'   => $this->createdAt->format('Y-m-d H:i:s'),
+            'updated_at'   => $this->updatedAt->format('Y-m-d H:i:s'),
+        ];
+    }
+
+     public function toInsertArray(): array {
+        return [
+            'first_name'   => $this->firstName,
+            'last_name'    => $this->lastName,
+            'email'        => $this->email,         // string
+            'password'     => $this->password,      // string hash
+            'phone_number' => $this->phoneNumber,
+            'portrait'     => $this->portrait,
+            'gender'       => $this->gender,
+            'date_of_birth'=> $this->dateOfBirth?->format('Y-m-d'),
+            'CCCD'         => $this->cccd,
+            'address'      => $this->address,
+            'province_id'  => $this->provinceId,
             'created_at'   => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at'   => $this->updatedAt->format('Y-m-d H:i:s'),
         ];
@@ -142,4 +153,5 @@ class User
             isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null
         );
     }
+
 }

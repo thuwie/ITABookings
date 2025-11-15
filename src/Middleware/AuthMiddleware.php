@@ -17,7 +17,7 @@ class AuthMiddleware implements MiddlewareInterface
         }
 
         // Kiểm tra session user
-        if (!isset($_SESSION['user_id'])) {
+        if (!isset($_SESSION['user'])) {
             // Chưa đăng nhập → redirect
             $response = new \Slim\Psr7\Response();
             return $response

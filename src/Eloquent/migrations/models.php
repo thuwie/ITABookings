@@ -141,6 +141,82 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'users' => function ($table) {
+        $table->increments('id');
+
+        $table->string('first_name', 100);
+        $table->string('last_name', 100);
+        $table->string('password', 255);
+        $table->string('email', 150)->unique();
+
+        $table->string('phone_number', 10)->nullable();
+        $table->string('portrait', 255)->nullable();
+
+        $table->enum('gender', ['male', 'female', 'other'])
+            ->default('male');
+
+        $table->date('date_of_birth')->nullable();
+        $table->string('CCCD', 20)->nullable();
+        $table->string('address', 255)->nullable();
+
+        $table->unsignedInteger('province_id')->nullable();
+        $table->timestamps();
+
+        // Charset + collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'user_roles' => function ($table) {
+        $table->unsignedInteger('user_id');
+        $table->unsignedInteger('role_id');
+        $table->timestamps();
+
+        $table->unique(['user_id', 'role_id']);
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
+    'providers' => function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('user_id'); // Liên kết users.id
+        $table->string('name', 255);
+        $table->string('logo_url', 255)->nullable();
+        $table->text('description')->nullable();
+        $table->string('email', 150);
+        $table->string('phone_number', 10)->nullable();
+        $table->string('address', 255)->nullable();
+        $table->unsignedInteger('province_id')->nullable();
+        $table->decimal('average_rates', 10, 2)->nullable();
+        $table->unsignedInteger('rating_count')->default(0);
+        $table->timestamp('verified_at')->nullable();
+
+        // created_at & updated_at
+        $table->timestamps();
+
+        // Unique: user_id chỉ có 1 provider
+        $table->unique('user_id');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'banned_providers' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('provider_id'); 
+        $table->tinyInteger('is_banned')->default(1);
+        $table->text('reason')->nullable();
+        $table->timestamp('banned_at')->useCurrent();
+
+        // created_at & updated_at
+        $table->timestamps();
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
 
 
 ];

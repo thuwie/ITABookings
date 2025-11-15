@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="/css/header.custom.css">
+</head>
 <header>
     <div>
         <div class="bg-black">
@@ -5,10 +8,49 @@
                 <div class="flex-row d-flex justify-content-between p-3 align-items-center">
                     <div class="text-white fs-3"><i><b>ITA BOOKINGS</b></i></div>
                     <div class="flex-row gap-4 d-flex">
+                        {% if authUser %}
+                        <div class="user-info position-relative d-flex align-items-center gap-2">
+                            <img src="{{ authUser.portrait|default('/uploads/avatar/default/avatar.png') }}"
+                                class="rounded-circle" alt="avatar" width="32" height="32">
+                            <span class="text-white pointer-hover">{{ authUser.first_name }} {{
+                                authUser.last_name}}</span>
+                            <i class="bi bi-caret-down-fill text-white"></i>
+
+                            <div class="user-dropdown position-absolute text-white bg-white w-100 rounded-1 p-2"
+                                style="right: 0; bottom: 0; transform: translateY(160px);">
+                                <ul style="list-style: none; padding-left: 0;">
+                                    <li class="border-bottom pb-1 ">
+                                        <a href="#" style="font-size: 12px; text-decoration-line: none; color: black;">
+                                            Thông tin cá
+                                            nhân</a>
+                                    </li>
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="/provider/register"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đăng ký
+                                            doanh
+                                            nghiệp</a>
+                                    </li>
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="#"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đăng ký
+                                            tài
+                                            xế</a>
+                                    </li>
+                                    <li class="py-1 d-flex align-items-center gap-2 text-black">
+                                        <a href="/logout"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đăng
+                                            xuất</a>
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% else %}
                         <a class="text-white pointer-hover hover-shadow" style="text-decoration: none;"
                             href="/login">Đăng nhập</a>
                         <a class="text-white pointer-hover hover-shadow" style="text-decoration: none;"
                             href="/register">Đăng ký</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

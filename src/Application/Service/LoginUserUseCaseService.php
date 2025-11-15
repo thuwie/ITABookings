@@ -37,9 +37,11 @@ class LoginUserUseCaseService implements LoginUserUseCasePort {
              throw new \Exception("Password is not correct");
         };
 
-        $this->sessionManagerPort->set('user_id', $user->id);
+        $sessionUser = $user->toSessionArray();
 
-        return  $user;
+        $this->sessionManagerPort->set('user', $sessionUser);
+
+        return  $sessionUser;
     }
 
 }
