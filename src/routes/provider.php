@@ -3,6 +3,8 @@
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 use App\Application\Port\Inbound\ProvinceServicePort;
+use App\Application\Port\Inbound\ProviderServicePort;
+use App\Application\Port\Inbound\InformationPaymentServicePort;
 use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
@@ -23,29 +25,50 @@ return function (App $app, $twig) {
         });
 
         // POST: xử lý đăng ký
-        $group->post('/register', function ($request, $response, $args) {
+    $group->post('/register', function ($request, $response) {
+        try {
+            $body = $request->getParsedBody();
 
-            $rawBody = $request->getBody()->getContents();
-            $data = json_decode($rawBody, true);
+            $providerInfo = json_decode($body['provider-information'], true);
+            $paymentInfo  = json_decode($body['payment-information'], true);
 
-            try {
-                // $service = $this->get(UserServicePort::class);
-                // $result = $service->createUser($data);
+            // files
+            $files = $request->getUploadedFiles();
+            $logo = $files['logo'] ?? null;
+            $qr   = $files['qr'] ?? null;
 
-                // if ($result['status'] === 'success') {
-                //     $result['redirect'] = '/provider/login'; 
-                // }
+            $serviceProvider = $this->get(ProviderServicePort::class);
+            $serviceInformationPayment = $this->get(InformationPaymentServicePort::class);
+            
+            $resultPro = $serviceProvider->save($providerInfo, $logo);
 
-            } catch (\Exception $e) {
-                $result = [
+            if ($resultPro) {
+                $resultInforPayment = $serviceInformationPayment->save($paymentInfo, $qr);
+
+                $payload = [
+                    'status' => $resultInforPayment ? 'success' : 'error',
+                    'message' => $resultInforPayment 
+                        ? 'Đăng ký doanh nghiệp thành công' 
+                        : 'Đăng ký doanh nghiệp thất bại',
+                ];
+            } else {
+                $payload = [
                     'status' => 'error',
-                    'message' => $e->getMessage()
+                    'message' => 'Đăng ký doanh nghiệp thất bại',
                 ];
             }
 
-            $response->getBody()->write(json_encode($result));
-            return $response->withHeader('Content-Type', 'application/json');
-        });
+        } catch (\Exception $e) {
+            $payload = [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
+
 
     })->add(new AuthMiddleware());
 
