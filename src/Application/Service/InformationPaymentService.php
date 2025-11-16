@@ -1,14 +1,14 @@
 <?php
 namespace App\Application\Service;
 
-use App\Application\Port\Inbound\InformationServicePort;
+use App\Application\Port\Inbound\InformationPaymentServicePort;
 use App\Application\Port\Outbound\InformationPaymentPort;
 use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Application\Port\Outbound\UploadImageRepositoryPort;
 use App\Domain\Entity\InformationPayment;
 use Carbon\Exceptions\Exception;
 
-class InformationPaymentService implements InformationServicePort {
+class InformationPaymentService implements InformationPaymentServicePort {
     private InformationPaymentPort  $informationPayment;
     private SessionManagerInterfacePort $sessionManager;
     private UploadImageRepositoryPort $uploadImageRepositoryPort;
@@ -30,7 +30,7 @@ class InformationPaymentService implements InformationServicePort {
         $fullName = $informationPaymentInput['full_name_account'];
         $userSession = $this->sessionManager->get('user');
         $userId = $userSession['id'];
-        $userName = $userSession['first_name'] + $userSession['last_name'];
+        $userName = $userSession['first_name'] . $userSession['last_name'];
 
         $newInformationPayment = new InformationPayment(0, $userId, $fullName, $accountNumber, $bankName);
         $addedInformationPayment = $this->informationPayment->save($newInformationPayment);
@@ -46,7 +46,9 @@ class InformationPaymentService implements InformationServicePort {
             throw new \RuntimeException('Failed to save information payment.');
         }
 
-        $assignQr =  $newInformationPayment->setQrCode($uploadedOrUrl);
+        $assignQr =  $addedInformationPayment;
+
+        $assignQr->setQrCode($uploadedOrUrl);
 
         if($assignQr) {
              $updatedInformationPayment = $this->informationPayment->update($assignQr);

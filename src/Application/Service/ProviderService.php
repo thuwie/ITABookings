@@ -33,7 +33,15 @@ class ProviderService implements ProviderServicePort {
 
         $newProvider = $this->providerRepositoryPort->save($newProvider);
 
+        if(!$newProvider) {
+             throw new \Exception('Failed to register provider information');
+        };
+
         $uploadedLogoUrl = $this->providerRepositoryPort->saveLogo($logo, $newProvider->getName());
+
+        if(!$uploadedLogoUrl) {
+             throw new \Exception('Failed to save logo');
+        }
 
         $result = $this->providerRepositoryPort->savePathLogo($uploadedLogoUrl, $newProvider);
 

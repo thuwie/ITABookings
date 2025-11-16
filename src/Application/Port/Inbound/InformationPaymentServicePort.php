@@ -3,6 +3,6 @@
 namespace App\Application\Port\Inbound;
 
 
-interface InformationServicePort {
+interface InformationPaymentServicePort {
     public function save($informationPayment, $qr): bool;
 }

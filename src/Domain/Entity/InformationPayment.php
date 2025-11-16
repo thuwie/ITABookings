@@ -83,4 +83,16 @@ class InformationPayment
         unset($arr['id']); // id auto-increment
         return $arr;
     }
+
+    public function toUpdateArray(): array {
+        return [
+            'user_id' => $this->userId,
+            'full_name' => $this->fullName,
+            'account_number' => $this->accountNumber,
+            'bank_name' => $this->bankName,
+            'qr_code' => $this->qrCode,
+            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+        ];
+    }
+
 }

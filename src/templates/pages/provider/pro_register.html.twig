@@ -6,6 +6,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký doanh nghiệp</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -132,6 +134,32 @@
       margin-bottom: 15px;
       text-align: center;
     }
+
+    /* Toast container góc trên phải */
+    #messageContainer {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1080;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      /* màn hình tối */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      /* cao hơn toast và form */
+    }
   </style>
 </head>
 
@@ -150,6 +178,9 @@
     <div class="field-single">
       <label for="logo">Logo doanh nghiệp</label>
       <input type="file" id="logo" name="logo" accept="image/*">
+      <div id="logoPreview" style="display:none; margin-top: 10px;">
+        <img id="logoPreviewImg" src="" alt="Logo Preview" style="max-width:150px; border:1px solid #ccc; padding:5px;">
+      </div>
     </div>
 
     <div class="row">
@@ -215,8 +246,7 @@
       <label for="qr_image">Tải ảnh QR thanh toán</label>
       <input type="file" id="qr_image" name="qr_image" accept="image/*">
       <div class="qr-preview" id="qrPreview" style="display:none;">
-        <p>Xem trước mã QR:</p>
-        <img id="qrImagePreview" src="" alt="QR Preview">
+        <img id="qrImagePreview" src="" alt="QR Preview" style="max-width:180px; border:1px solid #ccc; padding:5px;">
       </div>
     </div>
 
@@ -233,7 +263,20 @@
     <!-- Nộp đơn -->
     <button type="submit">Nộp đơn đăng ký doanh nghiệp</button>
   </form>
+
+  <!-- Toast message container -->
+  <div id="messageContainer"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="display:none;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+
 </body>
+<script src="/js/provider-register-hanlder.js"></script>
 
 </html>
 

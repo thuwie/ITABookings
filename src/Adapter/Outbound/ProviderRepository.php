@@ -65,7 +65,8 @@ class ProviderRepository implements ProviderRepositoryPort {
     }
 
     public function savePathLogo($url, Provider $provider): bool {
-        $updateLogoProvider = $provider->setLogoUrl($url);
+        $updateLogoProvider = $provider;
+        $updateLogoProvider->setLogoUrl($url);
         if($updateLogoProvider) {
             $result = $this->update($updateLogoProvider);
             return $result;

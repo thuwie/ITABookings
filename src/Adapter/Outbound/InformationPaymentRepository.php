@@ -26,14 +26,13 @@ class InformationPaymentRepository implements InformationPaymentPort {
 
     public function update(InformationPayment $informationPayment): bool
     {
-        $data = $informationPayment->toInsertArray();
-        unset($data['created_at']); // không cập nhật created_at
+        $data = $informationPayment->toUpdateArray();
 
         $updated = DB::table('information_payments')
-            ->where('id', $informationPayment->getId()) // sử dụng getter lấy ID
+            ->where('id', $informationPayment->getId())
             ->update($data);
 
-        return $updated > 0; // true nếu có ít nhất 1 bản ghi bị update
+        return $updated > 0;
     }
 
 

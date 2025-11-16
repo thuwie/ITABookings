@@ -31,6 +31,19 @@ use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Application\Service\LoginUserUseCaseService;
 use App\Application\Port\Inbound\LoginUserUseCasePort;
 
+use App\Application\Port\Inbound\ProviderServicePort;
+use App\Application\Service\ProviderService;
+use App\Application\Port\Outbound\ProviderRepositoryPort;
+use App\Adapter\Outbound\ProviderRepository;
+
+use App\Application\Port\Inbound\InformationPaymentServicePort;
+use App\Application\Service\InformationPaymentService;
+use App\Application\Port\Outbound\InformationPaymentPort;
+use App\Adapter\Outbound\InformationPaymentRepository;
+use App\Application\Port\Outbound\UploadImageRepositoryPort;
+use App\Adapter\Outbound\UploadImageRepository;
+
+
 use DI\Container;
 
 return function (): Container {
@@ -111,6 +124,41 @@ return function (): Container {
             return new LoginUserUseCaseService(
                 $container->get(UserRepositoryPort::class),
                 $container->get(SessionManagerInterfacePort::class)
+        );
+        });
+
+
+        //PROVODER
+        // Outbound Port Binding
+        $container->set(ProviderRepositoryPort::class, function() {
+            return new ProviderRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(ProviderServicePort::class, function() use ($container) {
+            return new ProviderService(
+                $container->get(ProviderRepositoryPort::class),
+                $container->get(SessionManagerInterfacePort::class)
+        );
+        });
+
+
+        //PAYMENT INFORMATION
+        // Outbound Port Binding
+        $container->set(InformationPaymentPort::class, function() {
+            return new InformationPaymentRepository();
+        });
+
+        $container->set(UploadImageRepositoryPort::class, function() {
+            return new UploadImageRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(InformationPaymentServicePort::class, function() use ($container) {
+            return new InformationPaymentService(
+                $container->get(InformationPaymentPort::class),
+                $container->get(SessionManagerInterfacePort::class),
+                $container->get(UploadImageRepositoryPort::class),
         );
         });
         
