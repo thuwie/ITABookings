@@ -8,4 +8,6 @@ interface ProviderRepositoryPort {
     public function savePathLogo($url, Provider $provider): bool;
     public function update(Provider $provider): bool;
     public function findUnVerifiedAccountByUserId (int $userId): ?Provider;
+    public function getProvidersByVerified(?string $verifiedAt = null): array;
+    public function findById(int $id): ?Provider;
 }

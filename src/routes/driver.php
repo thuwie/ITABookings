@@ -2,74 +2,84 @@
 
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
+
 use App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\ProviderServicePort;
 use App\Application\Port\Inbound\InformationPaymentServicePort;
+use App\Application\Port\Inbound\UserServicePort;
+
+
 use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
 
     $app->group('/driver', function (RouteCollectorProxy $group) use ($twig) {
 
-        // GET: đăng ký
-        $group->get('/register', function ($request, $response, $args) use ($twig) {
-            $service = $this->get(ProvinceServicePort::class);
+        // Load services ONCE here
+        $container = $group->getContainer();
 
-        // Lấy danh sách provinces
-            $provinces = $service->getProvinces();
-            $html = $twig->render('pages/driver/dri_register.html.twig',
-            ['provinces' => $provinces]);
+        $provinceServices  = $container->get(ProvinceServicePort::class);
+        $providerService  = $container->get(ProviderServicePort::class);
+        $paymentService   = $container->get(InformationPaymentServicePort::class);
+        $userServices = $container->get(UserServicePort::class);
+
+        // GET
+        $group->get('/register', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
+            $user = $userServices->getUserInformation();
+            $providers = $providerService->getProviders(null);
+            $provinces = $provinceServices->getProvinces();
+
+            $html = $twig->render('pages/driver/dri_register.html.twig', 
+            ['user'=> $user,'providers' =>  $providers, 'provinces' => $provinces
+            ]);
 
             $response->getBody()->write($html);
             return $response;
         });
 
-        // POST: xử lý đăng ký
-    $group->post('/register', function ($request, $response) {
-        try {
-            $body = $request->getParsedBody();
+        // POST
+        $group->post('/register', function ($request, $response) use ($providerService, $paymentService) {
 
-            $providerInfo = json_decode($body['provider-information'], true);
-            $paymentInfo  = json_decode($body['payment-information'], true);
+            try {
+                $body = $request->getParsedBody();
 
-            // files
-            $files = $request->getUploadedFiles();
-            $logo = $files['logo'] ?? null;
-            $qr   = $files['qr'] ?? null;
+                $providerInfo = json_decode($body['provider-information'], true);
+                $paymentInfo  = json_decode($body['payment-information'], true);
 
-            $serviceProvider = $this->get(ProviderServicePort::class);
-            $serviceInformationPayment = $this->get(InformationPaymentServicePort::class);
-            
-            $resultPro = $serviceProvider->save($providerInfo, $logo);
+                $files = $request->getUploadedFiles();
+                $logo = $files['logo'] ?? null;
+                $qr   = $files['qr'] ?? null;
 
-            if ($resultPro) {
-                $resultInforPayment = $serviceInformationPayment->save($paymentInfo, $qr);
+                $resultPro = $providerService->save($providerInfo, $logo);
 
-                $payload = [
-                    'status' => $resultInforPayment ? 'success' : 'error',
-                    'message' => $resultInforPayment 
-                        ? 'Đăng ký doanh nghiệp thành công' 
-                        : 'Đăng ký doanh nghiệp thất bại',
-                ];
-            } else {
+                if ($resultPro) {
+                    $resultPayment = $paymentService->save($paymentInfo, $qr);
+
+                    $payload = [
+                        'status'  => $resultPayment ? 'success' : 'error',
+                        'message' => $resultPayment 
+                            ? 'Đăng ký doanh nghiệp thành công'
+                            : 'Đăng ký doanh nghiệp thất bại'
+                    ];
+                } else {
+                    $payload = [
+                        'status' => 'error',
+                        'message' => 'Đăng ký doanh nghiệp thất bại'
+                    ];
+                }
+
+            } catch (\Exception $e) {
                 $payload = [
                     'status' => 'error',
-                    'message' => 'Đăng ký doanh nghiệp thất bại',
+                    'message' => $e->getMessage()
                 ];
             }
 
-        } catch (\Exception $e) {
-            $payload = [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
-        }
-
-        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-        return $response->withHeader('Content-Type', 'application/json');
-    });
-
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        });
 
     })->add(new AuthMiddleware());
 
 };
+

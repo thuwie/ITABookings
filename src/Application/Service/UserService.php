@@ -7,13 +7,18 @@ use App\Domain\Entity\UserRole;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
 use App\Application\Port\Outbound\UserRepositoryPort;
+use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Domain\ValueObject\PhoneNumber;
+use Exception;
 
 class UserService implements UserServicePort {
        private UserRepositoryPort $userRepositoryPort;
+       private SessionManagerInterfacePort $sessionManager;
 
-    public function __construct(UserRepositoryPort $userRepository) {
+    public function __construct(UserRepositoryPort $userRepository, SessionManagerInterfacePort $sessionManager
+    ) {
         $this->userRepositoryPort = $userRepository;
+        $this->sessionManager = $sessionManager;
     }
 
     public function createUser($user): array {
@@ -74,5 +79,16 @@ class UserService implements UserServicePort {
         return $role_user
         ? ['status' => 'success', 'message' => 'Đăng ký tài khoản thành công']
         : ['status' => 'failed', 'message' => 'Đăng ký tài khoản thất bại'];
+    }
+
+    public function getUserInformation(): array {
+        $userSession = $this->sessionManager->get('user');
+        $userId = $userSession['id'];
+        $isUserFound = $this->userRepositoryPort->findById($userId);
+        if(!$isUserFound) {
+             throw new \Exception("Not found user");
+        }
+
+        return $isUserFound->toArray();
     }
 }

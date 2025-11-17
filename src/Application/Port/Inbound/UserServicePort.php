@@ -4,4 +4,5 @@ namespace App\Application\Port\Inbound;
 
 interface UserServicePort {
     public function createUser($user): array;
+    public function getUserInformation(): array;
 }

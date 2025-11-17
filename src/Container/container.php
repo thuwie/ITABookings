@@ -101,7 +101,10 @@ return function (): Container {
 
         //Inbound Port Binding
         $container->set(UserServicePort::class, function() use ($container) {
-            return new UserService($container->get(UserRepositoryPort::class));
+            return new UserService(
+                $container->get(UserRepositoryPort::class),
+                $container->get(SessionManagerInterfacePort::class)
+        );
         });
 
 
