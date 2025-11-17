@@ -134,24 +134,22 @@ class User
         ];
     }
 
-    public static function fromArray(array $data): self {
-        return new self(
-            $data['id'] ?? 0,
-            $data['first_name'] ?? '',
-            $data['last_name'] ?? '',
-            $data['password'] ?? '',
-            $data['email'] ?? '',
-            $data['phone_number'] ?? null,
-            $data['portrait'] ?? null,
-            $data['gender'] ?? 'male',
+   public static function fromArray(array $data): User {
+        return new User(
+            $data['id'],
+            $data['first_name'],
+            $data['last_name'],
+            $data['password'],
+            $data['email'],
+            $data['phone_number'],
+            $data['portrait'] ?? '',
+            $data['gender'],
             isset($data['date_of_birth']) ? new \DateTimeImmutable($data['date_of_birth']) : null,
-            $data['CCCD'] ?? null,
-            $data['address'] ?? null,
+            $data['CCCD'] ?? '',
+            $data['address'] ?? '',
             $data['province_id'] ?? null,
-            $data['role_id'] ?? 4,
             isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null
         );
     }
-
 }

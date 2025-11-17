@@ -1,10 +1,13 @@
 {% block body %}
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Đăng ký tài xế</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,7 +25,7 @@
       background: #fff;
       padding: 25px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     }
 
     h2 {
@@ -32,10 +35,10 @@
     }
 
     h3 {
-      color:#002b5c; 
-      margin-top:25px; 
-      border-bottom:2px solid #c0c0c0; 
-      padding-bottom:5px;
+      color: #002b5c;
+      margin-top: 25px;
+      border-bottom: 2px solid #c0c0c0;
+      padding-bottom: 5px;
     }
 
     label {
@@ -45,7 +48,9 @@
       margin-bottom: 5px;
     }
 
-    input, select, button {
+    input,
+    select,
+    button {
       width: 100%;
       padding: 8px;
       border-radius: 5px;
@@ -54,7 +59,8 @@
       box-sizing: border-box;
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       outline: none;
       border-color: #004080;
       box-shadow: 0 0 3px rgba(0, 64, 128, 0.3);
@@ -134,6 +140,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <form id="driverForm">
@@ -144,11 +151,11 @@
     <div class="row">
       <div class="field">
         <label>Họ</label>
-        <input type="text" name="last_name" placeholder="Nhập họ" required />
+        <input type="text" name="last_name" value="{{user.last_name}}" disabled required />
       </div>
       <div class="field">
         <label>Tên</label>
-        <input type="text" name="first_name" placeholder="Nhập tên" required />
+        <input type="text" name="first_name" value="{{user.first_name}}" disabled required />
       </div>
     </div>
 
@@ -156,16 +163,15 @@
     <div class="row">
       <div class="field">
         <label>Giới tính</label>
-        <select name="gender" required>
-          <option value="">-- Chọn giới tính --</option>
-          <option value="male">Nam</option>
-          <option value="female">Nữ</option>
-          <option value="other">Khác</option>
+        <select name="gender" disabled required>
+          <option value="male" {% if user.gender=='male' %}selected{% endif %}>Nam</option>
+          <option value="female" {% if user.gender=='female' %}selected{% endif %}>Nữ</option>
+          <option value="other" {% if user.gender=='other' %}selected{% endif %}>Khác</option>
         </select>
       </div>
       <div class="field">
         <label>Ngày sinh</label>
-        <input type="date" name="date_of_birth" required />
+        <input type="text" name="date_of_birth" value="{{user.date_of_birth}}" disabled required />
       </div>
     </div>
 
@@ -173,11 +179,11 @@
     <div class="row">
       <div class="field">
         <label>Email</label>
-        <input type="email" name="email" placeholder="Nhập email" required />
+        <input type="email" name="email" value="{{user.email}}" disabled required />
       </div>
       <div class="field">
         <label>Số điện thoại</label>
-        <input type="tel" name="phone_number" placeholder="Nhập số điện thoại" required />
+        <input type="tel" name="phone_number" value="{{user.phone_number}}" disabled required />
       </div>
     </div>
 
@@ -185,24 +191,23 @@
     <div class="row">
       <div class="field">
         <label>Số CCCD</label>
-        <input type="text" name="cccd" placeholder="Nhập số CCCD" required />
+        <input type="text" name="cccd" value="{{user.CCCD}}" disabled required />
       </div>
       <div class="field">
         <label>Địa chỉ</label>
-        <input type="text" name="address" placeholder="Nhập địa chỉ" required />
+        <input type="text" name="address" value="{{user.address}}" disabled required />
       </div>
     </div>
 
     <!-- Tỉnh / Thành phố -->
     <div class="field-single">
       <label for="province_id">Chọn tỉnh/thành:</label>
-      <select name="province_id" id="province_id" required>
-          <option value="">-- Chọn tỉnh/thành phố --</option>
-          <option value="1">Hà Nội</option>
-          <option value="2">TP. Hồ Chí Minh</option>
-          <option value="3">Đà Nẵng</option>
-          <option value="4">Cần Thơ</option>
-          <option value="5">Khác...</option>
+      <select name="province_id" id="province_id" disabled required>
+        {% for province in provinces %}
+        <option value="{{ province.id }}" {{ province.id==province.id ? 'selected' : '' }}>
+          {{ province.name }}
+        </option>
+        {% endfor %}
       </select>
     </div>
 
@@ -218,10 +223,20 @@
         <label for="license_class">Loại bằng</label>
         <select id="license_class" required>
           <option value="">-- Chọn loại bằng --</option>
-          <option>B1</option><option>B2</option><option>C</option><option>D</option><option>E</option><option>F</option>
+          <option>B1</option>
+          <option>B2</option>
+          <option>C</option>
+          <option>D</option>
+          <option>E</option>
+          <option>F</option>
         </select>
-      </select>
       </div>
+    </div>
+
+    <div class="row p-lg-2">
+      <p class="note">
+        *Nếu có 2 bằng trở lên, vui lòng chọn bằng có mức cao hơn*
+      </p>
     </div>
 
     <div class="row">
@@ -238,11 +253,11 @@
     <div class="field-single">
       <label for="status">Tình trạng GPLX</label>
       <select id="status" required>
-          <option value="">-- Chọn tình trạng --</option>
-          <option>Còn hiệu lực</option>
-          <option>Hết hạn</option>
-          <option>Bị tạm giữ</option>
-        </select>
+        <option value="">-- Chọn tình trạng --</option>
+        <option>Còn hiệu lực</option>
+        <option>Hết hạn</option>
+        <option>Bị tạm giữ</option>
+      </select>
     </div>
 
     <!-- Thông tin thanh toán -->
@@ -267,6 +282,11 @@
     </div>
 
     <div class="field-single">
+      <label for="full_name_account">Họ và tên đã đăng ký ngân hàng</label>
+      <input type="text" id="full_name_account" name="full_name_account" placeholder="Nhập đầy đủ họ tên" required>
+    </div>
+
+    <div class="field-single">
       <label for="qr_image">Tải ảnh QR để nhận thanh toán</label>
       <input type="file" id="qr_image" name="qr_image" accept="image/*">
       <div class="qr-preview" id="qrPreview" style="display:none;">
@@ -275,6 +295,92 @@
       </div>
     </div>
 
+    <!-- Thông tin nhà cung cấp -->
+    <h3>Thông tin doanh nghiệp</h3>
+
+    <div class="field-single">
+      <label for="bank_name">Danh sách các doanh nghiệp</label>
+      <select id="providers" name="providers" required>
+        <option value="">-- Chọn doanh nghiệp --</option>
+        {% for provider in providers %}
+        <option value="{{provider.id}}">{{provider.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+
+    <!-- Loader -->
+    <div id="provider-loader" style="display:none; text-align:center; padding:20px;">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <div id="provider-details" style="display:none;">
+      <!-- Tên -->
+      <div class="row">
+        <div class="field d-flex gap-2">
+          <span class="fw-bold">Tên doanh nghiệp: </span>
+          <span type="text" name="name-business" id="name-business"></span>
+        </div>
+      </div>
+
+
+      <!-- Mô tả -->
+      <div class="row">
+        <div>
+          <span class="fw-bold">Mô tả: </span>
+          <p type="text" name="description-business" id="description-business"></p>
+        </div>
+      </div>
+
+
+      <!-- Logo -->
+      <div class="field-single">
+        <span class="fw-bold">Logo doanh nghiệp: </span>
+        <div id="logoPreview" style="margin-top:10px;">
+          <img id="logoPreviewImg" alt="Logo Preview" style="max-width:150px; border:1px solid #ccc; padding:5px;">
+        </div>
+      </div>
+
+      <!-- Email và số điện thoại -->
+      <div class="row">
+        <div class="field">
+          <span class="fw-bold">Email: </span>
+          <span type="text" name="email-business" id="email-business"></span>
+        </div>
+        <div class="field">
+          <span class="fw-bold">Số điện thoại: </span>
+          <span type="text" name="phone_number_business" id="phone_number_business"></span>
+        </div>
+      </div>
+
+      <!-- CCCD và Địa chỉ -->
+      <div class="row">
+        <div class="field">
+          <span class="fw-bold">Thuộc tỉnh/thành:</span>
+          <select name="province_business" id="province_business" disabled required>
+            {% for province in provinces %}
+            <option value="{{ province.id }}">
+              {{ province.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <span class="fw-bold">Địa chỉ</span>
+          <input type="text" name="address-business" id="address-business" disabled required />
+        </div>
+      </div>
+
+      <!-- Quy mô -->
+      <div class="row">
+        <div class="field">
+          <span class="fw-bold">Quy mô:</span>
+          <span type="text" name="business-size" id="business-size">11500 tài xế</span>
+        </div>
+      </div>
+    </div>
+
+
     <p class="note">
       *Nhà cung cấp sẽ thanh toán cho tài xế sau khi chuyến đi hoàn thành.*
     </p>
@@ -282,43 +388,11 @@
     <!-- Gửi đơn -->
     <button type="submit">Gửi đơn đăng ký</button>
 
-    <div class="success" id="successMessage" style="display:none;">
-      ✅ Gửi đơn thành công!
-    </div>
   </form>
 
-  <script>
-    // Xem trước ảnh QR
-    const qrInput = document.getElementById("qr_image");
-    const qrPreview = document.getElementById("qrPreview");
-    const qrImg = document.getElementById("qrImagePreview");
-
-    qrInput.addEventListener("change", function() {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          qrImg.src = e.target.result;
-          qrPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      } else {
-        qrPreview.style.display = "none";
-      }
-    });
-
-    // Submit form
-    document.getElementById("driverForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      document.getElementById("successMessage").style.display = "block";
-      setTimeout(() => {
-        document.getElementById("successMessage").style.display = "none";
-        this.reset();
-      }, 3000);
-    });
-  </script>
-
+  <script src="/js/driver-register-handle.js"></script>
 </body>
+
 </html>
 
 {% endblock %}

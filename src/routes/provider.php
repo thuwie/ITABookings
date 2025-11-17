@@ -38,6 +38,45 @@ return function (App $app, $twig) {
         });
 
 
+
+         /** ---------------------------
+         * GET /provider/register-form
+         * --------------------------- */
+        $group->get('/register-form-detail', function ($request, $response) 
+            use ($twig, $providerService, $provinceService) { 
+            
+            $registeredInformation = $providerService->getRegisterForm();
+            $provinces = $provinceService->getProvinces();
+
+            $html = $twig->render('pages/provider/register.form.html.twig', [
+                'information' => $registeredInformation,
+                'provinces' => $provinces
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+
+        /** ---------------------------
+         * GET /provider/{id}
+         * --------------------------- */
+        $group->get('/{id}', function ($request, $response) 
+            use ( $providerService) {
+
+            $id = $request->getAttribute('id');
+
+            $provider = $providerService->getProviderById($id);
+
+            $response->getBody()->write(json_encode([
+                'success' => true,
+                'provider' => $provider,
+            ]));
+
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+
         /** ---------------------------
          * POST /provider/register
          * --------------------------- */
@@ -83,25 +122,6 @@ return function (App $app, $twig) {
 
             $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
             return $response->withHeader('Content-Type', 'application/json');
-        });
-
-
-        /** ---------------------------
-         * GET /provider/register-form
-         * --------------------------- */
-        $group->get('/register-form-detail', function ($request, $response) 
-            use ($twig, $providerService, $provinceService) { 
-            
-            $registeredInformation = $providerService->getRegisterForm();
-            $provinces = $provinceService->getProvinces();
-
-            $html = $twig->render('pages/provider/register.form.html.twig', [
-                'information' => $registeredInformation,
-                'provinces' => $provinces
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
         });
 
     })->add(new AuthMiddleware());

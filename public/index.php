@@ -5,7 +5,6 @@ $capsule = require __DIR__ . '/../src/bootstrap.php';
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 use Slim\Factory\AppFactory;
-use App\Middleware\TwigUserMiddleware;
 
 // Khai báo thư mục templates
 $loader = new FilesystemLoader(__DIR__ . '/../src/templates');
@@ -14,12 +13,6 @@ $twig = new Environment($loader);
 //Khai báo container để khởi tạo các service cần thiết cho các routes
 $containerFactory = require __DIR__ . '/../src/Container/container.php';
 $container = $containerFactory();
-
-
-// Tạo repository và service sau khi bootstrap
-$userRepository = new \App\Adapter\Outbound\UserRepository();
-$userService = new \App\Application\Service\UserService($userRepository);
-$userController = new \App\Adapter\Inbound\UserController($userService);
 
 
 // Khởi tạo Slim App

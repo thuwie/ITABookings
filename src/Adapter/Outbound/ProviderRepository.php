@@ -86,7 +86,7 @@ class ProviderRepository implements ProviderRepositoryPort {
         return $updated > 0; // true nếu có ít nhất 1 bản ghi bị update
     }
 
-     public function findUnVerifiedAccountByUserId(int $userId): ?Provider
+    public function findUnVerifiedAccountByUserId(int $userId): ?Provider
     {
         $row = DB::table('providers')->where('user_id', $userId)->where('verified_at', null)->first();
         if (!$row) return null;
@@ -94,4 +94,20 @@ class ProviderRepository implements ProviderRepositoryPort {
         return Provider::fromArray((array)$row);
     }
 
+    public function getProvidersByVerified(?string $verifiedAt = null): array {
+        $query = DB::table('providers');
+
+        if ($verifiedAt !== null) {
+            $query->whereNotNull('verified_at');
+        }
+        $rows = $query->get();
+        return array_map(fn($row) => Provider::fromArray((array)$row), $rows->toArray());
+    }
+
+    public function findById(int $id): ?Provider {
+        $row = DB::table('providers')->where('id', $id)->first();
+        if (!$row) return null;
+
+        return Provider::fromArray((array)$row);
+    }
 }
