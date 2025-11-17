@@ -6,4 +6,5 @@ use App\Domain\Entity\Provider;
 
 interface ProviderServicePort {
     public function save($provider, $logo): bool;
+    public function getRegisterForm(): array;
 }

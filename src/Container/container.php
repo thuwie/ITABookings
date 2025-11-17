@@ -42,7 +42,11 @@ use App\Application\Port\Outbound\InformationPaymentPort;
 use App\Adapter\Outbound\InformationPaymentRepository;
 use App\Application\Port\Outbound\UploadImageRepositoryPort;
 use App\Adapter\Outbound\UploadImageRepository;
+use App\Application\Port\Outbound\DriverRepositoryPort;
 
+use App\Application\Port\Inbound\DriverServicePort;
+use App\Application\Service\DriverService;
+use App\Adapter\Outbound\DriverRepository;
 
 use DI\Container;
 
@@ -123,7 +127,9 @@ return function (): Container {
         $container->set(LoginUserUseCasePort::class, function() use ($container) {
             return new LoginUserUseCaseService(
                 $container->get(UserRepositoryPort::class),
-                $container->get(SessionManagerInterfacePort::class)
+                $container->get(SessionManagerInterfacePort::class),
+                $container->get(ProviderRepositoryPort::class),
+                $container->get(DriverRepositoryPort::class)
         );
         });
 
@@ -138,8 +144,9 @@ return function (): Container {
         $container->set(ProviderServicePort::class, function() use ($container) {
             return new ProviderService(
                 $container->get(ProviderRepositoryPort::class),
-                $container->get(SessionManagerInterfacePort::class)
-        );
+                $container->get(SessionManagerInterfacePort::class),
+                $container->get(InformationPaymentPort::class)
+        );  
         });
 
 
@@ -159,6 +166,21 @@ return function (): Container {
                 $container->get(InformationPaymentPort::class),
                 $container->get(SessionManagerInterfacePort::class),
                 $container->get(UploadImageRepositoryPort::class),
+        );
+        });
+
+
+        //DRIVER
+        // Outbound Port Binding
+        $container->set(DriverRepositoryPort::class, function() {
+            return new DriverRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(DriverServicePort::class, function() use ($container) {
+            return new DriverService(
+                $container->get(DriverRepositoryPort::class),
+                $container->get(SessionManagerInterfacePort::class),
         );
         });
         

@@ -23,6 +23,10 @@ class UserAuth
         $this->gender = $gender;
     }
 
+     public function getId() {
+        return $this->id;
+    }
+
     public function getPassword() {
         return $this->passwordHash;
     }

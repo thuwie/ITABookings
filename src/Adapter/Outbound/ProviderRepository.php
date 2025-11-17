@@ -1,5 +1,5 @@
 <?php
-// src/Infrastructure/Adapters/Persistence/UserRepository.php
+
 namespace App\Adapter\Outbound;
 
 use App\Application\Port\Outbound\ProviderRepositoryPort;
@@ -18,9 +18,9 @@ class ProviderRepository implements ProviderRepositoryPort {
             id: $id,
             userId: $provider->getUserId(),
             name: $provider->getName(),
+            email: $provider->getEmail(),
             logoUrl: $provider->getLogoUrl(),
             description: $provider->getDescription(),
-            email: $provider->getEmail(),
             phoneNumber: $provider->getPhoneNumber(),
             address: $provider->getAddress(),
             provinceId: $provider->getProvinceId(),
@@ -86,5 +86,12 @@ class ProviderRepository implements ProviderRepositoryPort {
         return $updated > 0; // true nếu có ít nhất 1 bản ghi bị update
     }
 
+     public function findUnVerifiedAccountByUserId(int $userId): ?Provider
+    {
+        $row = DB::table('providers')->where('user_id', $userId)->where('verified_at', null)->first();
+        if (!$row) return null;
+
+        return Provider::fromArray((array)$row);
+    }
 
 }

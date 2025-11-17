@@ -11,64 +11,98 @@ return function (App $app, $twig) {
 
     $app->group('/provider', function (RouteCollectorProxy $group) use ($twig) {
 
-        // GET: đăng ký
-        $group->get('/register', function ($request, $response, $args) use ($twig) {
-            $service = $this->get(ProvinceServicePort::class);
+        /** -----------------------------------------
+         *  Resolve dependencies ONCE per route group
+         * ----------------------------------------- */
+        $container = $group->getContainer();
 
-        // Lấy danh sách provinces
-            $provinces = $service->getProvinces();
-            $html = $twig->render('pages/provider/pro_register.html.twig',
-            ['provinces' => $provinces]);
+        $provinceService = $container->get(ProvinceServicePort::class);
+        $providerService = $container->get(ProviderServicePort::class);
+        $paymentService  = $container->get(InformationPaymentServicePort::class);
+
+
+        /** ---------------------------
+         * GET /provider/register
+         * --------------------------- */
+        $group->get('/register', function ($request, $response) 
+            use ($twig, $provinceService) {
+
+            $provinces = $provinceService->getProvinces();
+
+            $html = $twig->render('pages/provider/pro_register.html.twig', [
+                'provinces' => $provinces
+            ]);
 
             $response->getBody()->write($html);
             return $response;
         });
 
-        // POST: xử lý đăng ký
-    $group->post('/register', function ($request, $response) {
-        try {
-            $body = $request->getParsedBody();
 
-            $providerInfo = json_decode($body['provider-information'], true);
-            $paymentInfo  = json_decode($body['payment-information'], true);
+        /** ---------------------------
+         * POST /provider/register
+         * --------------------------- */
+        $group->post('/register', function ($request, $response) 
+            use ($providerService, $paymentService) {
 
-            // files
-            $files = $request->getUploadedFiles();
-            $logo = $files['logo'] ?? null;
-            $qr   = $files['qr'] ?? null;
+            try {
+                $body = $request->getParsedBody();
 
-            $serviceProvider = $this->get(ProviderServicePort::class);
-            $serviceInformationPayment = $this->get(InformationPaymentServicePort::class);
-            
-            $resultPro = $serviceProvider->save($providerInfo, $logo);
+                $providerInfo = json_decode($body['provider-information'], true);
+                $paymentInfo  = json_decode($body['payment-information'], true);
 
-            if ($resultPro) {
-                $resultInforPayment = $serviceInformationPayment->save($paymentInfo, $qr);
+                // Uploaded files
+                $files = $request->getUploadedFiles();
+                $logo  = $files['logo'] ?? null;
+                $qr    = $files['qr'] ?? null;
 
+                // Save provider
+                $resultPro = $providerService->save($providerInfo, $logo);
+
+                if ($resultPro) {
+                    $resultPayment = $paymentService->save($paymentInfo, $qr);
+
+                    $payload = [
+                        'status'  => $resultPayment ? 'success' : 'error',
+                        'message' => $resultPayment
+                            ? 'Đăng ký doanh nghiệp thành công'
+                            : 'Đăng ký doanh nghiệp thất bại',
+                    ];
+                } else {
+                    $payload = [
+                        'status'  => 'error',
+                        'message' => 'Đăng ký doanh nghiệp thất bại',
+                    ];
+                }
+
+            } catch (\Exception $e) {
                 $payload = [
-                    'status' => $resultInforPayment ? 'success' : 'error',
-                    'message' => $resultInforPayment 
-                        ? 'Đăng ký doanh nghiệp thành công' 
-                        : 'Đăng ký doanh nghiệp thất bại',
-                ];
-            } else {
-                $payload = [
-                    'status' => 'error',
-                    'message' => 'Đăng ký doanh nghiệp thất bại',
+                    'status'  => 'error',
+                    'message' => $e->getMessage()
                 ];
             }
 
-        } catch (\Exception $e) {
-            $payload = [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
-        }
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        });
 
-        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-        return $response->withHeader('Content-Type', 'application/json');
-    });
 
+        /** ---------------------------
+         * GET /provider/register-form
+         * --------------------------- */
+        $group->get('/register-form-detail', function ($request, $response) 
+            use ($twig, $providerService, $provinceService) { 
+            
+            $registeredInformation = $providerService->getRegisterForm();
+            $provinces = $provinceService->getProvinces();
+
+            $html = $twig->render('pages/provider/register.form.html.twig', [
+                'information' => $registeredInformation,
+                'provinces' => $provinces
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
 
     })->add(new AuthMiddleware());
 

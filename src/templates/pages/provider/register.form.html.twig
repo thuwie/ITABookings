@@ -1,0 +1,217 @@
+{% extends 'layouts/provider.html.twig' %}
+
+{% block title %}Đơn đăng ký doanh nghiệp{% endblock %}
+
+{% block body %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #eef2f7;
+    }
+
+    form {
+        max-width: 600px;
+        width: 100%;
+        background: #fff;
+        padding: 25px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        margin: 0 auto;
+    }
+
+    h2 {
+        text-align: center;
+        color: #002b5c;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        color: #002b5c;
+        margin-top: 25px;
+        border-bottom: 2px solid #c0c0c0;
+        padding-bottom: 5px;
+    }
+
+    label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #002b5c;
+        color: #fff;
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background-color: #004080;
+    }
+
+    .row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .field {
+        flex: 1;
+    }
+
+    .field-single {
+        margin-bottom: 15px;
+    }
+
+    .representative {
+        background-color: #f3f7ff;
+        padding: 10px;
+        border-left: 4px solid #004080;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        color: #002b5c;
+        font-weight: bold;
+    }
+
+    .note {
+        font-style: italic;
+        font-size: 14px;
+        color: #ba3636;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
+
+<div id="businessForm" class="container mt-3" style="width: 700px;">
+
+    <h2>Thông tin đăng ký doanh nghiệp</h2>
+
+    <div class="representative">
+        {{ authUser.gender == 'female' ? 'Bà' : 'Ông' }}
+        <span id="repName">{{ authUser.first_name }} {{ authUser.last_name }}</span>
+        là đại diện của công ty này.
+    </div>
+
+    <div class="field-single">
+        <label for="name">Tên doanh nghiệp</label>
+        <input type="text" id="name" name="name" value="{{ information.registeredInformation.name }}" required disabled>
+    </div>
+
+    <div class="field-single">
+        <label>Logo doanh nghiệp</label>
+        <div id="logoPreview" class="{{ information.registeredInformation.logo_url ? '' : 'd-none' }}"
+            style="margin-top:10px;">
+            <img id="logoPreviewImg" src="{{ information.registeredInformation.logo_url }}" alt="Logo Preview"
+                style="max-width:150px; border:1px solid #ccc; padding:5px;">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ information.registeredInformation.email }}" disabled
+                required>
+        </div>
+        <div class="field">
+            <label for="phone_number">Số điện thoại</label>
+            <input type="tel" id="phone_number" name="phone_number"
+                value="{{ information.registeredInformation.phone_number }}" disabled required>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="field">
+            <label for="address">Địa chỉ</label>
+            <input type="text" id="address" name="address" value="{{ information.registeredInformation.address }}"
+                disabled required>
+        </div>
+
+        <div class="field">
+            <label for="province_id">Tỉnh/Thành phố</label>
+            <select id="province_id" name="province_id" disabled required>
+                {% for province in provinces %}
+                <option value="{{ province.id }}" {{ province.id==information.registeredInformation.province_id
+                    ? 'selected' : '' }}>
+                    {{ province.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="field-single">
+        <label for="description">Mô tả</label>
+        <textarea id="description" name="description" rows="3"
+            disabled>{{ information.registeredInformation.description }}</textarea>
+    </div>
+
+    <!-- Thông tin thanh toán -->
+    <h3>Thông tin thanh toán</h3>
+
+    <div class="field-single">
+        <label for="bank_name">Ngân hàng</label>
+        <select id="bank_name" name="bank_name" disabled required>
+            <option value="VCB" {% if information.paymentInformation.bank_name=='VCB' %}selected{% endif %}>Vietcombank
+            </option>
+            <option value="ACB" {% if information.paymentInformation.bank_name=='ACB' %}selected{% endif %}>ACB</option>
+            <option value="TPB" {% if information.paymentInformation.bank_name=='TPB' %}selected{% endif %}>TPBank
+            </option>
+            <option value="MB" {% if information.paymentInformation.bank_name=='MB' %}selected{% endif %}>MB Bank
+            </option>
+            <option value="BIDV" {% if information.paymentInformation.bank_name=='BIDV' %}selected{% endif %}>BIDV
+            </option>
+            <option value="VPB" {% if information.paymentInformation.bank_name=='VPB' %}selected{% endif %}>VPBank
+            </option>
+        </select>
+    </div>
+
+    <div class="field-single">
+        <label for="account_number">Số tài khoản</label>
+        <input type="text" id="account_number" name="account_number"
+            value="{{information.paymentInformation.account_number}}" disabled required>
+    </div>
+
+    <div class="field-single">
+        <label for="full_name_account">Họ và tên đăng ký ngân hàng</label>
+        <input type="text" id="full_name_account" name="full_name_account"
+            value="{{information.paymentInformation.full_name}}" disabled required>
+    </div>
+
+    <div class="field-single">
+        <label for="qr_image">Ảnh QR thanh toán</label>
+        <div id="qrPreview" class="{{ information.paymentInformation.qr_code ? '' : 'd-none' }}"
+            style="margin-top:10px;">
+            <img id="qrPreviewImg" src="{{ information.paymentInformation.qr_code }}" alt="QR Preview"
+                style="max-width:150px; border:1px solid #ccc; padding:5px;">
+        </div>
+    </div>
+
+    <p class="note">
+        Thông tin này đang được người quản trị xem xét và đánh giá. Quá trình này thường mất 3 - 4 ngày, kết quả sẽ được
+        thông báo qua email của bạn.
+        Vui lòng kiểm tra email thường xuyên.
+        Xin cảm ơn.
+    </p>
+
+</div>
+
+
+{% endblock %}

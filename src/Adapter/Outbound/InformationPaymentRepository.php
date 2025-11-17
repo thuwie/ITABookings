@@ -35,5 +35,9 @@ class InformationPaymentRepository implements InformationPaymentPort {
         return $updated > 0;
     }
 
-
+     public function getPaymentInformationByUserId(int $userId):?InformationPayment {
+        $row = DB::table('information_payments')->where('user_id', $userId)->first();
+        if (!$row) return null;
+        return InformationPayment::fromArray((array)$row);
+     }
 }
