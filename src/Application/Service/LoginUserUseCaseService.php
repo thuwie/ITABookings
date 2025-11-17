@@ -3,6 +3,8 @@ namespace App\Application\Service;
 
 use App\Application\Port\Inbound\LoginUserUseCasePort;
 use App\Application\Port\Outbound\UserRepositoryPort;
+use App\Application\Port\Outbound\DriverRepositoryPort;
+use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\Password;
@@ -10,14 +12,19 @@ use App\Domain\ValueObject\Password;
 class LoginUserUseCaseService implements LoginUserUseCasePort {
     private UserRepositoryPort $userRepositoryPort;
     private SessionManagerInterfacePort $sessionManagerPort;
-
+    private ProviderRepositoryPort $providerRepositoryPort;
+    private DriverRepositoryPort $driverRepositoryPort;
 
     public function __construct(
         UserRepositoryPort $userRepository,
-        SessionManagerInterfacePort $sessionManager
+        SessionManagerInterfacePort $sessionManager,
+        ProviderRepositoryPort $providerRepositoryPort,
+        DriverRepositoryPort $driverRepositoryPort
     ) {
         $this->userRepositoryPort = $userRepository;
         $this->sessionManagerPort = $sessionManager;
+        $this->providerRepositoryPort = $providerRepositoryPort;
+        $this->driverRepositoryPort = $driverRepositoryPort;
     }
 
     public function login(string $email, string $password) {
@@ -29,6 +36,8 @@ class LoginUserUseCaseService implements LoginUserUseCasePort {
              throw new \Exception("Email not found");
         }
 
+        $userId = $user->getId();
+
         $passwordHashStorage =$user->getPassword();
 
         $passwordObject = Password::fromHash($passwordHashStorage);
@@ -37,7 +46,21 @@ class LoginUserUseCaseService implements LoginUserUseCasePort {
              throw new \Exception("Password is not correct");
         };
 
+
         $sessionUser = $user->toSessionArray();
+
+        $registeredAsProvider = $this->providerRepositoryPort->findUnVerifiedAccountByUserId($userId);
+        $registeredAsDriver = $this->driverRepositoryPort->findUnVerifiedAccountByUserId($userId);
+
+        if($registeredAsProvider) {
+            $sessionUser = $user->toSessionArray() + [
+                'temporary_role' => 'provider'];
+        } ;
+
+        if($registeredAsDriver) {
+             $sessionUser = $user->toSessionArray() + [
+                'temporary_role' => 'driver'];
+        };
 
         $this->sessionManagerPort->set('user', $sessionUser);
 

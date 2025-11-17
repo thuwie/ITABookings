@@ -235,6 +235,42 @@ $tables = [
 
     },
 
+    'drivers' => function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('user_id');        
+        $table->unsignedInteger('provider_id');
+
+        $table->string('license_number', 50);
+        $table->string('license_class', 5);
+        $table->date('license_issue_date');
+        $table->date('license_expiry_date');
+
+        $table->enum('status', ['valid','expired','suspended','revoked'])
+            ->default('valid');
+
+        $table->unsignedInteger('experience')     
+            ->default(0);
+
+        $table->decimal('average_rates', 10, 2)   
+            ->nullable();
+
+        $table->unsignedInteger('rating_count')   
+            ->default(0);
+
+        $table->timestamp('verified_at')->nullable();
+
+        // created_at & updated_at
+        $table->timestamps();
+
+        // UNIQUE
+        $table->unique('user_id', 'unique_user');
+
+        // Charset & collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
 
 ];
 

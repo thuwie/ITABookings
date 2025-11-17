@@ -7,4 +7,5 @@ interface ProviderRepositoryPort {
     public function saveLogo(?UploadedFileInterface $logo, string $providerName): string;
     public function savePathLogo($url, Provider $provider): bool;
     public function update(Provider $provider): bool;
+    public function findUnVerifiedAccountByUserId (int $userId): ?Provider;
 }
