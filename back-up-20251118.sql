@@ -44,6 +44,42 @@ LOCK TABLES `banned_providers` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `drivers`
+--
+
+DROP TABLE IF EXISTS `drivers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `drivers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `provider_id` int unsigned NOT NULL,
+  `license_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `license_class` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `license_issue_date` date NOT NULL,
+  `license_expiry_date` date NOT NULL,
+  `status` enum('valid','expired','suspended','revoked') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'valid',
+  `average_rates` decimal(10,2) DEFAULT NULL,
+  `rating_count` int unsigned NOT NULL DEFAULT '0',
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `drivers`
+--
+
+LOCK TABLES `drivers` WRITE;
+/*!40000 ALTER TABLE `drivers` DISABLE KEYS */;
+INSERT INTO `drivers` VALUES (7,5,13,'D123456789','B2','2025-10-30','2029-11-15','valid',NULL,0,NULL,'2025-11-18 04:39:29','2025-11-18 04:39:29');
+/*!40000 ALTER TABLE `drivers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `food_court_images`
 --
 
@@ -113,6 +149,36 @@ INSERT INTO `food_courts` VALUES (1,'B??n c?? Long Xuy??n','L?? m??n ??n ?????u 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `information_payments`
+--
+
+DROP TABLE IF EXISTS `information_payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `information_payments` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `full_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `account_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bank_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `qr_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `information_payments`
+--
+
+LOCK TABLES `information_payments` WRITE;
+/*!40000 ALTER TABLE `information_payments` DISABLE KEYS */;
+INSERT INTO `information_payments` VALUES (7,3,'NGUYEN HONG PHONG','123131231321313','ACB','/uploads/QRs/hong-phongnguyen/QR_691aee6d2153d2.75927344_Screenshot_2025-04-24_171602.png','2025-11-17 09:44:13','2025-11-17 09:44:13'),(8,4,'PHAM THI THUY NGAN','12345678910','TPB','/uploads/QRs/thuy-nganpham/QR_691aef04dd8390.12470732_download.jpg','2025-11-17 09:46:44','2025-11-17 09:46:44'),(13,5,'NGUYEN HONG PHONG','1231123464','VCB','/uploads/QRs/nguyenthanh-hieu/QR_691bf8822fabc3.53335949_illustration.png','2025-11-18 04:39:30','2025-11-18 04:39:30');
+/*!40000 ALTER TABLE `information_payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `providers`
 --
 
@@ -136,7 +202,7 @@ CREATE TABLE `providers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `providers_user_id_unique` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,6 +211,7 @@ CREATE TABLE `providers` (
 
 LOCK TABLES `providers` WRITE;
 /*!40000 ALTER TABLE `providers` DISABLE KEYS */;
+INSERT INTO `providers` VALUES (13,3,'A Po thương mại','/uploads/providers/a-po-thuong-mai/provider_691aee6d08f662.77508200_Screenshot_2025-04-24_171602.png','Doanh nghiệp chúng tôi là 1 doanh nghiệp cung cấp dịch vụ về thuê xe','thanhhang@abc','0123456789','79 Hồ CHí Minh',15,NULL,0,NULL,'2025-11-17 09:44:12','2025-11-17 09:44:13'),(14,4,'Công ty cổ phần 1 thành viên','/uploads/providers/cong-ty-co-phan-1-thanh-vien/provider_691aef04ccdba8.85948081_place-icon.png','Doanh nghiệp hiện tại cung cấp phương tiện và dịch vụ cho ngời dùng có 102','gideonzz246@gmail.com','0123654799','Phú Yên, Lạng Sơn',11,NULL,0,NULL,'2025-11-17 09:46:44','2025-11-17 09:46:44');
 /*!40000 ALTER TABLE `providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,7 +451,7 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32');
+INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09');
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -412,7 +479,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -421,7 +488,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Beckom','David','$2y$12$XI6qh/yth/XjYdBhtYjn3eKNzbUnDy.uxFT3abJlCRILE8bf3dfF6','phong@gmail.com','0387792293','','male','2025-11-06','1234564894','123 Tòa Nhà Tây Thạnh',17,'2025-11-15 08:44:14','2025-11-15 08:44:14');
+INSERT INTO `users` VALUES (3,'Hong Phong','Nguyen','$2y$12$pVb0CD0zUpAm/hZxZEhn4OZzqrxEIEpEoXmJa2yVeKqLt99t3RCei','nguyenhongphong4151050139@gmail.com','0387792293','','male','2000-07-24','012345649789','79 Tân Phú',15,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,'Thúy Ngân','Phạm','$2y$12$.wtOyGaPlC.2HZAuYhm8/eYsDR.a6BXHWC6g73G6nxwTd7i4wpDOi','phongnguyenwn123@gmail.com','0123456789','','female','2002-04-23','0231466491','Phú Yên',11,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,'Nguyễn','Thanh Hiếu','$2y$12$zUuR0PUSsm.tAK0N.JoHfet1tmTtwE1oV6VoAtunRkwIvasezGV7S','newbierhp2000@gmail.com','1234567891','','male','2002-10-23','1234564898','QNBD',15,'2025-11-17 09:48:09','2025-11-17 09:48:09');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -434,4 +501,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-15 15:53:31
+-- Dump completed on 2025-11-18 11:44:22
