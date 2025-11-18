@@ -22,7 +22,6 @@ class DriverRepository implements DriverRepositoryPort {
             licenseIssueDate: $driver->getLicenseIssueDate(),
             licenseExpiryDate: $driver->getLicenseExpiryDate(),
             status: $driver->getStatus(),
-            experience: $driver->getExperience(),
             averageRates: $driver->getAverageRates(),
             ratingCount: $driver->getRatingCount(),
             verifiedAt: $driver->getVerifiedAt(),

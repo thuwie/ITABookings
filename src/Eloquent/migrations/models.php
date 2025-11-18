@@ -248,8 +248,6 @@ $tables = [
         $table->enum('status', ['valid','expired','suspended','revoked'])
             ->default('valid');
 
-        $table->unsignedInteger('experience')     
-            ->default(0);
 
         $table->decimal('average_rates', 10, 2)   
             ->nullable();

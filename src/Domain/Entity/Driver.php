@@ -11,7 +11,6 @@ class Driver
     private \DateTimeImmutable $licenseIssueDate;
     private \DateTimeImmutable $licenseExpiryDate;
     private string $status; // valid | expired | suspended | revoked
-    private int $experience;
     private ?float $averageRates;
     private int $ratingCount;
     private ?\DateTimeImmutable $verifiedAt;
@@ -27,7 +26,6 @@ class Driver
         \DateTimeImmutable $licenseIssueDate,
         \DateTimeImmutable $licenseExpiryDate,
         string $status = 'valid',
-        int $experience = 0,
         ?float $averageRates = null,
         int $ratingCount = 0,
         ?\DateTimeImmutable $verifiedAt = null,
@@ -42,7 +40,6 @@ class Driver
         $this->licenseIssueDate = $licenseIssueDate;
         $this->licenseExpiryDate = $licenseExpiryDate;
         $this->status = $status;
-        $this->experience = $experience;
         $this->averageRates = $averageRates;
         $this->ratingCount = $ratingCount;
         $this->verifiedAt = $verifiedAt;
@@ -87,12 +84,6 @@ class Driver
         $this->touch();
     }
 
-    public function setExperience(int $experience): void
-    {
-        $this->experience = $experience;
-        $this->touch();
-    }
-
     public function setAverageRates(?float $averageRates): void
     {
         $this->averageRates = $averageRates;
@@ -120,7 +111,6 @@ class Driver
     public function getLicenseIssueDate(): \DateTimeImmutable { return $this->licenseIssueDate; }
     public function getLicenseExpiryDate(): \DateTimeImmutable { return $this->licenseExpiryDate; }
     public function getStatus(): string { return $this->status; }
-    public function getExperience(): int { return $this->experience; }
     public function getAverageRates(): ?float { return $this->averageRates; }
     public function getRatingCount(): int { return $this->ratingCount; }
     public function getVerifiedAt(): ?\DateTimeImmutable { return $this->verifiedAt; }
@@ -135,7 +125,6 @@ class Driver
         ?\DateTimeImmutable $licenseIssueDate = null,
         ?\DateTimeImmutable $licenseExpiryDate = null,
         ?string $status = null,
-        ?int $experience = null,
         ?float $averageRates = null,
         ?int $ratingCount = null,
         ?\DateTimeImmutable $verifiedAt = null
@@ -146,7 +135,6 @@ class Driver
         if ($licenseIssueDate !== null) $this->licenseIssueDate = $licenseIssueDate;
         if ($licenseExpiryDate !== null) $this->licenseExpiryDate = $licenseExpiryDate;
         if ($status !== null) $this->status = $status;
-        if ($experience !== null) $this->experience = $experience;
         if ($averageRates !== null) $this->averageRates = $averageRates;
         if ($ratingCount !== null) $this->ratingCount = $ratingCount;
         if ($verifiedAt !== null) $this->verifiedAt = $verifiedAt;
@@ -169,7 +157,6 @@ class Driver
             'license_issue_date' => $this->licenseIssueDate->format('Y-m-d'),
             'license_expiry_date' => $this->licenseExpiryDate->format('Y-m-d'),
             'status' => $this->status,
-            'experience' => $this->experience,
             'average_rates' => $this->averageRates,
             'rating_count' => $this->ratingCount,
             'verified_at' => $this->verifiedAt?->format('Y-m-d H:i:s'),
@@ -188,7 +175,6 @@ class Driver
             new \DateTimeImmutable($data['license_issue_date']),
             new \DateTimeImmutable($data['license_expiry_date']),
             $data['status'] ?? 'valid',
-            $data['experience'] ?? 0,
             $data['average_rates'] ?? null,
             $data['rating_count'] ?? 0,
             isset($data['verified_at']) ? new \DateTimeImmutable($data['verified_at']) : null,
