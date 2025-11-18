@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Dashboard</title>
+<style>
+:root {
+  --accent: #0256b0;
+  --accent-2: #4dabff;
+}
+body { font-family: Arial; margin:0; padding:0; background:#f9f9f9; height:100%; }
+
+/* Dashboard layout */
+.dashboard-wrapper { display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width:260px;
+  background:#fff;
+  border-right:1px solid #eee;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.sidebar .profile {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid #f0f0f0;
+}
+.sidebar .profile img { width:56px; height:56px; border-radius:50%; object-fit:cover; }
+.sidebar .profile .name { font-weight:700; color:#333; }
+
+.side-title { margin-top:12px; margin-bottom:6px; font-weight:700; color:#333; }
+
+/* vertical menu */
+.side-nav {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:6px;
+}
+.side-item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:10px;
+  background:transparent;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  color:#666;
+  font-weight:600;
+  font-size:14px;
+  transition: all .18s ease;
+}
+.side-item img.icon { width:20px; height:20px; opacity:.65; display:inline-block; }
+.side-item span { display:inline-block; line-height:1; }
+.side-item:hover { background:#f4f8ff; color:var(--accent); }
+.side-item.active { background: linear-gradient(90deg, rgba(2,86,176,0.06), rgba(77,171,255,0.02)); color: var(--accent); border-right:4px solid var(--accent); }
+.side-item.active img.icon { opacity:1; filter:none; }
+
+.spacer { flex:1; } /* push logout down */
+.logout-btn {
+  margin-top:8px;
+  padding:10px 14px;
+  border-radius:10px;
+  background:#df3131;
+  color: #ffffff;
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex:1;
+  padding:20px;
+  background:#f9f9f9;
+  min-height:100vh;
+}
+
+/* TAB CONTENT */
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* Container for tables */
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+h2 { margin-bottom:15px; color:#333; }
+table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+th, td { border:1px solid #ddd; padding:8px; text-align:center; }
+th { background-color:#f4f4f4; }
+select { padding:5px; margin-bottom:10px; }
+button { padding:5px 10px; border:none; border-radius:4px; cursor:pointer; }
+.view-btn { background-color:#007bff; color:white; }
+.view-btn:hover { background-color:#0256b0; }
+.complete-btn { background-color:#28a745; color:white; }
+.complete-btn:hover { background-color:#1e7e34; }
+tfoot td { font-weight:bold; }
+
+/* Status pill */
+.status { display:inline-block; padding:4px 10px; border-radius:12px; font-size:13px; font-weight:600; line-height:1; color:#fff; box-shadow:0 1px 0 rgba(0,0,0,0.08); }
+.status-going { background:#eb9008; }
+.status-upcoming { background:#e51308; }
+.status-done { background:#198754; }
+
+/* Responsive */
+@media (max-width:880px){
+  .sidebar { width:64px; padding:12px; align-items:center; gap:12px; }
+  .sidebar .profile { display:none; }
+  .side-item { justify-content:center; padding:10px; border-radius:8px; }
+  .side-item span { display:none; }
+  .main-content { padding:14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="https://via.placeholder.com/80" alt="avatar">
+      <div>
+        <div class="name">Nguyen Van A</div>
+        <div style="font-size:12px;color:#888;">Tài xế</div>
+      </div>
+    </div>
+
+    <div class="side-title">Main Menu</div>
+
+    <nav class="side-nav">
+      <button class="side-item active" data-tab="tabComplete" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/ios/24/000000/checklist.png">
+        <span>Xác nhận chuyến xe</span>
+      </button>
+      <button class="side-item" data-tab="tabBookings" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/ios/24/000000/bus.png">
+        <span>Danh sách các chuyến</span>
+      </button>
+      <button class="side-item" data-tab="tabRevenue" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/ios/24/000000/money.png">
+        <span>Tổng doanh thu</span>
+      </button>
+    </nav>
+
+    <div class="spacer"></div>
+    <button class="logout-btn" onclick="alert('Đăng xuất')">Đăng xuất</button>
+  </aside>
+
+  <!-- MAIN CONTENT (giữ code bảng của bạn) -->
+  <div class="main-content">
+
+    <!-- TAB 1 -->
+    <div id="tabComplete" class="tab-content active">
+      <div class="container">
+        <h2>Xác nhận chuyến xe hoàn thành</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Booking</th>
+              <th>Nơi đi</th>
+              <th>Nơi đến</th>
+              <th>Ngày kết thúc</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="completionList"></tbody>
+        </table>
+        <p id="noActiveTrip" style="text-align:center;color:#666;margin-top:10px;display:none;">
+          Không có chuyến xe nào đang thực hiện.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB 2 -->
+    <div id="tabBookings" class="tab-content">
+      <div class="container">
+        <h2>Danh sách Bookings</h2>
+        <label>Trạng thái thanh toán:</label>
+        <select id="paymentStatusFilter">
+          <option value="all">Tất cả</option>
+          <option value="pending">Chưa thanh toán</option>
+          <option value="paid">Đã thanh toán</option>
+        </select>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Booking</th>
+              <th>Nơi đi</th>
+              <th>Nơi đến</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Tổng tiền</th>
+              <th>Thanh toán</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="bookingList"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div id="tabRevenue" class="tab-content">
+      <div class="container">
+        <h2>Tổng doanh thu theo tháng/năm</h2>
+        <label>Tháng:</label>
+        <select id="filterMonth"><option value="all">Tất cả</option></select>
+        <label>Năm:</label>
+        <select id="filterYear"><option value="all">Tất cả</option></select>
+        <button id="applyFilterBtn" class="view-btn">Lọc</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Booking</th>
+              <th>Nơi đi</th>
+              <th>Nơi đến</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Tổng tiền</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="revenueList"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6">Tổng doanh thu</td>
+              <td id="totalRevenue">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- QR Modal -->
+<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; backdrop-filter: blur(8px); z-index:5000;">
+  <div style="background:white; padding:20px; border-radius:12px; width:360px; text-align:center; position:relative;">
+    <span style="position:absolute; top:8px; right:12px; cursor:pointer; font-size:22px;" onclick="closeQR()">×</span>
+    <h3>Thanh toán 50% còn lại</h3>
+    <p>Booking: <span id="modalBookingId"></span></p>
+    <img id="qrImage" width="200">
+    <p>Tên TK: <strong>Nguyen Van A</strong></p>
+    <p>Số TK: <strong>0123456789</strong></p>
+    <p>Số tiền: <strong id="modalAmount"></strong> VND</p>
+    <button style="background-color:#28a745; color:white; padding:8px 14px; border:none; border-radius:8px;" onclick="confirmPayment()">Xác nhận đã thanh toán</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Tab switching sidebar ---------- */
+function openTabFromSidebar(evt){
+  document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
+  const btn = evt.currentTarget;
+  btn.classList.add('active');
+  const tabId = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if(target) target.classList.add('active');
+}
+
+/* Dữ liệu & render (giữ nguyên từ code của bạn) */
+let currentBookingId = '';
+const bookings = [
+  {id:'BK001', from:'Hà Nội', to:'Hải Phòng', start:'2025-11-16', end:'2025-11-19', payment:'paid', completed:false, total:1500000},
+  {id:'BK002', from:'Đà Nẵng', to:'Huế', start:'2025-11-22', end:'2025-11-28', payment:'paid', completed:false, total:1200000},
+];
+
+function confirmTrip(id){
+  currentBookingId=id;
+  const b = bookings.find(x=>x.id===id);
+  if(!b) return;
+  document.getElementById('qrModal').style.display='flex';
+  document.getElementById('modalBookingId').innerText=b.id;
+  document.getElementById('modalAmount').innerText=(b.total/2).toLocaleString();
+  document.getElementById('qrImage').src=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Payment+${b.id}`;
+}
+function closeQR(){ document.getElementById('qrModal').style.display='none'; }
+function confirmPayment(){
+  const b = bookings.find(x=>x.id===currentBookingId);
+  if(b){ b.completed=true; alert(`Booking ${b.id} đã thanh toán 100%`); closeQR(); renderBookingList(); renderRevenueList(); renderCompletionList(); }
+}
+
+function getStatus(start,end,completed){
+  let text='',cls='';
+  if(completed){text='Hoàn thành';cls='status-done';}
+  else {
+    const today=new Date(); today.setHours(0,0,0,0);
+    const s=new Date(start); s.setHours(0,0,0,0);
+    const e=new Date(end); e.setHours(0,0,0,0);
+    if(today<s){ const diff=Math.ceil((s-today)/(1000*60*60*24)); text=`Sắp đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`; cls='status-upcoming'; }
+    else if(today>=s&&today<=e){ const diff=Math.ceil((e-today)/(1000*60*60*24)); text=`Đang đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`; cls='status-going'; }
+    else{text='Hoàn thành';cls='status-done';}
+  }
+  return `<span class="status ${cls}">${text}</span>`;
+}
+function getPaymentStatus(b){ return b.completed?"100%":"50%"; }
+
+function renderBookingList(filter='all'){
+  const tbody=document.getElementById('bookingList'); if(!tbody) return; tbody.innerHTML='';
+  bookings.forEach(b=>{
+    if(filter==='pending' && b.completed) return;
+    if(filter==='paid' && !b.completed) return;
+    tbody.innerHTML+=`
+      <tr>
+        <td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.start}</td><td>${b.end}</td>
+        <td>${getStatus(b.start,b.end,b.completed)}</td><td>${b.total.toLocaleString()} VND</td>
+        <td>${getPaymentStatus(b)}</td>
+        <td><button class="view-btn" onclick="alert('Xem chi tiết ${b.id}')">Xem</button></td>
+      </tr>`;
+  });
+}
+
+function renderRevenueList(month='all',year='all'){
+  const tbody=document.getElementById('revenueList'); if(!tbody) return; tbody.innerHTML=''; let total=0;
+  bookings.forEach(b=>{
+    if(!b.completed) return;
+    const d=new Date(b.start), m=d.getMonth()+1, y=d.getFullYear();
+    if(month!=='all' && String(m)!==String(month)) return;
+    if(year!=='all' && String(y)!==String(year)) return;
+    total+=b.total;
+    tbody.innerHTML+=`<tr><td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.start}</td><td>${b.end}</td><td>Hoàn thành</td><td>${b.total.toLocaleString()} VND</td><td><button class="view-btn" onclick="alert('Xem chi tiết ${b.id}')">Xem</button></td></tr>`;
+  });
+  const totalEl=document.getElementById('totalRevenue'); if(totalEl) totalEl.innerText=total.toLocaleString()+' VND';
+}
+
+function applyRevenueFilter(){
+  const m=document.getElementById('filterMonth').value;
+  const y=document.getElementById('filterYear').value;
+  renderRevenueList(m,y);
+}
+
+function renderCompletionList(){
+  const tbody=document.getElementById('completionList');
+  const emptyMsg=document.getElementById('noActiveTrip');
+  if(!tbody) return; tbody.innerHTML=''; let hasTrip=false;
+  bookings.forEach(b=>{
+    const now=new Date(); now.setHours(0,0,0,0);
+    const s=new Date(b.start); s.setHours(0,0,0,0);
+    const e=new Date(b.end); e.setHours(0,0,0,0);
+    if(now>=s && now<=e && !b.completed){
+      hasTrip=true;
+      tbody.innerHTML+=`<tr><td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.end}</td><td><button class="complete-btn" onclick="confirmTrip('${b.id}')">Hoàn thành</button></td></tr>`;
+    }
+  });
+  emptyMsg.style.display=hasTrip?"none":"block";
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const monthSel=document.getElementById('filterMonth'); for(let m=1;m<=12;m++){ const opt=document.createElement('option'); opt.value=m; opt.text=m; monthSel.appendChild(opt);}
+  const yearSel=document.getElementById('filterYear'); const currentYear=new Date().getFullYear(); for(let y=currentYear-5;y<=currentYear;y++){ const opt=document.createElement('option'); opt.value=y; opt.text=y; yearSel.appendChild(opt);}
+  const paymentFilter=document.getElementById('paymentStatusFilter'); if(paymentFilter) paymentFilter.addEventListener('change',e=>renderBookingList(e.target.value||'all'));
+  const applyBtn=document.getElementById('applyFilterBtn'); if(applyBtn) applyBtn.addEventListener('click',applyRevenueFilter);
+  renderBookingList(); renderRevenueList(); renderCompletionList();
+});
+</script>
+</body>
+</html>
