@@ -138,12 +138,38 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
+    /* Toast container góc trên phải */
+    #messageContainer {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1080;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      /* màn hình tối */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      /* cao hơn toast và form */
+    }
   </style>
 </head>
 
 <body>
 
-  <form id="driverForm">
+  <form id="driverForm" method="POST" action="/driver/register" enctype="multipart/form-data">
     <h2>Đăng Ký Tài Xế</h2>
 
     <!-- Thông tin cá nhân -->
@@ -151,11 +177,11 @@
     <div class="row">
       <div class="field">
         <label>Họ</label>
-        <input type="text" name="last_name" value="{{user.last_name}}" disabled required />
+        <input type="text" name="first_name" value="{{user.first_name}}" disabled required />
       </div>
       <div class="field">
         <label>Tên</label>
-        <input type="text" name="first_name" value="{{user.first_name}}" disabled required />
+        <input type="text" name="last_name" value="{{user.last_name}}" disabled required />
       </div>
     </div>
 
@@ -217,11 +243,11 @@
     <div class="row">
       <div class="field">
         <label for="license_number">Số GPLX</label>
-        <input type="text" id="license_number" placeholder="Nhập số giấy phép lái xe" required>
+        <input type="text" id="license_number" name="license_number" placeholder="Nhập số giấy phép lái xe" required>
       </div>
       <div class="field">
         <label for="license_class">Loại bằng</label>
-        <select id="license_class" required>
+        <select id="license_class" name="license_class" required>
           <option value="">-- Chọn loại bằng --</option>
           <option>B1</option>
           <option>B2</option>
@@ -242,21 +268,21 @@
     <div class="row">
       <div class="field">
         <label for="license_issue_date">Ngày cấp GPLX</label>
-        <input type="date" id="license_issue_date" required>
+        <input type="date" id="license_issue_date" name="license_issue_date" required>
       </div>
       <div class="field">
         <label for="license_expiry_date">Ngày hết hạn GPLX</label>
-        <input type="date" id="license_expiry_date" required>
+        <input type="date" id="license_expiry_date" name="license_expiry_date" required>
       </div>
     </div>
 
     <div class="field-single">
       <label for="status">Tình trạng GPLX</label>
-      <select id="status" required>
+      <select id="status" name="status" required>
         <option value="">-- Chọn tình trạng --</option>
-        <option>Còn hiệu lực</option>
-        <option>Hết hạn</option>
-        <option>Bị tạm giữ</option>
+        <option value="valid">Còn hiệu lực</option>
+        <option value="expired">Hết hạn</option>
+        <option value="suspended">Bị tạm giữ</option>
       </select>
     </div>
 
@@ -290,7 +316,6 @@
       <label for="qr_image">Tải ảnh QR để nhận thanh toán</label>
       <input type="file" id="qr_image" name="qr_image" accept="image/*">
       <div class="qr-preview" id="qrPreview" style="display:none;">
-        <p>Xem trước mã QR:</p>
         <img id="qrImagePreview" src="" alt="QR Preview">
       </div>
     </div>
@@ -387,8 +412,17 @@
 
     <!-- Gửi đơn -->
     <button type="submit">Gửi đơn đăng ký</button>
-
   </form>
+
+  <!-- Toast message container -->
+  <div id="messageContainer"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" style="display:none;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
   <script src="/js/driver-register-handle.js"></script>
 </body>

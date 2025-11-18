@@ -7,7 +7,7 @@ use App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\ProviderServicePort;
 use App\Application\Port\Inbound\InformationPaymentServicePort;
 use App\Application\Port\Inbound\UserServicePort;
-
+use App\Application\Port\Inbound\DriverServicePort;
 
 use App\Middleware\AuthMiddleware;
 
@@ -22,6 +22,7 @@ return function (App $app, $twig) {
         $providerService  = $container->get(ProviderServicePort::class);
         $paymentService   = $container->get(InformationPaymentServicePort::class);
         $userServices = $container->get(UserServicePort::class);
+        $driverServices  =  $container->get(DriverServicePort::class);
 
         // GET
         $group->get('/register', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
@@ -38,33 +39,32 @@ return function (App $app, $twig) {
         });
 
         // POST
-        $group->post('/register', function ($request, $response) use ($providerService, $paymentService) {
+        $group->post('/register', function ($request, $response) use ($paymentService, $driverServices) {
 
             try {
                 $body = $request->getParsedBody();
 
-                $providerInfo = json_decode($body['provider-information'], true);
+                $driverInfo = json_decode($body['driver-information'], true);
                 $paymentInfo  = json_decode($body['payment-information'], true);
 
                 $files = $request->getUploadedFiles();
-                $logo = $files['logo'] ?? null;
-                $qr   = $files['qr'] ?? null;
+                $qr   = $files['qr_image'] ?? null;
 
-                $resultPro = $providerService->save($providerInfo, $logo);
+                $driverResult = $driverServices->save($driverInfo);
 
-                if ($resultPro) {
-                    $resultPayment = $paymentService->save($paymentInfo, $qr);
+                if ($driverResult) {
+                    $paymentResult = $paymentService->save($paymentInfo, $qr);
 
                     $payload = [
-                        'status'  => $resultPayment ? 'success' : 'error',
-                        'message' => $resultPayment 
-                            ? 'Đăng ký doanh nghiệp thành công'
-                            : 'Đăng ký doanh nghiệp thất bại'
+                        'status'  => $paymentResult  ? 'success' : 'error',
+                        'message' => $paymentResult  
+                            ? 'Đăng ký tài xế thành công'
+                            : 'Đăng ký tài xế thất bại'
                     ];
                 } else {
                     $payload = [
                         'status' => 'error',
-                        'message' => 'Đăng ký doanh nghiệp thất bại'
+                        'message' => 'Đăng ký tài xế thất bại'
                     ];
                 }
 

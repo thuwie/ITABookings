@@ -48,7 +48,7 @@ return function (App $app, $twig) {
             $registeredInformation = $providerService->getRegisterForm();
             $provinces = $provinceService->getProvinces();
 
-            $html = $twig->render('pages/provider/register.form.html.twig', [
+            $html = $twig->render('pages/provider/register.form.detail.html.twig', [
                 'information' => $registeredInformation,
                 'provinces' => $provinces
             ]);
