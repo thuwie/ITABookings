@@ -37,8 +37,6 @@ return function (App $app, $twig) {
             return $response;
         });
 
-
-
          /** ---------------------------
          * GET /provider/register-form
          * --------------------------- */
@@ -51,6 +49,19 @@ return function (App $app, $twig) {
             $html = $twig->render('pages/provider/register.form.detail.html.twig', [
                 'information' => $registeredInformation,
                 'provinces' => $provinces
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+         /** ---------------------------
+         * GET /provider/register-vehicles
+         * --------------------------- */        
+        $group->get('/register-vehicles', function ($request, $response) 
+            use ($twig, $providerService, $provinceService) { 
+
+            $html = $twig->render('pages/provider/vehicle.register.html.twig', [
             ]);
 
             $response->getBody()->write($html);
@@ -110,6 +121,48 @@ return function (App $app, $twig) {
                     $payload = [
                         'status'  => 'error',
                         'message' => 'Đăng ký doanh nghiệp thất bại',
+                    ];
+                }
+
+            } catch (\Exception $e) {
+                $payload = [
+                    'status'  => 'error',
+                    'message' => $e->getMessage()
+                ];
+            }
+
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+         /** ---------------------------
+         * POST /provider/{id}/vehicles
+         * --------------------------- */        
+        $group->post('/{id}/vehicles', function ($request, $response) 
+            use ($twig, $providerService) { 
+
+           
+            try {
+                $body = $request->getParsedBody();
+
+                $vehicleInfo = json_decode($body['vehicle-information'], true);
+               
+                // Uploaded files
+                $files = $request->getUploadedFiles();
+                $imgs  = $files['files'] ?? null;
+
+                // Save provider
+                $resultPro = $providerService->saveVehicle($vehicleInfo, $imgs);
+
+                if($resultPro) {
+                     return  [
+                        'status'  =>  'success',
+                        'message' =>  'Đăng ký phương tiện thành công'
+                    ];
+                } else {
+                    return [
+                        'status'  => 'error',
+                        'message' => 'Đăng ký phương tiện thất bại',
                     ];
                 }
 

@@ -268,7 +268,75 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'vehicles' => function ($table) {
+        $table->increments('id');
 
+        $table->text('description');
+
+        $table->string('license_plate', 20);
+        $table->string('brand', 100);
+        $table->string('model', 100);
+
+        $table->year('year_of_manufacture');
+
+        $table->tinyInteger('seat_count')->unsigned();
+
+        $table->unsignedInteger('provider_id'); // FK
+
+        $table->decimal('fuel_consumption', 5, 2); // L/100km
+        $table->decimal('maintenance_per_km', 10, 2);
+
+        $table->timestamps();
+
+        // UNIQUE
+        $table->unique('license_plate', 'unique_license_plate');
+
+        // Charset & Collation
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'vehicle_img' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('vehicle_id');
+
+        $table->string('url', 255);
+        $table->string('public_url', 255)->nullable();
+
+        $table->timestamps();
+
+        // Charset
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
+    'utilities' => function ($table) {
+        $table->increments('id');
+
+        $table->string('name', 100);
+
+        $table->timestamps();
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'vehicle_utilities' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('utility_id');
+        $table->unsignedInteger('vehicle_id');
+
+        $table->timestamps();
+
+        // UNIQUE
+        $table->unique(['utility_id', 'vehicle_id'], 'unique_vehicle_utility');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
 
 ];
 

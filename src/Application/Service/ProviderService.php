@@ -81,12 +81,24 @@ class ProviderService implements ProviderServicePort {
         return $result;
     }
 
-     public function getProviderById(int $id): array {
+    public function getProviderById(int $id): array {
         $result = $this->providerRepositoryPort->findById($id)->toArray();
         if(!$result) {
             throw new \Exception('Not found provider !!!');
         }
 
         return $result;
-     }
+    }
+
+    public function saveVehicle($vehicleInfo, $imgs):bool {
+        $brand = $vehicleInfo['brand'];
+        $model = $vehicleInfo['model'];
+        $year_of_manufacture = $vehicleInfo['year_of_manufacture'];
+        $seat_counting = $vehicleInfo['seat_counting'];
+        $fuel_consumption = $vehicleInfo['fuel_consumption'];
+        $maintenance_per_km = $vehicleInfo['maintenance_per_km'];
+        $description = $vehicleInfo['description'];
+        
+        
+    }
 }
