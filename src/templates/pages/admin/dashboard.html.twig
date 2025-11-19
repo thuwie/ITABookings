@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin - Payments & Provider Payouts</title>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --card:#fff;
+  --muted:#666;
+  --accent:#0256b0; /* đổi sang gradient tab */
+  --accent-2:#4dabff;
+  --success:#28a745;
+  --danger:#dc3545;
+}
+
+body{
+  font-family:Inter,Segoe UI,Arial;
+  background:var(--bg);
+  margin:0;
+  padding:20px;
+  color:#222;
+}
+
+.wrap{
+  max-width:1200px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+
+.card{
+  background:var(--card);
+  padding:18px;
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(20,20,50,0.06);
+}
+
+h1,h2{margin:0 0 10px 0}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+  font-size:14px;
+}
+th{
+  background:#fafafa;
+  font-weight:600;
+}
+
+.row{display:flex;gap:12px;align-items:center}
+
+.btn{
+  padding:8px 12px;
+  border-radius:8px;
+  border:0;
+  cursor:pointer;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-ghost{background:transparent;border:1px solid #ddd;padding:6px 8px;border-radius:8px}
+
+.muted{color:var(--muted);font-size:13px}
+.small{font-size:13px;padding:6px 8px}
+.flex{display:flex;gap:12px;align-items:center}
+.right{margin-left:auto}
+.badge{background:#eef; padding:4px 8px;border-radius:999px;font-size:13px}
+.disabled{opacity:0.5;pointer-events:none}
+.grid2{display:grid;grid-template-columns:1fr 420px;gap:18px}
+.center{text-align:center}
+.provider-list li{list-style:none;padding:8px 0;border-bottom:1px dashed #eee}
+.note{font-size:13px;color:#555;margin-top:8px}
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:9999}
+.modal-card{background:#fff;padding:18px;border-radius:10px;max-width:720px;width:100%}
+.field{margin-bottom:8px}
+.muted-small{color:#666;font-size:13px}
+select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; background:white; }
+.top-controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+
+/* =========================
+   TAB MENU
+========================= */
+.tab-menu {
+  display:flex;
+  gap:25px;
+  margin-bottom:20px;
+  padding-bottom:8px;
+}
+
+.tab-btn {
+  background:none;
+  border:none;
+  font-size:20px;
+  cursor:pointer;
+  font-weight:600;
+  color:#555;
+  padding:8px 0;
+  position:relative;
+  transition: color .25s ease;
+}
+
+.tab-btn::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height:3px;
+  bottom:-5px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius:3px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .45s cubic-bezier(.25,.8,.25,1);
+}
+
+.tab-btn:hover {
+  color: var(--accent);
+}
+
+.tab-btn:hover::after{
+  transform: scaleX(1);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+}
+
+.tab-btn.active::after {
+  transform: scaleX(1);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <!-- TAB NAVIGATION -->
+<div class="card">
+  <div class="row" style="gap:12px">
+    <button class="tab-btn" onclick="openTab('tabBookings')" id="tabBtnBookings">Bookings</button>
+    <button class="tab-btn" onclick="openTab('tabBiz')" id="tabBtnBiz">Đơn đăng ký doanh nghiệp</button>
+    <button class="tab-btn" onclick="openTab('tabPayments')" id="tabBtnPayments">Payments & Providers</button>
+  </div>
+</div>
+
+<!-- TAB CONTENT -->
+<div id="tabBookings" class="tabContent">
+  <div class="card">
+    <h2>Bookings (user đã cọc)</h2>
+    <p class="muted">Danh sách bookings: admin tạo payment cho bookings user đã thanh toán 50%.</p>
+    <table id="bookingsTable">
+      <thead>
+        <tr>
+          <th>Mã Booking</th>
+          <th>Start - End</th>
+          <th>Tổng tiền</th>
+          <th>Thanh toán (user)</th>
+          <th>Xác nhận</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tabBiz" class="tabContent" style="display:none">
+  <div class="card">
+    <h2>Đơn đăng ký doanh nghiệp</h2>
+    <p class="muted">Danh sách đơn đăng ký doanh nghiệp — admin xét duyệt.</p>
+    <table id="bizTable">
+      <thead><tr><th>Đơn ID</th><th>Tên doanh nghiệp</th><th>Người đại diện</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="tabPayments" class="tabContent" style="display:none">
+  <div class="grid2">
+    <div>
+      <div class="card">
+        <div class="top-controls">
+          <h2 style="margin:0">Payments</h2>
+          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+            <button class="btn btn-ghost" onclick="exportPaymentsCSV()">Xuất CSV</button>
+            <select id="filterMonth" class="small" onchange="applyPaymentsFilter()"><option value="">-- Tháng --</option></select>
+            <select id="filterYear" class="small" onchange="applyPaymentsFilter()"><option value="">-- Năm --</option></select>
+            <button class="btn btn-ghost" onclick="resetPaymentsFilter()">Reset</button>
+          </div>
+        </div>
+        <p class="muted">Bảng payments lưu thông tin admin nhận và tiền cần trả provider.</p>
+        <table id="paymentsTable">
+          <thead>
+            <tr>
+              <th>Mã Payment</th>
+              <th>Mã Booking</th>
+              <th>Tổng tiền</th>
+              <th>Provider share</th>
+              <th>Provider</th>
+              <th>Admin share</th>
+              <th>Trạng thái</th>
+              <th>Paid at</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Danh sách Providers (tổng cần thanh toán)</h2>
+        <p class="muted">Tổng quan số tiền admin cần trả cho từng provider (chưa paid).</p>
+        <ul id="providerSummary" class="provider-list"></ul>
+        <div class="note">Click "Pay" ở bảng Payments để thanh toán cho provider.</div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h2>Lịch sử thanh toán Provider</h2>
+        <select id="providerHistorySelect" class="small" onchange="renderProviderHistory()">
+          <option value="">-- Chọn provider --</option>
+        </select>
+        <table style="margin-top:10px">
+          <thead>
+            <tr><th>Payment ID</th><th>Booking</th><th>Số tiền</th><th>Ngày thanh toán</th></tr>
+          </thead>
+          <tbody id="providerHistoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Business detail -->
+<div id="bizModal" style="display:none" class="modal">
+  <div class="modal-card">
+    <h3>Thông tin doanh nghiệp</h3>
+    <div id="bizDetail"></div>
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <button class="btn btn-success" onclick="approveBiz()">Duyệt</button>
+      <button class="btn btn-danger" onclick="rejectBiz()">Từ chối</button>
+      <button class="btn btn-ghost right" onclick="closeBizModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: QR Payment (50% còn lại) -->
+<div id="qrModal" style="display:none" class="modal">
+  <div class="modal-card center">
+    <h3>Quét QR thanh toán 50% còn lại</h3>
+    <p id="qrBookingInfo"></p>
+    <div id="qrCodePlaceholder" style="font-size:24px;padding:20px;border:1px dashed #ccc;margin:12px 0">[QR CODE]</div>
+    <button class="btn btn-success" onclick="confirmQRPayment()">Xác nhận thanh toán</button>
+    <button class="btn btn-ghost right" onclick="closeQRModal()">Đóng</button>
+  </div>
+</div>
+
+<script>
+  function openTab(tabId){
+  document.querySelectorAll('.tabContent').forEach(tc => tc.style.display='none');
+  document.getElementById(tabId).style.display='block';
+
+  // Highlight active tab button
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tabBtn' + tabId.replace('tab','')).classList.add('active');
+}
+
+// Mở tab đầu tiên khi load
+openTab('tabBookings');
+/* =========================
+   MOCK DATA
+========================= */
+const providers = [
+  {id: 'P001', name: 'Provider A', bankName:'Vietcombank', account:'123456789'},
+  {id: 'P002', name: 'Provider B', bankName:'ACB', account:'987654321'},
+  {id: 'P003', name: 'Provider C', bankName:'Techcombank', account:'555666777'}
+];
+
+const bookings = [
+  {id:'BK100', total: 2000000, userPaid:false, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:false, start:'2025-11-10', end:'2025-11-12'},
+  {id:'BK101', total: 1200000, userPaid:true, providerId:'P002', providerRate:0.65, driverConfirmed:true, userConfirmed:true, start:'2025-11-11', end:'2025-11-11'},
+  {id:'BK102', total: 1800000, userPaid:false, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:false, start:'2025-11-16', end:'2025-11-18'},
+  {id:'BK103', total: 2500000, userPaid:true, providerId:'P002', providerRate:0.60, driverConfirmed:true, userConfirmed:true, start:'2025-11-14', end:'2025-11-15'},
+  {id:'BK104', total: 800000, userPaid:true, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:true, start:'2025-11-15', end:'2025-11-15'},
+  {id:'BK105', total: 950000, userPaid:false, providerId:'P002', providerRate:0.65, driverConfirmed:false, userConfirmed:false, start:'2025-11-17', end:'2025-11-17'}
+];
+
+let payments = [
+  {id:1, booking_id:'BK101', total_amount:1200000, provider_share:780000, provider_id:'P002', admin_share:420000, payment_status:'paid', paid_at:'2025-11-12T10:00:00'},
+  {id:2, booking_id:'BK103', total_amount:2500000, provider_share:1500000, provider_id:'P002', admin_share:1000000, payment_status:'pending', paid_at:null}
+];
+let paymentIdCounter = 3;
+
+const bizRequests = [
+  {id:'BIZ001', company:'Công ty TNHH A', rep:'Nguyễn Văn A', phone:'0912345678', email:'a@company.com', info:'Đăng ký dịch vụ vận chuyển', status:'pending'},
+  {id:'BIZ002', company:'Công ty TNHH B', rep:'Trần Thị B', phone:'0987654321', email:'b@company.com', info:'Đăng ký đối tác', status:'pending'},
+  {id:'BIZ003', company:'Công ty TNHH C', rep:'Lê Văn C', phone:'0909123456', email:'c@company.com', info:'Đăng ký vận tải', status:'approved'},
+  {id:'BIZ004', company:'Công ty TNHH D', rep:'Phạm Thị D', phone:'0933222111', email:'d@company.com', info:'Đăng ký đối tác', status:'rejected'}
+];
+
+/* =========================
+   HELPERS
+========================= */
+function formatVND(n){ return n.toLocaleString('vi-VN') + ' ₫'; }
+function findProvider(id){ return providers.find(p=>p.id===id) || {name:'(Unknown)'}; }
+function getUserPaymentStatus(b){ return !b.userPaid?'0%':'50%'; }
+
+/* =========================
+   RENDER BOOKINGS
+========================= */
+function renderBookings(){
+  const tbody = document.querySelector('#bookingsTable tbody');
+  tbody.innerHTML = '';
+
+  // Chỉ hiển thị booking đã cọc
+  const bookingsToShow = bookings.filter(b => b.userPaid);
+
+  if(bookingsToShow.length === 0){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="6" style="text-align:center; color:#888;">Không có chuyến xe nào đang thực hiện.</td>`;
+    tbody.appendChild(tr);
+    return;
+  }
+
+  bookingsToShow.forEach(b => {
+    const tr = document.createElement('tr');
+    const driverStatus = b.driverConfirmed ? 'OK' : 'Chưa';
+    const userConfirm = b.userConfirmed ? 'OK' : 'Chưa';
+    tr.innerHTML = `
+      <td>${b.id}</td>
+      <td>${b.start} → ${b.end}</td>
+      <td>${formatVND(b.total)}</td>
+      <td>50%</td>
+      <td>
+        <div class="muted-small">
+          Driver: ${driverStatus}<br>
+          User: ${userConfirm}
+        </div>
+      </td>
+      <td>
+        <div class="flex">
+          <button class="btn small btn-ghost" onclick="viewBookingDetails('${b.id}')">Chi tiết</button>
+          <button class="btn small btn-primary" onclick="createPaymentFromBooking('${b.id}')">Tạo payment</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================
+   PAYMENT ACTIONS
+========================= */
+function createPaymentFromBooking(bookingId){
+  const b = bookings.find(x=>x.id===bookingId);
+  if(!b) return alert('Booking không tồn tại');
+  if(!b.userPaid) return alert('User chưa thanh toán 50%, không thể tạo payment.');
+  if(payments.some(p=>p.booking_id===bookingId)) return alert('Payment cho booking này đã tồn tại.');
+  // Tính provider share/admin share
+  const provider_share = Math.round(b.total * b.providerRate);
+  const admin_share = b.total - provider_share;
+  const newPayment = {
+    id: paymentIdCounter++,
+    booking_id: bookingId,
+    total_amount: b.total,
+    provider_share,
+    provider_id: b.providerId,
+    admin_share,
+    payment_status: 'pending',
+    paid_at: null
+  };
+  payments.push(newPayment);
+  renderPayments();
+  renderProviderSummary();
+  alert('Tạo payment thành công.');
+}
+
+function payProvider(paymentId){
+  const p = payments.find(x=>x.id===paymentId);
+  if(!p) return alert('Payment không tồn tại');
+  const sourceBooking = bookings.find(b=>b.id===p.booking_id);
+  if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed) {
+    return alert('Chỉ thanh toán khi driver và user xác nhận chuyến hoàn tất.');
+  }
+  p.payment_status = 'paid';
+  p.paid_at = new Date().toISOString();
+  renderPayments(); renderProviderSummary(); renderProviderHistory();
+  alert(`Đã thanh toán provider ${p.provider_id} — ${formatVND(p.provider_share)}`);
+}
+
+/* =========================
+   QR PAYMENT 50%
+========================= */
+let currentQRBookingId = null;
+
+function openQRModal(bookingId){
+  currentQRBookingId = bookingId;
+  const b = bookings.find(x=>x.id===bookingId);
+  if(!b) return alert('Booking không tồn tại');
+  document.getElementById('qrBookingInfo').innerText = `Booking ${b.id} — Tổng: ${formatVND(b.total)} — Provider: ${findProvider(b.providerId).name}`;
+  document.getElementById('qrModal').style.display='flex';
+}
+
+function closeQRModal(){ currentQRBookingId=null; document.getElementById('qrModal').style.display='none'; }
+
+function confirmQRPayment(){
+  const b = bookings.find(x=>x.id===currentQRBookingId);
+  if(!b) return alert('Booking không tồn tại');
+  b.userPaid = true;       // đánh dấu 50% đã cọc
+  b.userConfirmed = true;  // giả lập xác nhận user
+  const p = payments.find(x=>x.booking_id===currentQRBookingId);
+  if(p) p.payment_status = 'pending'; // nếu payment đã tạo
+  renderBookings(); renderPayments(); renderProviderSummary();
+  alert(`User đã thanh toán 50% còn lại cho booking ${b.id}`);
+  closeQRModal();
+}
+
+/* =========================
+   RENDER PAYMENTS + PROVIDER SUMMARY
+========================= */
+function renderPayments(list = payments){
+  const tbody = document.querySelector('#paymentsTable tbody');
+  tbody.innerHTML = '';
+  list.forEach(p=>{
+    const provider = findProvider(p.provider_id);
+    const sourceBooking = bookings.find(b=>b.id===p.booking_id);
+    function getPaymentStatusText(b, p){
+        if(b.userPaid && b.driverConfirmed) return '100%'; // Hoàn tất
+        if(b.userPaid) return '50%';                        // Chỉ cọc 50%
+        return '50%';                                        // Chưa thanh toán
+    }
+    if(sourceBooking.userPaid && p.payment_status==='pending') statusText='50%';
+    if(sourceBooking.userPaid && sourceBooking.driverConfirmed && p.payment_status==='paid') statusText='100%';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>PMT${String(p.id).padStart(4,'0')}</td>
+      <td>${p.booking_id}</td>
+      <td>${formatVND(p.total_amount)}</td>
+      <td>${formatVND(p.provider_share)}</td>
+      <td>${provider.name} (${p.provider_id})</td>
+      <td>${formatVND(p.admin_share)}</td>
+      <td>${statusText}</td>
+      <td>${p.paid_at ? (new Date(p.paid_at).toLocaleString()) : '-'}</td>
+      <td>
+        <div class="flex">
+          <button class="btn small btn-ghost" onclick="viewPayment(${p.id})">Xem</button>
+          <button class="btn small btn-success" id="payBtn${p.id}" onclick="payProvider(${p.id})">Pay provider</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+
+    const payBtn = document.getElementById(`payBtn${p.id}`);
+    if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed || p.payment_status==='paid'){
+        payBtn.classList.add('disabled');
+    } else {
+        payBtn.classList.remove('disabled');
+    }
+  });
+}
+
+function renderProviderSummary(){
+  const summary = {};
+  payments.forEach(p=>{
+    if(p.payment_status !== 'paid'){
+      summary[p.provider_id] = (summary[p.provider_id]||0) + p.provider_share;
+    }
+  });
+  const ul = document.getElementById('providerSummary');
+  ul.innerHTML = '';
+  providers.forEach(prov=>{
+    const amt = summary[prov.id] || 0;
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${prov.name}</strong><div class="muted-small">Chưa trả: ${formatVND(amt)} — Tài khoản: ${prov.account} (${prov.bankName})</div>`;
+    ul.appendChild(li);
+  });
+}
+
+/* =========================
+   INIT FILTERS + PROVIDER HISTORY
+========================= */
+function initFiltersAndProviders(){
+  // Fill filter tháng (1-12)
+  const monthSelect = document.getElementById('filterMonth');
+  for(let m=1; m<=12; m++){
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.text = m;
+    monthSelect.appendChild(opt);
+  }
+
+  // Fill filter năm (ví dụ 2024-2026)
+  const yearSelect = document.getElementById('filterYear');
+  for(let y=2024; y<=2026; y++){
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.text = y;
+    yearSelect.appendChild(opt);
+  }
+
+  // Fill provider history select
+  const provSelect = document.getElementById('providerHistorySelect');
+  providers.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.text = p.name;
+    provSelect.appendChild(opt);
+  });
+}
+
+/* =========================
+   PROVIDER HISTORY
+========================= */
+function renderProviderHistory(){
+  const select = document.getElementById('providerHistorySelect');
+  const providerId = select.value;
+  const tbody = document.getElementById('providerHistoryBody');
+  tbody.innerHTML = '';
+  if(!providerId) return;
+  payments.filter(p=>p.provider_id===providerId && p.payment_status==='paid')
+          .forEach(p=>{
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>PMT${String(p.id).padStart(4,'0')}</td>
+              <td>${p.booking_id}</td>
+              <td>${formatVND(p.provider_share)}</td>
+              <td>${p.paid_at ? (new Date(p.paid_at).toLocaleString()) : '-'}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+}
+
+/* =========================
+   BIZ REQUESTS
+========================= */
+function renderBizRequests(){
+  const tbody = document.querySelector('#bizTable tbody');
+  tbody.innerHTML = '';
+  bizRequests.forEach(b=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${b.id}</td>
+      <td>${b.company}</td>
+      <td>${b.rep}</td>
+      <td>${b.status}</td>
+      <td>
+        <button class="btn small btn-ghost" onclick="openBizModal('${b.id}')">Chi tiết</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================
+   MODAL BIZ
+========================= */
+let currentBizId = null;
+function openBizModal(bizId){
+  currentBizId = bizId;
+  const b = bizRequests.find(x=>x.id===bizId);
+  if(!b) return;
+  document.getElementById('bizDetail').innerHTML = `
+    <p><strong>Doanh nghiệp:</strong> ${b.company}</p>
+    <p><strong>Người đại diện:</strong> ${b.rep}</p>
+    <p><strong>Phone:</strong> ${b.phone}</p>
+    <p><strong>Email:</strong> ${b.email}</p>
+    <p><strong>Thông tin:</strong> ${b.info}</p>
+  `;
+  document.getElementById('bizModal').style.display='flex';
+}
+function closeBizModal(){ currentBizId=null; document.getElementById('bizModal').style.display='none'; }
+function approveBiz(){ 
+  if(!currentBizId) return;
+  const b = bizRequests.find(x=>x.id===currentBizId);
+  if(!b) return;
+  b.status='approved';
+  renderBizRequests();
+  closeBizModal();
+}
+function rejectBiz(){ 
+  if(!currentBizId) return;
+  const b = bizRequests.find(x=>x.id===currentBizId);
+  if(!b) return;
+  b.status='rejected';
+  renderBizRequests();
+  closeBizModal();
+}
+
+/* =========================
+   INIT
+========================= */
+initFiltersAndProviders();
+renderBookings();
+renderPayments();
+renderProviderSummary();
+renderBizRequests();
+renderProviderHistory();
+</script>
