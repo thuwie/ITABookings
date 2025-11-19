@@ -1,3 +1,4 @@
+{% block body %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -48,20 +49,19 @@ body { font-family: Arial; margin:0; padding:0; background:#f9f9f9; height:100%;
   align-items:center;
   gap:12px;
   padding:12px 14px;
-  border-radius:10px;
   background:transparent;
   border:none;
   text-align:left;
   cursor:pointer;
   color:#666;
   font-weight:600;
-  font-size:14px;
+  font-size:15px;
   transition: all .18s ease;
 }
 .side-item img.icon { width:20px; height:20px; opacity:.65; display:inline-block; }
 .side-item span { display:inline-block; line-height:1; }
 .side-item:hover { background:#f4f8ff; color:var(--accent); }
-.side-item.active { background: linear-gradient(90deg, rgba(2,86,176,0.06), rgba(77,171,255,0.02)); color: var(--accent); border-right:4px solid var(--accent); }
+.side-item.active { background: linear-gradient(90deg, rgba(2,86,176,0.06), rgba(77,171,255,0.02)); color: var(--accent); border-left:4px solid var(--accent); }
 .side-item.active img.icon { opacity:1; filter:none; }
 
 .spacer { flex:1; } /* push logout down */
@@ -128,9 +128,9 @@ tfoot td { font-weight:bold; }
 <div class="dashboard-wrapper">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <div class="sidebar">
     <div class="profile">
-      <img src="https://via.placeholder.com/80" alt="avatar">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
       <div>
         <div class="name">Nguyen Van A</div>
         <div style="font-size:12px;color:#888;">Tài xế</div>
@@ -156,7 +156,7 @@ tfoot td { font-weight:bold; }
 
     <div class="spacer"></div>
     <button class="logout-btn" onclick="alert('Đăng xuất')">Đăng xuất</button>
-  </aside>
+  </div>
 
   <!-- MAIN CONTENT (giữ code bảng của bạn) -->
   <div class="main-content">
@@ -372,3 +372,4 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 </body>
 </html>
+{% endblock %}

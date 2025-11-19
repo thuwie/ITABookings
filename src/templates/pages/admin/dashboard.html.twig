@@ -1,9 +1,10 @@
+{% block body %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Admin - Payments & Provider Payouts</title>
+<title>Admin - Dashboard</title>
 <style>
 :root{
   --bg:#f6f7fb;
@@ -11,35 +12,23 @@
   --muted:#666;
   --accent:#0256b0; /* đổi sang gradient tab */
   --accent-2:#4dabff;
-  --success:#28a745;
+  --success:#0256b0;
   --danger:#dc3545;
 }
-
 body{
-  font-family:Inter,Segoe UI,Arial;
+  font-family:Arial;
   background:var(--bg);
   margin:0;
   padding:20px;
   color:#222;
 }
-
-.wrap{
-  max-width:1200px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:18px;
-}
-
 .card{
   background:var(--card);
   padding:18px;
   border-radius:10px;
   box-shadow:0 6px 18px rgba(20,20,50,0.06);
 }
-
 h1,h2{margin:0 0 10px 0}
-
 table{
   width:100%;
   border-collapse:collapse;
@@ -47,16 +36,17 @@ table{
 th,td{
   padding:10px;
   border-bottom:1px solid #eee;
-  text-align:left;
-  font-size:14px;
+  text-align:center;
+  font-size:16px;
 }
 th{
   background:#fafafa;
   font-weight:600;
 }
-
+td:last-child > .flex {
+  justify-content: center;
+}
 .row{display:flex;gap:12px;align-items:center}
-
 .btn{
   padding:8px 12px;
   border-radius:8px;
@@ -67,7 +57,6 @@ th{
 .btn-danger{background:var(--danger);color:#fff}
 .btn-success{background:var(--success);color:#fff}
 .btn-ghost{background:transparent;border:1px solid #ddd;padding:6px 8px;border-radius:8px}
-
 .muted{color:var(--muted);font-size:13px}
 .small{font-size:13px;padding:6px 8px}
 .flex{display:flex;gap:12px;align-items:center}
@@ -85,233 +74,325 @@ th{
 select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; background:white; }
 .top-controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
 
-/* =========================
-   TAB MENU
-========================= */
-.tab-menu {
+/* ======== SIDEBAR ========= */
+.dashboard-wrapper{
   display:flex;
-  gap:25px;
-  margin-bottom:20px;
-  padding-bottom:8px;
+  min-height:100vh;
 }
-
-.tab-btn {
-  background:none;
-  border:none;
-  font-size:20px;
+.sidebar{
+  width:260px;
+  background:#fff;
+  border-right:1px solid #eee;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+.sidebar .profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:16px;
+  border-bottom:1px solid #f0f0f0;
+}
+.sidebar .profile img{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  object-fit:cover;
+}
+.sidebar .name{
+  font-weight:700;
+}
+.side-title { font-weight:700; color:#333; }
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.menu-item{
+  padding:12px 14px;
+  border-radius:10px;
+  text-align:left;
+  font-size:15px;
+  border:0;
+  background:#f7f7f7;
   cursor:pointer;
   font-weight:600;
-  color:#555;
-  padding:8px 0;
-  position:relative;
-  transition: color .25s ease;
+  transition:0.25s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.menu-item:hover{
+  background:#e9f3ff;
+}
+.menu-item.active{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#fff;
+  box-shadow:0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
-.tab-btn::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  height:3px;
-  bottom:-5px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-radius:3px;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform .45s cubic-bezier(.25,.8,.25,1);
+/* MAIN CONTENT */
+.main-content{
+  flex:1;
+  padding:22px;
 }
 
-.tab-btn:hover {
-  color: var(--accent);
-}
-
-.tab-btn:hover::after{
-  transform: scaleX(1);
-}
-
-.tab-btn.active {
-  color: var(--accent);
-}
-
-.tab-btn.active::after {
-  transform: scaleX(1);
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
+/* HIDDEN TABS */
+.tab-page{ display:none; }
+.tab-page.active{ display:block; }
 </style>
-
 </head>
 <body>
-<div class="wrap">
-  <!-- TAB NAVIGATION -->
-<div class="card">
-  <div class="row" style="gap:12px">
-    <button class="tab-btn" onclick="openTab('tabBookings')" id="tabBtnBookings">Bookings</button>
-    <button class="tab-btn" onclick="openTab('tabBiz')" id="tabBtnBiz">Đơn đăng ký doanh nghiệp</button>
-    <button class="tab-btn" onclick="openTab('tabPayments')" id="tabBtnPayments">Payments & Providers</button>
-  </div>
-</div>
 
-<!-- TAB CONTENT -->
-<div id="tabBookings" class="tabContent">
-  <div class="card">
-    <h2>Bookings (user đã cọc)</h2>
-    <p class="muted">Danh sách bookings: admin tạo payment cho bookings user đã thanh toán 50%.</p>
-    <table id="bookingsTable">
-      <thead>
-        <tr>
-          <th>Mã Booking</th>
-          <th>Start - End</th>
-          <th>Tổng tiền</th>
-          <th>Thanh toán (user)</th>
-          <th>Xác nhận</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<div class="dashboard-wrapper">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+      <div class="profile">
+         <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
+         <div>
+           <div class="name">Admin</div>
+           <div style="font-size:12px;color:#888;">Quản trị hệ thống</div>
+         </div>
+      </div>
+      <div class="side-title">Main Menu</div>
+      <!-- MENU -->
+      <div class="menu">
+        <button class="menu-item active" data-target="tabBookings">
+          <img class="icon" src="https://img.icons8.com/ios/24/000000/bus.png">
+          <span>Xác nhận đặt xe</span>
+        </button>
+        <button class="menu-item" data-target="tabBiz">
+          <img class="icon" src="https://img.icons8.com/ios/24/000000/business.png">
+          <span>Đăng ký doanh nghiệp</span>
+        </button>
+        <button class="menu-item" data-target="tabPayments">
+          <img class="icon" src="https://img.icons8.com/ios/24/000000/money.png">
+          <span>Thanh toán đơn</span>
+        </button>
+        <button class="menu-item" data-target="tabProviders">
+          <img class="icon" src="https://img.icons8.com/ios/24/000000/driver.png">
+          <span>Quản lý doanh nghiệp</span>
+        </button>
+        <button class="menu-item" data-target="tabUsers">
+          <img class="icon" src="https://img.icons8.com/ios/24/000000/user-group-man-man.png">
+          <span>Quản lý người dùng</span>
+        </button>
+      </div>
   </div>
-</div>
-
-<div id="tabBiz" class="tabContent" style="display:none">
-  <div class="card">
-    <h2>Đơn đăng ký doanh nghiệp</h2>
-    <p class="muted">Danh sách đơn đăng ký doanh nghiệp — admin xét duyệt.</p>
-    <table id="bizTable">
-      <thead><tr><th>Đơn ID</th><th>Tên doanh nghiệp</th><th>Người đại diện</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
-
-<div id="tabPayments" class="tabContent" style="display:none">
-  <div class="grid2">
-    <div>
-      <div class="card">
-        <div class="top-controls">
-          <h2 style="margin:0">Payments</h2>
-          <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-            <button class="btn btn-ghost" onclick="exportPaymentsCSV()">Xuất CSV</button>
-            <select id="filterMonth" class="small" onchange="applyPaymentsFilter()"><option value="">-- Tháng --</option></select>
-            <select id="filterYear" class="small" onchange="applyPaymentsFilter()"><option value="">-- Năm --</option></select>
-            <button class="btn btn-ghost" onclick="resetPaymentsFilter()">Reset</button>
+  <!-- MAIN AREA -->
+  <div class="main-content">
+      <div id="tabBookings" class="tab-page active">
+        <div class="card">
+          <h2>Các chuyến xe đã đặt</h2>
+          <p class="muted">Danh sách bookings: admin tạo payment cho bookings user đã thanh toán.</p>
+          <table id="bookingsTable">
+            <thead>
+              <tr>
+                <th>Mã Booking</th>
+                <th>Start - End</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="tabBiz" class="tab-page">
+        <div class="card">
+          <h2>Đơn đăng ký doanh nghiệp</h2>
+          <p class="muted">Danh sách đơn đăng ký doanh nghiệp — admin xét duyệt.</p>
+          <table id="bizTable">
+            <thead><tr>
+              <th>Đơn ID</th>
+              <th>Tên doanh nghiệp</th>
+              <th>Người đại diện</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="tabPayments" class="tab-page">
+        <div class="grid2">
+          <div>
+            <div class="card">
+              <div class="top-controls">
+                <h2 style="margin:0">Thanh toán</h2>
+                <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+                  <button class="btn btn-ghost" onclick="exportPaymentsCSV()">Xuất CSV</button>
+                  <select id="filterMonth" class="small" onchange="applyPaymentsFilter()"><option value="">-- Tháng --</option></select>
+                  <select id="filterYear" class="small" onchange="applyPaymentsFilter()"><option value="">-- Năm --</option></select>
+                  <button class="btn btn-ghost" onclick="resetPaymentsFilter()">Reset</button>
+                </div>
+              </div>
+              <p class="muted">Bảng payments lưu thông tin admin nhận và tiền cần trả provider.</p>
+              <table id="paymentsTable">
+                <thead>
+                  <tr>
+                    <th>Mã Payment</th>
+                    <th>Mã Booking</th>
+                    <th>Tổng tiền</th>
+                    <th>Provider share</th>
+                    <th>Provider</th>
+                    <th>Admin share</th>
+                    <th>Trạng thái</th>
+                    <th>Paid at</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>    
+          <div>
+            <div class="card">
+              <h2>Danh sách Providers (tổng cần thanh toán)</h2>
+              <p class="muted">Tổng quan số tiền admin cần trả cho từng provider (chưa paid).</p>
+              <ul id="providerSummary" class="provider-list"></ul>
+              <div class="note">Click "Pay" ở bảng Payments để thanh toán cho provider.</div>
+            </div>
+            <div class="card" style="margin-top:12px">
+              <h2>Lịch sử thanh toán Provider</h2>
+              <select id="providerHistorySelect" class="small" onchange="renderProviderHistory()">
+                <option value="">-- Chọn provider --</option>
+              </select>
+              <table style="margin-top:10px">
+                <thead>
+                  <tr><th>Payment ID</th><th>Booking</th><th>Số tiền</th><th>Ngày thanh toán</th></tr>
+                </thead>
+                <tbody id="providerHistoryBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <p class="muted">Bảng payments lưu thông tin admin nhận và tiền cần trả provider.</p>
-        <table id="paymentsTable">
-          <thead>
-            <tr>
-              <th>Mã Payment</th>
-              <th>Mã Booking</th>
-              <th>Tổng tiền</th>
-              <th>Provider share</th>
-              <th>Provider</th>
-              <th>Admin share</th>
-              <th>Trạng thái</th>
-              <th>Paid at</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
       </div>
-    </div>
-
-    <div>
-      <div class="card">
-        <h2>Danh sách Providers (tổng cần thanh toán)</h2>
-        <p class="muted">Tổng quan số tiền admin cần trả cho từng provider (chưa paid).</p>
-        <ul id="providerSummary" class="provider-list"></ul>
-        <div class="note">Click "Pay" ở bảng Payments để thanh toán cho provider.</div>
+      <div id="tabProviders" class="tab-page">
+        <div class="card">
+          <h2>Danh sách nhà cung cấp</h2>
+          <p class="muted">Thông tin provider, tổng số đơn, tổng tiền kiếm được, và đánh giá từ user.</p>
+          <table id="providersTable">
+            <thead>
+              <tr>
+                <th>Tên doanh nghiệp</th>
+                <th>Người đại diện công ty</th>
+                <th>Mô tả</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Tỉnh/Thành phố</th>
+                <th>Đánh giá</th>
+                <th>Số đơn</th>
+                <th>Tổng tiền kiếm được</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
-
-      <div class="card" style="margin-top:12px">
-        <h2>Lịch sử thanh toán Provider</h2>
-        <select id="providerHistorySelect" class="small" onchange="renderProviderHistory()">
-          <option value="">-- Chọn provider --</option>
-        </select>
-        <table style="margin-top:10px">
-          <thead>
-            <tr><th>Payment ID</th><th>Booking</th><th>Số tiền</th><th>Ngày thanh toán</th></tr>
-          </thead>
-          <tbody id="providerHistoryBody"></tbody>
-        </table>
+      <div id="tabUsers" class="tab-page">
+        <div class="card">
+          <h2>Danh sách người dùng</h2>
+          <p class="muted">Thông tin cơ bản của người dùng hệ thống.</p>
+          <table id="usersTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
-    </div>
   </div>
 </div>
-
-<!-- MODAL: Business detail -->
-<div id="bizModal" style="display:none" class="modal">
+<div id="bizModal" class="modal" style="display:none;">
   <div class="modal-card">
-    <h3>Thông tin doanh nghiệp</h3>
+    <h3>Chi tiết doanh nghiệp</h3>
     <div id="bizDetail"></div>
-    <div style="display:flex;gap:10px;margin-top:12px">
+    <div style="margin-top:12px; display:flex; gap:8px;">
       <button class="btn btn-success" onclick="approveBiz()">Duyệt</button>
       <button class="btn btn-danger" onclick="rejectBiz()">Từ chối</button>
-      <button class="btn btn-ghost right" onclick="closeBizModal()">Đóng</button>
+      <button class="btn btn-ghost" onclick="closeBizModal()">Đóng</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL: QR Payment (50% còn lại) -->
-<div id="qrModal" style="display:none" class="modal">
-  <div class="modal-card center">
-    <h3>Quét QR thanh toán 50% còn lại</h3>
-    <p id="qrBookingInfo"></p>
-    <div id="qrCodePlaceholder" style="font-size:24px;padding:20px;border:1px dashed #ccc;margin:12px 0">[QR CODE]</div>
-    <button class="btn btn-success" onclick="confirmQRPayment()">Xác nhận thanh toán</button>
-    <button class="btn btn-ghost right" onclick="closeQRModal()">Đóng</button>
-  </div>
-</div>
-
 <script>
-  function openTab(tabId){
-  document.querySelectorAll('.tabContent').forEach(tc => tc.style.display='none');
-  document.getElementById(tabId).style.display='block';
+// Sidebar navigation
+document.querySelectorAll(".menu-item").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.querySelectorAll(".menu-item").forEach(i => i.classList.remove("active"));
+        this.classList.add("active");
+        document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("active"));
+        const id = this.dataset.target;
+        document.getElementById(id).classList.add("active");
+    });
+});
 
-  // Highlight active tab button
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tabBtn' + tabId.replace('tab','')).classList.add('active');
-}
-
-// Mở tab đầu tiên khi load
-openTab('tabBookings');
 /* =========================
    MOCK DATA
 ========================= */
+const users = [
+  {id:1, first_name:'Nguyễn', last_name:'Văn A', email:'a@example.com', phone:'0912345678', role:'user', active:true},
+  {id:2, first_name:'Trần', last_name:'Thị B', email:'b@example.com', phone:'0987654321', role:'user', active:true},
+  {id:3, first_name:'Lê', last_name:'Văn C', email:'c@example.com', phone:'0909123456', role:'admin', active:true},
+];
+const providerReviews = [
+  {providerId:'P001', user:'User1', rating:5},
+  {providerId:'P001', user:'User2', rating:4},
+  {providerId:'P002', user:'User3', rating:3},
+  {providerId:'P003', user:'User4', rating:4},
+];
 const providers = [
-  {id: 'P001', name: 'Provider A', bankName:'Vietcombank', account:'123456789'},
-  {id: 'P002', name: 'Provider B', bankName:'ACB', account:'987654321'},
-  {id: 'P003', name: 'Provider C', bankName:'Techcombank', account:'555666777'}
+  {id: 'P001', 
+   name: 'Công ty Vận tải A', 
+   description: 'Dịch vụ vận chuyển uy tín', 
+   email: 'a@company.com', 
+   phone_number: '0912345678', 
+   address: '123 Đường Lê Lợi', 
+   province_id: 'Hà Nội', 
+   is_active: true, 
+   company_representative_id: 'Nguyễn Văn A'},
+  {id: 'P002', 
+   name: 'Công ty Vận tải B', 
+   description: 'Chuyên cung cấp xe hợp đồng', 
+   email: 'b@company.com', 
+   phone_number: '0987654321', 
+   address: '456 Đường Trần Hưng Đạo', 
+   province_id: 'Hồ Chí Minh', 
+   is_active: true, 
+   company_representative_id: 'Trần Thị B'},
 ];
-
+let banned_providers = [
+  // { id: 1, provider_id: 'P003', is_banned: true, reason: 'Hủy chuyến nhiều lần' }
+];
+let banIdCounter = 1;
 const bookings = [
-  {id:'BK100', total: 2000000, userPaid:false, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:false, start:'2025-11-10', end:'2025-11-12'},
-  {id:'BK101', total: 1200000, userPaid:true, providerId:'P002', providerRate:0.65, driverConfirmed:true, userConfirmed:true, start:'2025-11-11', end:'2025-11-11'},
-  {id:'BK102', total: 1800000, userPaid:false, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:false, start:'2025-11-16', end:'2025-11-18'},
-  {id:'BK103', total: 2500000, userPaid:true, providerId:'P002', providerRate:0.60, driverConfirmed:true, userConfirmed:true, start:'2025-11-14', end:'2025-11-15'},
-  {id:'BK104', total: 800000, userPaid:true, providerId:'P001', providerRate:0.70, driverConfirmed:false, userConfirmed:true, start:'2025-11-15', end:'2025-11-15'},
-  {id:'BK105', total: 950000, userPaid:false, providerId:'P002', providerRate:0.65, driverConfirmed:false, userConfirmed:false, start:'2025-11-17', end:'2025-11-17'}
+  {id:'BK100', total: 2000000, userPaid:true, providerId:'P001', providerRate:0.70,  start:'2025-11-10', end:'2025-11-12', driverConfirmed:true, userConfirmed:true},
+  {id:'BK101', total: 1200000, userPaid:true, providerId:'P002', providerRate:0.65, start:'2025-11-11', end:'2025-11-11', driverConfirmed:true, userConfirmed:true}
 ];
-
 let payments = [
   {id:1, booking_id:'BK101', total_amount:1200000, provider_share:780000, provider_id:'P002', admin_share:420000, payment_status:'paid', paid_at:'2025-11-12T10:00:00'},
-  {id:2, booking_id:'BK103', total_amount:2500000, provider_share:1500000, provider_id:'P002', admin_share:1000000, payment_status:'pending', paid_at:null}
+  {id:2, booking_id:'BK100', total_amount:2000000, provider_share:1400000, provider_id:'P001', admin_share:600000, payment_status:'pending', paid_at:null}
 ];
-let paymentIdCounter = 3;
-
+let paymentIdCounter = 6;
 const bizRequests = [
   {id:'BIZ001', company:'Công ty TNHH A', rep:'Nguyễn Văn A', phone:'0912345678', email:'a@company.com', info:'Đăng ký dịch vụ vận chuyển', status:'pending'},
   {id:'BIZ002', company:'Công ty TNHH B', rep:'Trần Thị B', phone:'0987654321', email:'b@company.com', info:'Đăng ký đối tác', status:'pending'},
   {id:'BIZ003', company:'Công ty TNHH C', rep:'Lê Văn C', phone:'0909123456', email:'c@company.com', info:'Đăng ký vận tải', status:'approved'},
-  {id:'BIZ004', company:'Công ty TNHH D', rep:'Phạm Thị D', phone:'0933222111', email:'d@company.com', info:'Đăng ký đối tác', status:'rejected'}
 ];
 
 /* =========================
@@ -319,7 +400,6 @@ const bizRequests = [
 ========================= */
 function formatVND(n){ return n.toLocaleString('vi-VN') + ' ₫'; }
 function findProvider(id){ return providers.find(p=>p.id===id) || {name:'(Unknown)'}; }
-function getUserPaymentStatus(b){ return !b.userPaid?'0%':'50%'; }
 
 /* =========================
    RENDER BOOKINGS
@@ -327,36 +407,27 @@ function getUserPaymentStatus(b){ return !b.userPaid?'0%':'50%'; }
 function renderBookings(){
   const tbody = document.querySelector('#bookingsTable tbody');
   tbody.innerHTML = '';
-
-  // Chỉ hiển thị booking đã cọc
   const bookingsToShow = bookings.filter(b => b.userPaid);
-
   if(bookingsToShow.length === 0){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="6" style="text-align:center; color:#888;">Không có chuyến xe nào đang thực hiện.</td>`;
-    tbody.appendChild(tr);
+    tbody.innerHTML = `<tr>
+        <td colspan="6" style="text-align:center;color:#888;">
+            Không có chuyến xe nào đã thanh toán.
+        </td>
+      </tr>`;
     return;
   }
-
   bookingsToShow.forEach(b => {
     const tr = document.createElement('tr');
-    const driverStatus = b.driverConfirmed ? 'OK' : 'Chưa';
-    const userConfirm = b.userConfirmed ? 'OK' : 'Chưa';
     tr.innerHTML = `
       <td>${b.id}</td>
       <td>${b.start} → ${b.end}</td>
       <td>${formatVND(b.total)}</td>
-      <td>50%</td>
-      <td>
-        <div class="muted-small">
-          Driver: ${driverStatus}<br>
-          User: ${userConfirm}
-        </div>
-      </td>
+      <td>${formatVND(b.total)}</td>
+      <td>100%</td>
       <td>
         <div class="flex">
           <button class="btn small btn-ghost" onclick="viewBookingDetails('${b.id}')">Chi tiết</button>
-          <button class="btn small btn-primary" onclick="createPaymentFromBooking('${b.id}')">Tạo payment</button>
+          <button class="btn small btn-primary" onclick="createPaymentFromBooking('${b.id}')">Xác nhận đơn</button>
         </div>
       </td>
     `;
@@ -369,8 +440,10 @@ function renderBookings(){
 ========================= */
 function createPaymentFromBooking(bookingId){
   const b = bookings.find(x=>x.id===bookingId);
-  if(!b) return alert('Booking không tồn tại');
-  if(!b.userPaid) return alert('User chưa thanh toán 50%, không thể tạo payment.');
+  // Booking không tồn tại → bỏ qua
+  if (!b) return;
+  // User chưa thanh toán 50% → KHÔNG tạo payment, KHÔNG alert
+  if (!b.userPaid) return;
   if(payments.some(p=>p.booking_id===bookingId)) return alert('Payment cho booking này đã tồn tại.');
   // Tính provider share/admin share
   const provider_share = Math.round(b.total * b.providerRate);
@@ -388,12 +461,13 @@ function createPaymentFromBooking(bookingId){
   payments.push(newPayment);
   renderPayments();
   renderProviderSummary();
-  alert('Tạo payment thành công.');
+  alert('Tạo payment thành công cho 100% tổng tiền.');
+  const btn = document.querySelector(`#bookingsTable button.btn-primary[onclick*="${bookingId}"]`);
+  if(btn) btn.classList.add('disabled');
 }
-
 function payProvider(paymentId){
   const p = payments.find(x=>x.id===paymentId);
-  if(!p) return alert('Payment không tồn tại');
+  if(!p) return;
   const sourceBooking = bookings.find(b=>b.id===p.booking_id);
   if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed) {
     return alert('Chỉ thanh toán khi driver và user xác nhận chuyến hoàn tất.');
@@ -401,34 +475,10 @@ function payProvider(paymentId){
   p.payment_status = 'paid';
   p.paid_at = new Date().toISOString();
   renderPayments(); renderProviderSummary(); renderProviderHistory();
-  alert(`Đã thanh toán provider ${p.provider_id} — ${formatVND(p.provider_share)}`);
-}
-
-/* =========================
-   QR PAYMENT 50%
-========================= */
-let currentQRBookingId = null;
-
-function openQRModal(bookingId){
-  currentQRBookingId = bookingId;
-  const b = bookings.find(x=>x.id===bookingId);
-  if(!b) return alert('Booking không tồn tại');
-  document.getElementById('qrBookingInfo').innerText = `Booking ${b.id} — Tổng: ${formatVND(b.total)} — Provider: ${findProvider(b.providerId).name}`;
-  document.getElementById('qrModal').style.display='flex';
-}
-
-function closeQRModal(){ currentQRBookingId=null; document.getElementById('qrModal').style.display='none'; }
-
-function confirmQRPayment(){
-  const b = bookings.find(x=>x.id===currentQRBookingId);
-  if(!b) return alert('Booking không tồn tại');
-  b.userPaid = true;       // đánh dấu 50% đã cọc
-  b.userConfirmed = true;  // giả lập xác nhận user
-  const p = payments.find(x=>x.booking_id===currentQRBookingId);
-  if(p) p.payment_status = 'pending'; // nếu payment đã tạo
-  renderBookings(); renderPayments(); renderProviderSummary();
-  alert(`User đã thanh toán 50% còn lại cho booking ${b.id}`);
-  closeQRModal();
+  if (isProviderBanned(p.provider_id)) {
+  return alert("Provider đang bị cấm — không thể thanh toán.");
+  }
+  return alert(`Đã thanh toán provider ${p.provider_id} — ${formatVND(p.provider_share)}`);
 }
 
 /* =========================
@@ -440,14 +490,9 @@ function renderPayments(list = payments){
   list.forEach(p=>{
     const provider = findProvider(p.provider_id);
     const sourceBooking = bookings.find(b=>b.id===p.booking_id);
-    function getPaymentStatusText(b, p){
-        if(b.userPaid && b.driverConfirmed) return '100%'; // Hoàn tất
-        if(b.userPaid) return '50%';                        // Chỉ cọc 50%
-        return '50%';                                        // Chưa thanh toán
-    }
-    if(sourceBooking.userPaid && p.payment_status==='pending') statusText='50%';
+    let statusText = p.payment_status==='paid' ? '100%' : 'Pending';
+    if(sourceBooking.userPaid && p.payment_status==='pending') statusText='0%';
     if(sourceBooking.userPaid && sourceBooking.driverConfirmed && p.payment_status==='paid') statusText='100%';
-
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>PMT${String(p.id).padStart(4,'0')}</td>
@@ -461,12 +506,11 @@ function renderPayments(list = payments){
       <td>
         <div class="flex">
           <button class="btn small btn-ghost" onclick="viewPayment(${p.id})">Xem</button>
-          <button class="btn small btn-success" id="payBtn${p.id}" onclick="payProvider(${p.id})">Pay provider</button>
+          <button class="btn small btn-success" id="payBtn${p.id}" onclick="payProvider(${p.id})">Thanh toán</button>
         </div>
       </td>
     `;
     tbody.appendChild(tr);
-
     const payBtn = document.getElementById(`payBtn${p.id}`);
     if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed || p.payment_status==='paid'){
         payBtn.classList.add('disabled');
@@ -475,7 +519,6 @@ function renderPayments(list = payments){
     }
   });
 }
-
 function renderProviderSummary(){
   const summary = {};
   payments.forEach(p=>{
@@ -494,6 +537,98 @@ function renderProviderSummary(){
 }
 
 /* =========================
+   RENDER Providers
+========================= */
+function renderProviders(){
+  const tbody = document.querySelector('#providersTable tbody');
+  tbody.innerHTML = '';
+  providers.forEach(p=>{
+    // Lấy các payment đã thanh toán
+    const providerPayments = payments.filter(pay => pay.provider_id === p.id && pay.payment_status === 'paid');
+    const totalEarnings = providerPayments.reduce((sum,pay)=>sum + pay.provider_share, 0);
+    const totalOrders = providerPayments.length;
+    // Tính đánh giá trung bình
+    const reviews = providerReviews.filter(r => r.providerId === p.id);
+    const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : '-';
+    const banned = isProviderBanned(p.id);
+    const banBadge = banned 
+      ? `<span style="color:#dc3545;">Bị cấm</span>` 
+      : `<span style="color:#28a745;">Hoạt động</span>`;
+    const banButton = banned
+      ? `<button class="btn small btn-success" onclick="unbanProvider('${p.id}')">Gỡ cấm</button>`
+      : `<button class="btn small btn-danger" onclick="banProvider('${p.id}')">Cấm</button>`;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.name || '-'}</td>
+      <td>${p.company_representative_id || '-'}</td>
+      <td>${p.description || '-'}</td>
+      <td>${p.email || '-'}</td>
+      <td>${p.phone_number || '-'}</td>
+      <td>${p.address || '-'}</td>
+      <td>${p.province_id || '-'}</td>
+      <td>${avgRating} ★</td>
+      <td>${totalOrders}</td>
+      <td>${formatVND(totalEarnings)}</td>
+      <td>${banBadge}</td>
+      <td>${banButton}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function banProvider(providerId) {
+  const reason = prompt("Lý do cấm provider?");
+  if (!reason) return;
+  banned_providers.push({
+    id: banIdCounter++,
+    provider_id: providerId,
+    is_banned: true,
+    reason: reason
+  });
+  alert("Đã cấm provider " + providerId);
+  renderProviders();
+}
+function unbanProvider(providerId) {
+  banned_providers = banned_providers.filter(b => b.provider_id !== providerId);
+  alert("Đã gỡ cấm provider " + providerId);
+  renderProviders();
+}
+function isProviderBanned(providerId) {
+  return banned_providers.some(b => b.provider_id === providerId && b.is_banned);
+}
+
+/* =========================
+   RENDER Users
+========================= */
+function renderUsers(){
+  const tbody = document.querySelector('#usersTable tbody');
+  tbody.innerHTML = '';
+  users.forEach(u=>{
+    const tr = document.createElement('tr');
+    const status = u.active ? '<span style="color:green;">Hoạt động</span>' : '<span style="color:red;">Bị khóa</span>';
+    const toggleBtn = u.active 
+      ? `<button class="btn small btn-danger" onclick="toggleUser(${u.id})">Khóa</button>` 
+      : `<button class="btn small btn-success" onclick="toggleUser(${u.id})">Mở khóa</button>`;
+    tr.innerHTML = `
+      <td>${u.id}</td>
+      <td>${u.first_name} ${u.last_name}</td>
+      <td>${u.email}</td>
+      <td>${u.phone}</td>
+      <td>${u.role}</td>
+      <td>${status}</td>
+      <td>${toggleBtn}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleUser(userId){
+  const u = users.find(x=>x.id===userId);
+  if(!u) return;
+  u.active = !u.active;
+  renderUsers();
+}
+
+/* =========================
    INIT FILTERS + PROVIDER HISTORY
 ========================= */
 function initFiltersAndProviders(){
@@ -505,7 +640,6 @@ function initFiltersAndProviders(){
     opt.text = m;
     monthSelect.appendChild(opt);
   }
-
   // Fill filter năm (ví dụ 2024-2026)
   const yearSelect = document.getElementById('filterYear');
   for(let y=2024; y<=2026; y++){
@@ -514,7 +648,6 @@ function initFiltersAndProviders(){
     opt.text = y;
     yearSelect.appendChild(opt);
   }
-
   // Fill provider history select
   const provSelect = document.getElementById('providerHistorySelect');
   providers.forEach(p=>{
@@ -571,11 +704,10 @@ function renderBizRequests(){
 /* =========================
    MODAL BIZ
 ========================= */
-let currentBizId = null;
 function openBizModal(bizId){
-  currentBizId = bizId;
   const b = bizRequests.find(x=>x.id===bizId);
   if(!b) return;
+  let currentBizId = bizId;
   document.getElementById('bizDetail').innerHTML = `
     <p><strong>Doanh nghiệp:</strong> ${b.company}</p>
     <p><strong>Người đại diện:</strong> ${b.rep}</p>
@@ -612,4 +744,7 @@ renderPayments();
 renderProviderSummary();
 renderBizRequests();
 renderProviderHistory();
+renderProviders();
+renderUsers();
 </script>
+{% endblock %}
