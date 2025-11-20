@@ -2,6 +2,7 @@ const VehicleRegisterHandler = {
     elements: {},
     init() {
         this.getElements();
+        this.fetch();
         this.addEventElements();
     },
     getElements() {
@@ -66,10 +67,6 @@ const VehicleRegisterHandler = {
                 vehicleInfo = { ...vehicleInfo, utilities: checkedValues, newUtility: false };
             }
 
-            console.log(vehicleInfo);
-            console.log(files);
-
-
             formData.set("vehicle-information", JSON.stringify(vehicleInfo));
             for (let i = 0; i < files.length; i++) {
                 formData.append("files[]", files[i]);
@@ -89,6 +86,8 @@ const VehicleRegisterHandler = {
                 this.hideLoading();
 
                 if (result.status === 'success') {
+                    VehicleRegisterHandler.fetch();
+                    form.reset();
                     this.showMessage(result.message, 'success');
 
                     // // Chuyển trang sau 1 giây
@@ -142,9 +141,9 @@ const VehicleRegisterHandler = {
 
                 if (target === "0") {
                     this.enableUtilities(containerAddNewUtilities);
-                    selectAvailableUtilitiesElement.classList.remove("open");
+                    this.disableUtilities(selectAvailableUtilitiesElement);
                 } else {
-                    selectAvailableUtilitiesElement.classList.add("open");
+                    this.enableUtilities(selectAvailableUtilitiesElement);
                     this.disableUtilities(containerAddNewUtilities);
                 }
             })
@@ -278,7 +277,72 @@ const VehicleRegisterHandler = {
         this.elements.loadingOverlay.style.display = 'none';
     },
 
-};
+    fetch() {
+        const selectAvailableUtilitiesElement = this.elements.selectAvailableUtilitiesElement;
+
+        const utilities = async () => {
+            try {
+                const res = await fetch(`/provider/utilities`, {
+                    method: 'GET',
+                });
+
+                const result = await res.json();
+
+                if (result.status === 'success') {
+                    const { data } = result;
+                    const children = data.map((util) => {
+                        const newLabel = document.createElement('label');
+                        const newInput = document.createElement('input');
+                        const newSpan = document.createElement('span');
+                        newLabel.className = "d-flex gap-2 align-items-center";
+                        newInput.type = "checkbox";
+                        newInput.name = "utilities_select";
+                        newInput.value = util.id;
+                        newInput.style = "width: 12px; height: 12px;";
+                        newSpan.className = "fw-lighter";
+                        newSpan.innerHTML = util.name.charAt(0).toUpperCase() + util.name.slice(1);
+                        newLabel.appendChild(newInput);
+                        newLabel.appendChild(newSpan);
+
+                        return newLabel;
+                    }
+                    )
+
+                    VehicleRegisterHandler.fetchElement();
+
+                    children.forEach(child => selectAvailableUtilitiesElement.appendChild(child));
+
+
+                } else {
+                    console.log(result.status);
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        utilities();
+    },
+
+    fetchElement() {
+        const selectAvailableUtilitiesElement = this.elements.selectAvailableUtilitiesElement;
+        const containerAddNewUtilities = this.elements.containerAddNewUtilities;
+        const previewContainer = this.elements.imgsPreview;
+
+        previewContainer.style = "display: none";
+        VehicleRegisterHandler.enableUtilities(selectAvailableUtilitiesElement);
+        VehicleRegisterHandler.disableUtilities(containerAddNewUtilities);
+        containerAddNewUtilities.style = "pointer-events: none; opacity: 0.6;";
+
+        while (containerAddNewUtilities.children.length > 1) {
+            containerAddNewUtilities.removeChild(containerAddNewUtilities.lastElementChild);
+        }
+
+        selectAvailableUtilitiesElement.innerHTML = "";
+    }
+
+}
 
 document.addEventListener('DOMContentLoaded', () => VehicleRegisterHandler.init());
 

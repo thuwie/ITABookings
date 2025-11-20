@@ -10,6 +10,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
 use App\Domain\Entity\Utility;
+use App\Domain\Entity\VehicleImage;
+use App\Domain\Entity\VehicleUtility;
+
 
 class ProviderService implements ProviderServicePort {
     private ProviderRepositoryPort  $providerRepositoryPort;
@@ -196,17 +199,12 @@ class ProviderService implements ProviderServicePort {
         });
     }
 
-
     public function buildVehicleImgEntities(array $uploadedImgs, int $vehicleId): array
     {
         $rows = [];
 
         foreach ($uploadedImgs as $img) {
-            $rows[] = [
-                'vehicle_id' => $vehicleId,
-                'url'        => $img['url'],
-                'public_url' => $img['file_name'] ?? null,
-            ];
+            $rows[] =  new VehicleImage(0, $vehicleId,  $img['url'], $img['file_name']);
         }
 
         return $rows;
@@ -215,11 +213,13 @@ class ProviderService implements ProviderServicePort {
     public function buildVehicleWithUtilities(array $utilities, int $vehicleId): array {
         $rows = [];
         foreach($utilities as $utility) {
-            $rows[] = [
-                    'utility_id' => $utility,
-                    'vehicle_id' => $vehicleId
-            ];
+            $rows[] = new VehicleUtility(0, $vehicleId, $utility);
         };
         return $rows;
+    }
+
+    public function getUtilities(): array {
+        $result = $this->providerRepositoryPort->getUtilities();
+        return $result;
     }
 }

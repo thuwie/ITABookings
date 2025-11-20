@@ -451,7 +451,7 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09');
+INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,4,'2025-11-18 10:15:14','2025-11-18 10:15:14');
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,7 +479,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -488,8 +488,122 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (3,'Hong Phong','Nguyen','$2y$12$pVb0CD0zUpAm/hZxZEhn4OZzqrxEIEpEoXmJa2yVeKqLt99t3RCei','nguyenhongphong4151050139@gmail.com','0387792293','','male','2000-07-24','012345649789','79 Tân Phú',15,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,'Thúy Ngân','Phạm','$2y$12$.wtOyGaPlC.2HZAuYhm8/eYsDR.a6BXHWC6g73G6nxwTd7i4wpDOi','phongnguyenwn123@gmail.com','0123456789','','female','2002-04-23','0231466491','Phú Yên',11,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,'Nguyễn','Thanh Hiếu','$2y$12$zUuR0PUSsm.tAK0N.JoHfet1tmTtwE1oV6VoAtunRkwIvasezGV7S','newbierhp2000@gmail.com','1234567891','','male','2002-10-23','1234564898','QNBD',15,'2025-11-17 09:48:09','2025-11-17 09:48:09');
+INSERT INTO `users` VALUES (3,'Hong Phong','Nguyen','$2y$12$pVb0CD0zUpAm/hZxZEhn4OZzqrxEIEpEoXmJa2yVeKqLt99t3RCei','nguyenhongphong4151050139@gmail.com','0387792293','','male','2000-07-24','012345649789','79 Tân Phú',15,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,'Thúy Ngân','Phạm','$2y$12$.wtOyGaPlC.2HZAuYhm8/eYsDR.a6BXHWC6g73G6nxwTd7i4wpDOi','phongnguyenwn123@gmail.com','0123456789','','female','2002-04-23','0231466491','Phú Yên',11,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,'Nguyễn','Thanh Hiếu','$2y$12$zUuR0PUSsm.tAK0N.JoHfet1tmTtwE1oV6VoAtunRkwIvasezGV7S','newbierhp2000@gmail.com','1234567891','','male','2002-10-23','1234564898','QNBD',15,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,'Nguyễn','Phong Ku Teo','$2y$12$bAu2AVqW08nByIlU2oA0yOMXzgDaaP9v3qO/FI76m5lDPD4HSSNC2','kuteo@xxx.xx','0987654321','','female','2028-10-18','q','q',1,'2025-11-18 10:15:14','2025-11-18 10:15:14');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `utilities`
+--
+
+DROP TABLE IF EXISTS `utilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `utilities` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `utilities`
+--
+
+LOCK TABLES `utilities` WRITE;
+/*!40000 ALTER TABLE `utilities` DISABLE KEYS */;
+INSERT INTO `utilities` VALUES (7,'Máy lạnh','2025-11-20 08:38:39','2025-11-20 08:38:39'),(8,'Tivi','2025-11-20 08:38:39','2025-11-20 08:38:39'),(9,'Wifi','2025-11-20 09:09:23','2025-11-20 09:09:23'),(10,'Nước uống','2025-11-20 09:09:23','2025-11-20 09:09:23'),(11,'Khăn lạnh','2025-11-20 09:12:08','2025-11-20 09:12:08'),(12,'Đồ ăn','2025-11-20 09:12:08','2025-11-20 09:12:08'),(13,'Nệm chăn','2025-11-20 09:24:02','2025-11-20 09:24:02'),(14,'gối','2025-11-20 09:26:25','2025-11-20 09:26:25');
+/*!40000 ALTER TABLE `utilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_imgs`
+--
+
+DROP TABLE IF EXISTS `vehicle_imgs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_imgs` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int unsigned NOT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `public_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_imgs`
+--
+
+LOCK TABLES `vehicle_imgs` WRITE;
+/*!40000 ALTER TABLE `vehicle_imgs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_imgs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_utilities`
+--
+
+DROP TABLE IF EXISTS `vehicle_utilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_utilities` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `utility_id` int unsigned NOT NULL,
+  `vehicle_id` int unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_vehicle_utility` (`utility_id`,`vehicle_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_utilities`
+--
+
+LOCK TABLES `vehicle_utilities` WRITE;
+/*!40000 ALTER TABLE `vehicle_utilities` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_utilities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicles`
+--
+
+DROP TABLE IF EXISTS `vehicles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `license_plate` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `brand` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `year_of_manufacture` year NOT NULL,
+  `seat_count` tinyint unsigned NOT NULL,
+  `provider_id` int unsigned NOT NULL,
+  `fuel_consumption` decimal(5,2) NOT NULL,
+  `maintenance_per_km` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_license_plate` (`license_plate`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicles`
+--
+
+LOCK TABLES `vehicles` WRITE;
+/*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -501,4 +615,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-18 11:44:22
+-- Dump completed on 2025-11-20 16:44:56

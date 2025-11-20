@@ -161,24 +161,11 @@
             /* cao hơn toast và form */
         }
 
-        .collapse-container {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            padding: 0;
-            margin: 0;
-            visibility: hidden;
-            transition: all 0.25s ease;
-        }
-
-        /* When opened */
-        .collapse-container.open {
-            max-height: 500px;
-            /* big enough */
-            opacity: 1;
-            visibility: visible;
-            padding: 10px 0;
-            /* restore padding */
+        #utilities-radio {
+            height: 210px;
+            /* fixed height */
+            overflow-y: auto;
+            /* enable vertical scrolling */
         }
     </style>
 </head>
@@ -255,49 +242,25 @@
         <div class="row">
             <div class="field">
                 <div class="d-flex gap-2 align-items-center mb-2">
-                    <input type="radio" name="utility" id="new-utilities" style="width: 12px; height: 12px;" checked
-                        value="0">
-                    <label for="new-utilities" style="margin-bottom: 0;">Thêm mới tiện ích</label>
+                    <input type="radio" name="utility" id="utilities" style="width: 12px; height: 12px;" value="1"
+                        checked>
+                    <label for="utilities" style="margin-bottom: 0;">Tiện ích sẵn có</label>
                 </div>
-                <div class="gap-2 d-flex flex-column" id="multiple_utilities" name="multiple_utilities">
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="text" id="utility-1" name="utility-1">
-                        <i class="bi bi-plus fw-bold text-success fs-5 plus-icon" id="plus-icon"></i>
-                    </div>
+                <div id="utilities-radio" class="border rounded-2 p-2">
                 </div>
             </div>
             <div class="field">
                 <div class="d-flex gap-2 align-items-center mb-2">
-                    <input type="radio" name="utility" id="utilities" style="width: 12px; height: 12px;" value="1">
-                    <label for="utilities" style="margin-bottom: 0;">Tiện ích sẵn có</label>
+                    <input type="radio" name="utility" id="new-utilities" style="width: 12px; height: 12px;" value="0">
+                    <label for="new-utilities" style="margin-bottom: 0;">Thêm mới tiện ích</label>
                 </div>
-                <div id="utilities-radio" class="border rounded-2 p-2 collapse-container">
-                    <label>
-                        <input type="checkbox" name="utilities_select" value="4" style="width: 12px; height: 12px;">
-                        <span class="fw-lighter">Điều hòa</span>
-                    </label>
-
-                    <label>
-                        <input type="checkbox" name="utilities_select" value="7" style="width: 12px; height: 12px;">
-                        <span class="fw-lighter">Tivi</span>
-                    </label>
-
-                    <label>
-                        <input type="checkbox" name="utilities_select" value="16" style="width: 12px; height: 12px;">
-                        <span class="fw-lighter">Wifi</span>
-                    </label>
-
-                    <label>
-                        <input type="checkbox" name="utilities_select" value="24" style="width: 12px; height: 12px;">
-                        <span class="fw-lighter">Nước uống</span>
-                    </label>
-
-                    <label>
-                        <input type="checkbox" name="utilities_select" value="35" style="width: 12px; height: 12px;">
-                        Khăn ướt
-                    </label>
+                <div class="gap-2 d-flex flex-column" id="multiple_utilities" name="multiple_utilities"
+                    style="pointer-events: none; opacity: 0.6;">
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="text" id="utility-1" name="utility-1" disabled="true">
+                        <i class="bi bi-plus fw-bold text-success fs-5 plus-icon" id="plus-icon"></i>
+                    </div>
                 </div>
-
             </div>
         </div>
 

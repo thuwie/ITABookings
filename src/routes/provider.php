@@ -60,12 +60,30 @@ return function (App $app, $twig) {
          * --------------------------- */        
         $group->get('/register-vehicles', function ($request, $response) 
             use ($twig, $providerService, $provinceService) { 
-
+            
+            $utilities = $providerService->getUtilities();
             $html = $twig->render('pages/provider/vehicle.register.html.twig', [
+                'utilities' => $utilities
             ]);
 
             $response->getBody()->write($html);
             return $response;
+        });
+
+         /** ---------------------------
+         * GET /provider/utilities
+         * --------------------------- */        
+        $group->get('/utilities', function ($request, $response) 
+            use ($providerService) { 
+            
+            $utilities = $providerService->getUtilities();
+            $payload = [
+                'status' => 'success',
+                'data'   => $utilities,
+            ];
+
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
         });
 
 

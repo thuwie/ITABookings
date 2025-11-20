@@ -15,4 +15,5 @@ interface ProviderRepositoryPort {
     public function saveVehicleImgs(array $vehicles): bool;
     public function saveUtilities(array $utilities): array;
     public function saveVehicleWithUtilities(array $data): bool;
+    public function getUtilities(): array;
 }

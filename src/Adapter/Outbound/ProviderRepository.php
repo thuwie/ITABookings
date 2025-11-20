@@ -34,7 +34,6 @@ class ProviderRepository implements ProviderRepositoryPort {
         );
     }
 
-
     public function saveLogo(?UploadedFileInterface $logo, string $providerName): string {
         $folderName = FileHelper::sanitizeFolderName($providerName);
         
@@ -128,7 +127,13 @@ class ProviderRepository implements ProviderRepositoryPort {
    }
 
    public function saveVehicleImgs(array $vehicles): bool {
-        $result = DB::table('vehicle_imgs')->insert($vehicles);
+        $rows = [];
+
+        foreach ($vehicles as $vehicleImage) {
+            $rows[] = $vehicleImage->toInsertArray();
+        }
+
+        $result = DB::table('vehicle_imgs')->insert($rows);
         return $result;
    }
    
@@ -150,9 +155,19 @@ class ProviderRepository implements ProviderRepositoryPort {
 
 
    public function saveVehicleWithUtilities(array $data): bool {
-        $result = DB::table('vehicle_utilities')->insert($data);
+        $rows = [];
+
+        foreach ($data as $vehicleImage) {
+            $rows[] = $vehicleImage->toInsertArray();
+        }
+
+        $result = DB::table('vehicle_utilities')->insert($rows);
         return $result;
    }
 
+   public function getUtilities(): array {
+        $result = DB::table('utilities')->get();
+        return $result->toArray(); 
+   }
 }
 
