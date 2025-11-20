@@ -4,6 +4,8 @@ namespace App\Adapter\Outbound;
 
 use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Domain\Entity\Provider;
+use App\Domain\Entity\Vehicle;
+use App\Domain\Entity\Utility;
 use Psr\Http\Message\UploadedFileInterface;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Helper\FileHelper;
@@ -31,7 +33,6 @@ class ProviderRepository implements ProviderRepositoryPort {
             updatedAt: $provider->getUpdatedAt(),
         );
     }
-
 
     public function saveLogo(?UploadedFileInterface $logo, string $providerName): string {
         $folderName = FileHelper::sanitizeFolderName($providerName);
@@ -110,4 +111,63 @@ class ProviderRepository implements ProviderRepositoryPort {
 
         return Provider::fromArray((array)$row);
     }
+
+   public function saveVehicle(Vehicle $vehicle): array {
+        // Insert and get last ID
+        $id = DB::table('vehicles')->insertGetId(
+        $vehicle->toInsertArray()
+        );
+
+        // Query the inserted row
+        $newVehicle = DB::table('vehicles')
+        ->where('id', $id)
+        ->first();
+
+        return (array) $newVehicle;
+   }
+
+   public function saveVehicleImgs(array $vehicles): bool {
+        $rows = [];
+
+        foreach ($vehicles as $vehicleImage) {
+            $rows[] = $vehicleImage->toInsertArray();
+        }
+
+        $result = DB::table('vehicle_imgs')->insert($rows);
+        return $result;
+   }
+   
+    public function saveUtilities(array $utilities): array
+    {
+        $insertedIds = [];
+
+        foreach ($utilities as $utility) {
+            if (!$utility instanceof Utility) {
+                throw new \InvalidArgumentException("Expected Utility entity");
+            }
+
+            $id = DB::table('utilities')->insertGetId($utility->toInsertArray());
+            $insertedIds[] = $id;
+        }
+
+        return $insertedIds; // array of inserted IDs
+    }
+
+
+   public function saveVehicleWithUtilities(array $data): bool {
+        $rows = [];
+
+        foreach ($data as $vehicleImage) {
+            $rows[] = $vehicleImage->toInsertArray();
+        }
+
+        $result = DB::table('vehicle_utilities')->insert($rows);
+        return $result;
+   }
+
+   public function getUtilities(): array {
+        $result = DB::table('utilities')->get();
+        return $result->toArray(); 
+   }
 }
+

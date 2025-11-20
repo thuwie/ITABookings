@@ -37,8 +37,6 @@ return function (App $app, $twig) {
             return $response;
         });
 
-
-
          /** ---------------------------
          * GET /provider/register-form
          * --------------------------- */
@@ -55,6 +53,37 @@ return function (App $app, $twig) {
 
             $response->getBody()->write($html);
             return $response;
+        });
+
+         /** ---------------------------
+         * GET /provider/register-vehicles
+         * --------------------------- */        
+        $group->get('/register-vehicles', function ($request, $response) 
+            use ($twig, $providerService, $provinceService) { 
+            
+            $utilities = $providerService->getUtilities();
+            $html = $twig->render('pages/provider/vehicle.register.html.twig', [
+                'utilities' => $utilities
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+         /** ---------------------------
+         * GET /provider/utilities
+         * --------------------------- */        
+        $group->get('/utilities', function ($request, $response) 
+            use ($providerService) { 
+            
+            $utilities = $providerService->getUtilities();
+            $payload = [
+                'status' => 'success',
+                'data'   => $utilities,
+            ];
+
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
         });
 
 
@@ -123,6 +152,51 @@ return function (App $app, $twig) {
             $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+         /** ---------------------------
+         * POST /provider/{id}/vehicles
+         * --------------------------- */        
+       $group->post('/{id}/vehicles', function ($request, $response) use ($twig, $providerService) {
+
+        try {
+            $body = $request->getParsedBody();
+
+            $vehicleInfo = json_decode($body['vehicle-information'], true);
+
+            // Uploaded files
+            $files = $request->getUploadedFiles();
+            $imgs  = $files['files'] ?? [];
+
+            $id = $request->getAttribute('id');
+
+            // Save vehicle
+            $resultPro = $providerService->saveVehicle($vehicleInfo, $imgs, $id);
+
+            // Build payload
+            if ($resultPro) {
+                $payload = [
+                    'status'  => 'success',
+                    'message' => 'Đăng ký phương tiện thành công'
+                ];
+            } else {
+                $payload = [
+                    'status'  => 'error',
+                    'message' => 'Đăng ký phương tiện thất bại',
+                ];
+            }
+
+        } catch (\Exception $e) {
+            $payload = [
+                'status'  => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+
+        // Write JSON to response
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
+
 
     })->add(new AuthMiddleware());
 

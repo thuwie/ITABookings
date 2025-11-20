@@ -148,7 +148,8 @@ return function (): Container {
             return new ProviderService(
                 $container->get(ProviderRepositoryPort::class),
                 $container->get(SessionManagerInterfacePort::class),
-                $container->get(InformationPaymentPort::class)
+                $container->get(InformationPaymentPort::class),
+                $container->get(UploadImageRepositoryPort::class),
         );  
         });
 
