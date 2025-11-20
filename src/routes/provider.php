@@ -138,44 +138,47 @@ return function (App $app, $twig) {
          /** ---------------------------
          * POST /provider/{id}/vehicles
          * --------------------------- */        
-        $group->post('/{id}/vehicles', function ($request, $response) 
-            use ($twig, $providerService) { 
+       $group->post('/{id}/vehicles', function ($request, $response) use ($twig, $providerService) {
 
-           
-            try {
-                $body = $request->getParsedBody();
+        try {
+            $body = $request->getParsedBody();
 
-                $vehicleInfo = json_decode($body['vehicle-information'], true);
-               
-                // Uploaded files
-                $files = $request->getUploadedFiles();
-                $imgs  = $files['files'] ?? null;
+            $vehicleInfo = json_decode($body['vehicle-information'], true);
 
-                // Save provider
-                $resultPro = $providerService->saveVehicle($vehicleInfo, $imgs);
+            // Uploaded files
+            $files = $request->getUploadedFiles();
+            $imgs  = $files['files'] ?? [];
 
-                if($resultPro) {
-                     return  [
-                        'status'  =>  'success',
-                        'message' =>  'Đăng ký phương tiện thành công'
-                    ];
-                } else {
-                    return [
-                        'status'  => 'error',
-                        'message' => 'Đăng ký phương tiện thất bại',
-                    ];
-                }
+            $id = $request->getAttribute('id');
 
-            } catch (\Exception $e) {
+            // Save vehicle
+            $resultPro = $providerService->saveVehicle($vehicleInfo, $imgs, $id);
+
+            // Build payload
+            if ($resultPro) {
+                $payload = [
+                    'status'  => 'success',
+                    'message' => 'Đăng ký phương tiện thành công'
+                ];
+            } else {
                 $payload = [
                     'status'  => 'error',
-                    'message' => $e->getMessage()
+                    'message' => 'Đăng ký phương tiện thất bại',
                 ];
             }
 
-            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-            return $response->withHeader('Content-Type', 'application/json');
-        });
+        } catch (\Exception $e) {
+            $payload = [
+                'status'  => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+
+        // Write JSON to response
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
+
 
     })->add(new AuthMiddleware());
 

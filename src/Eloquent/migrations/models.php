@@ -296,7 +296,7 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
-    'vehicle_img' => function ($table) {
+    'vehicle_imgs' => function ($table) {
         $table->increments('id');
 
         $table->unsignedInteger('vehicle_id');

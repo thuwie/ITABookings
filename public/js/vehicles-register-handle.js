@@ -48,6 +48,7 @@ const VehicleRegisterHandler = {
                 fuel_consumption: allData.fuel_consumption,
                 maintenance_per_km: allData.maintenance_per_km,
                 description: allData.description,
+                license_plate: allData.license_plate
             };
 
             if (allData.utility === "0") {
@@ -55,52 +56,55 @@ const VehicleRegisterHandler = {
 
                 // Extract their values into an array
                 const values = Array.from(inputs).map(input => input.value);
-                vehicleInfo = { ...vehicleInfo, utilities: values };
+                vehicleInfo = { ...vehicleInfo, utilities: values, newUtility: true };
             } else {
                 // Select only checked checkboxes
                 const checkedBoxes = selectAvailableUtilitiesElement.querySelectorAll('input[type="checkbox"]:checked');
 
                 // Extract their values
                 const checkedValues = Array.from(checkedBoxes).map(cb => cb.value);
-                vehicleInfo = { ...vehicleInfo, utilities: checkedValues };
+                vehicleInfo = { ...vehicleInfo, utilities: checkedValues, newUtility: false };
             }
 
             console.log(vehicleInfo);
+            console.log(files);
+
 
             formData.set("vehicle-information", JSON.stringify(vehicleInfo));
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files[]", files[i]);
+            }
 
-            formData.set("images", files);
+            // // Hiển thị overlay loading
+            this.showLoading();
 
-            // // // Hiển thị overlay loading
-            // this.showLoading();
+            try {
+                const res = await fetch(`/provider/${user_id}/vehicles`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            // try {
-            //     const res = await fetch(`/provider/${user_id}/vehicles`, {
-            //         method: 'POST',
-            //         body: formData
-            //     });
+                const result = await res.json();
 
-            //     const result = await res.json();
+                this.hideLoading();
 
-            //     this.hideLoading();
+                if (result.status === 'success') {
+                    this.showMessage(result.message, 'success');
 
-            //     if (result.status === 'success') {
-            //         this.showMessage(result.message, 'success');
+                    // // Chuyển trang sau 1 giây
+                    // setTimeout(() => {
+                    //     window.location.href = result.redirect;
+                    // }, 1000);
 
-            //         // // Chuyển trang sau 1 giây
-            //         // setTimeout(() => {
-            //         //     window.location.href = result.redirect;
-            //         // }, 1000);
+                } else {
+                    this.showMessage(result.message, 'error');
+                }
 
-            //     } else {
-            //         this.showMessage(result.message, 'error');
-            //     }
-
-            // } catch (err) {
-            //     this.hideLoading();
-            //     this.showMessage('Có lỗi xảy ra, thử lại sau', 'error');
-            //     console.error(err);
-            // }
+            } catch (err) {
+                this.hideLoading();
+                this.showMessage('Có lỗi xảy ra, thử lại sau', 'error');
+                console.error(err);
+            }
         });
 
         files.addEventListener('change', function (event) {
@@ -181,24 +185,6 @@ const VehicleRegisterHandler = {
         // Disable all form fields inside
         container.querySelectorAll('input, select, textarea, button').forEach(el => {
             el.disabled = true;
-
-            if (el.tagName === "INPUT") {
-                if (el.type === "number") {
-                    el.value = 0;
-                } else if (el.type === "text") {
-                    el.value = "";
-                } else if (el.type === "checkbox" || el.type === "radio") {
-                    el.checked = false;
-                }
-            }
-
-            if (el.tagName === "SELECT") {
-                el.selectedIndex = ""; // or -1 if you want no selection
-            }
-
-            if (el.tagName === "TEXTAREA") {
-                el.value = "";
-            }
         });
 
         // Disable clicking the plus icon
