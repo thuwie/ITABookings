@@ -13,4 +13,5 @@ interface UserRepositoryPort {
     public function findById(int $id): ?User;
     public function findUserByEmail(Email $email):?UserAuth;
     public function saveRole(UserRole $role);
+    public function getUsersById($ids): array;
 }

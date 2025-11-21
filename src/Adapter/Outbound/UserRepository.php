@@ -53,4 +53,11 @@ class UserRepository implements UserRepositoryPort {
         return $role;
     }
 
+     public function getUsersById($ids): array {
+        $users = DB::table('users')
+            ->whereIn('id', $ids)
+            ->get();
+        return $users->toArray();
+     }
+
 }

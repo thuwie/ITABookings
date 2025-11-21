@@ -95,15 +95,19 @@ class ProviderRepository implements ProviderRepositoryPort {
         return Provider::fromArray((array)$row);
     }
 
-    public function getProvidersByVerified(?string $verifiedAt = null): array {
+    public function getProvidersByVerified(?bool $verified = null): array {
         $query = DB::table('providers');
 
-        if ($verifiedAt !== null) {
+        if ($verified === true) {
             $query->whereNotNull('verified_at');
+        } elseif ($verified === false) {
+            $query->whereNull('verified_at'); // <-- filter for null
         }
+
         $rows = $query->get();
         return array_map(fn($row) => Provider::fromArray((array)$row), $rows->toArray());
     }
+
 
     public function findById(int $id): ?Provider {
         $row = DB::table('providers')->where('id', $id)->first();

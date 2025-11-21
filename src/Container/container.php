@@ -48,6 +48,16 @@ use App\Application\Port\Inbound\DriverServicePort;
 use App\Application\Service\DriverService;
 use App\Adapter\Outbound\DriverRepository;
 
+use App\Application\Port\Inbound\AdminServicePort;
+use App\Application\Port\Outbound\AdminRepositoryPort;
+use App\Application\Service\AdminService;
+use App\Adapter\Outbound\AdminRepository;
+
+use App\Application\Port\Outbound\EmailRepositoryPort;
+use App\Adapter\Outbound\EmailRepository;
+
+use App\Domain\Entity\MailerService;
+
 use DI\Container;
 
 return function (): Container {
@@ -185,6 +195,40 @@ return function (): Container {
             return new DriverService(
                 $container->get(DriverRepositoryPort::class),
                 $container->get(SessionManagerInterfacePort::class),
+        );
+        });
+
+        //ADMIN
+        // Outbound Port Binding
+        $container->set(AdminRepositoryPort::class, function() {
+            return new AdminRepository();
+        });
+
+        $container->set(MailerService::class, function() {
+            return new MailerService(
+                'smtp.gmail.com',  // host
+                'nguyenthu6605@gmail.com',             // SMTP username
+                'jwxh hdrr nbtl cyza',             // SMTP password
+                587,                    // port (optional, default is 587)
+                'no-reply@ITABookings.com', // fromEmail (optional)
+                'ITABookings',              // fromName (optional)
+                'tls'                   // encryption (optional)
+            );
+        });
+
+        // Inject MailerService into EmailRepository
+        $container->set(EmailRepositoryPort::class, function($c) {
+            return new EmailRepository($c->get(MailerService::class));
+        });
+
+        //Inbound Port Binding
+        $container->set(AdminServicePort::class, function() use ($container) {
+            return new AdminService(
+                $container->get(SessionManagerInterfacePort::class),
+                $container->get(ProviderRepositoryPort::class),
+                $container->get(UserRepositoryPort::class),
+                $container->get(AdminRepositoryPort::class),
+                $container->get(EmailRepositoryPort::class),
         );
         });
         

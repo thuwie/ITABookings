@@ -91,4 +91,8 @@ class UserService implements UserServicePort {
 
         return $isUserFound->toArray();
     }
+    public function getUsersById($ids): array {
+        $users = $this->userRepositoryPort->getUsersById($ids);
+        return $users;
+    }
 }

@@ -1,160 +1,294 @@
 {% block body %}
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Admin - Dashboard</title>
-<style>
-:root{
-  --bg:#f6f7fb;
-  --card:#fff;
-  --muted:#666;
-  --accent:#0256b0; /* đổi sang gradient tab */
-  --accent-2:#4dabff;
-  --success:#0256b0;
-  --danger:#dc3545;
-}
-body{
-  font-family:Arial;
-  background:var(--bg);
-  margin:0;
-  padding:20px;
-  color:#222;
-}
-.card{
-  background:var(--card);
-  padding:18px;
-  border-radius:10px;
-  box-shadow:0 6px 18px rgba(20,20,50,0.06);
-}
-h1,h2{margin:0 0 10px 0}
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #eee;
-  text-align:center;
-  font-size:16px;
-}
-th{
-  background:#fafafa;
-  font-weight:600;
-}
-td:last-child > .flex {
-  justify-content: center;
-}
-.row{display:flex;gap:12px;align-items:center}
-.btn{
-  padding:8px 12px;
-  border-radius:8px;
-  border:0;
-  cursor:pointer;
-}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-success{background:var(--success);color:#fff}
-.btn-ghost{background:transparent;border:1px solid #ddd;padding:6px 8px;border-radius:8px}
-.muted{color:var(--muted);font-size:13px}
-.small{font-size:13px;padding:6px 8px}
-.flex{display:flex;gap:12px;align-items:center}
-.right{margin-left:auto}
-.badge{background:#eef; padding:4px 8px;border-radius:999px;font-size:13px}
-.disabled{opacity:0.5;pointer-events:none}
-.grid2{display:grid;grid-template-columns:1fr 420px;gap:18px}
-.center{text-align:center}
-.provider-list li{list-style:none;padding:8px 0;border-bottom:1px dashed #eee}
-.note{font-size:13px;color:#555;margin-top:8px}
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:9999}
-.modal-card{background:#fff;padding:18px;border-radius:10px;max-width:720px;width:100%}
-.field{margin-bottom:8px}
-.muted-small{color:#666;font-size:13px}
-select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; background:white; }
-.top-controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Dashboard</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #fff;
+      --muted: #666;
+      --accent: #0256b0;
+      /* đổi sang gradient tab */
+      --accent-2: #4dabff;
+      --success: #0256b0;
+      --danger: #dc3545;
+    }
 
-/* ======== SIDEBAR ========= */
-.dashboard-wrapper{
-  display:flex;
-  min-height:100vh;
-}
-.sidebar{
-  width:260px;
-  background:#fff;
-  border-right:1px solid #eee;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-.sidebar .profile{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding-bottom:16px;
-  border-bottom:1px solid #f0f0f0;
-}
-.sidebar .profile img{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  object-fit:cover;
-}
-.sidebar .name{
-  font-weight:700;
-}
-.side-title { font-weight:700; color:#333; }
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-.menu-item{
-  padding:12px 14px;
-  border-radius:10px;
-  text-align:left;
-  font-size:15px;
-  border:0;
-  background:#f7f7f7;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.25s;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.menu-item:hover{
-  background:#e9f3ff;
-}
-.menu-item.active{
-  background:linear-gradient(90deg,var(--accent),var(--accent-2));
-  color:#fff;
-  box-shadow:0 3px 12px rgba(0, 0, 0, 0.12);
-}
+    body {
+      font-family: Arial;
+      background: var(--bg);
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
 
-/* MAIN CONTENT */
-.main-content{
-  flex:1;
-  padding:22px;
-}
+    .card {
+      background: var(--card);
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(20, 20, 50, 0.06);
+    }
 
-/* HIDDEN TABS */
-.tab-page{ display:none; }
-.tab-page.active{ display:block; }
-</style>
+    h1,
+    h2 {
+      margin: 0 0 10px 0
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+
+    td:last-child>.flex {
+      justify-content: center;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      border-radius: 8px
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .small {
+      font-size: 13px;
+      padding: 6px 8px
+    }
+
+    .flex {
+      display: flex;
+      gap: 12px;
+      align-items: center
+    }
+
+    .right {
+      margin-left: auto
+    }
+
+    .badge {
+      background: #eef;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 13px
+    }
+
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 18px
+    }
+
+    .center {
+      text-align: center
+    }
+
+    .provider-list li {
+      list-style: none;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee
+    }
+
+    .note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 8px
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 9999
+    }
+
+    .modal-card {
+      background: #fff;
+      padding: 18px;
+      border-radius: 10px;
+      max-width: 720px;
+      width: 100%
+    }
+
+    .field {
+      margin-bottom: 8px
+    }
+
+    .muted-small {
+      color: #666;
+      font-size: 13px
+    }
+
+    select.small {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: white;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    /* ======== SIDEBAR ========= */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #fff;
+      border-right: 1px solid #eee;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .sidebar .profile img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .sidebar .name {
+      font-weight: 700;
+    }
+
+    .side-title {
+      font-weight: 700;
+      color: #333;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .menu-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 15px;
+      border: 0;
+      background: #f7f7f7;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .menu-item:hover {
+      background: #e9f3ff;
+    }
+
+    .menu-item.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      padding: 22px;
+    }
+
+    /* HIDDEN TABS */
+    .tab-page {
+      display: none;
+    }
+
+    .tab-page.active {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="dashboard-wrapper">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="dashboard-wrapper">
+    <!-- SIDEBAR -->
+    <div class="sidebar" style="min-width: 260px;">
       <div class="profile">
-         <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
-         <div>
-           <div class="name">Admin</div>
-           <div style="font-size:12px;color:#888;">Quản trị hệ thống</div>
-         </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="">
+        <div>
+          <div class="name">Admin</div>
+          <div style="font-size:12px;color:#888;">Quản trị hệ thống</div>
+        </div>
       </div>
       <div class="side-title">Main Menu</div>
       <!-- MENU -->
@@ -180,9 +314,9 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
           <span>Quản lý người dùng</span>
         </button>
       </div>
-  </div>
-  <!-- MAIN AREA -->
-  <div class="main-content">
+    </div>
+    <!-- MAIN AREA -->
+    <div class="main-content">
       <div id="tabBookings" class="tab-page active">
         <div class="card">
           <h2>Các chuyến xe đã đặt</h2>
@@ -207,12 +341,14 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
           <h2>Đơn đăng ký doanh nghiệp</h2>
           <p class="muted">Danh sách đơn đăng ký doanh nghiệp — admin xét duyệt.</p>
           <table id="bizTable">
-            <thead><tr>
-              <th>Đơn ID</th>
-              <th>Tên doanh nghiệp</th>
-              <th>Người đại diện</th>
-              <th>Trạng thái</th>
-              <th>Hành động</th></tr>
+            <thead>
+              <tr>
+                <th>Đơn ID</th>
+                <th>Tên doanh nghiệp</th>
+                <th>Người đại diện</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
             </thead>
             <tbody></tbody>
           </table>
@@ -226,8 +362,12 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
                 <h2 style="margin:0">Thanh toán</h2>
                 <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
                   <button class="btn btn-ghost" onclick="exportPaymentsCSV()">Xuất CSV</button>
-                  <select id="filterMonth" class="small" onchange="applyPaymentsFilter()"><option value="">-- Tháng --</option></select>
-                  <select id="filterYear" class="small" onchange="applyPaymentsFilter()"><option value="">-- Năm --</option></select>
+                  <select id="filterMonth" class="small" onchange="applyPaymentsFilter()">
+                    <option value="">-- Tháng --</option>
+                  </select>
+                  <select id="filterYear" class="small" onchange="applyPaymentsFilter()">
+                    <option value="">-- Năm --</option>
+                  </select>
                   <button class="btn btn-ghost" onclick="resetPaymentsFilter()">Reset</button>
                 </div>
               </div>
@@ -249,7 +389,7 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
                 <tbody></tbody>
               </table>
             </div>
-          </div>    
+          </div>
           <div>
             <div class="card">
               <h2>Danh sách Providers (tổng cần thanh toán)</h2>
@@ -264,7 +404,12 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
               </select>
               <table style="margin-top:10px">
                 <thead>
-                  <tr><th>Payment ID</th><th>Booking</th><th>Số tiền</th><th>Ngày thanh toán</th></tr>
+                  <tr>
+                    <th>Payment ID</th>
+                    <th>Booking</th>
+                    <th>Số tiền</th>
+                    <th>Ngày thanh toán</th>
+                  </tr>
                 </thead>
                 <tbody id="providerHistoryBody"></tbody>
               </table>
@@ -317,108 +462,112 @@ select.small { padding:6px 8px; border-radius:6px; border:1px solid #ddd; backgr
           </table>
         </div>
       </div>
-  </div>
-</div>
-<div id="bizModal" class="modal" style="display:none;">
-  <div class="modal-card">
-    <h3>Chi tiết doanh nghiệp</h3>
-    <div id="bizDetail"></div>
-    <div style="margin-top:12px; display:flex; gap:8px;">
-      <button class="btn btn-success" onclick="approveBiz()">Duyệt</button>
-      <button class="btn btn-danger" onclick="rejectBiz()">Từ chối</button>
-      <button class="btn btn-ghost" onclick="closeBizModal()">Đóng</button>
     </div>
   </div>
-</div>
-<script>
-// Sidebar navigation
-document.querySelectorAll(".menu-item").forEach(btn => {
-    btn.addEventListener("click", function () {
+  <div id="bizModal" class="modal" style="display:none;">
+    <div class="modal-card">
+      <h3>Chi tiết doanh nghiệp</h3>
+      <div id="bizDetail"></div>
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <button class="btn btn-success" id="binzDetail-approve">Duyệt</button>
+        <button class="btn btn-danger" onclick="rejectBiz()">Từ chối</button>
+        <button class="btn btn-ghost" onclick="closeBizModal()">Đóng</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Sidebar navigation
+    document.querySelectorAll(".menu-item").forEach(btn => {
+      btn.addEventListener("click", function () {
         document.querySelectorAll(".menu-item").forEach(i => i.classList.remove("active"));
         this.classList.add("active");
         document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("active"));
         const id = this.dataset.target;
         document.getElementById(id).classList.add("active");
+      });
     });
-});
 
-/* =========================
-   MOCK DATA
-========================= */
-const users = [
-  {id:1, first_name:'Nguyễn', last_name:'Văn A', email:'a@example.com', phone:'0912345678', role:'user', active:true},
-  {id:2, first_name:'Trần', last_name:'Thị B', email:'b@example.com', phone:'0987654321', role:'user', active:true},
-  {id:3, first_name:'Lê', last_name:'Văn C', email:'c@example.com', phone:'0909123456', role:'admin', active:true},
-];
-const providerReviews = [
-  {providerId:'P001', user:'User1', rating:5},
-  {providerId:'P001', user:'User2', rating:4},
-  {providerId:'P002', user:'User3', rating:3},
-  {providerId:'P003', user:'User4', rating:4},
-];
-const providers = [
-  {id: 'P001', 
-   name: 'Công ty Vận tải A', 
-   description: 'Dịch vụ vận chuyển uy tín', 
-   email: 'a@company.com', 
-   phone_number: '0912345678', 
-   address: '123 Đường Lê Lợi', 
-   province_id: 'Hà Nội', 
-   is_active: true, 
-   company_representative_id: 'Nguyễn Văn A'},
-  {id: 'P002', 
-   name: 'Công ty Vận tải B', 
-   description: 'Chuyên cung cấp xe hợp đồng', 
-   email: 'b@company.com', 
-   phone_number: '0987654321', 
-   address: '456 Đường Trần Hưng Đạo', 
-   province_id: 'Hồ Chí Minh', 
-   is_active: true, 
-   company_representative_id: 'Trần Thị B'},
-];
-let banned_providers = [
-  // { id: 1, provider_id: 'P003', is_banned: true, reason: 'Hủy chuyến nhiều lần' }
-];
-let banIdCounter = 1;
-const bookings = [
-  {id:'BK100', total: 2000000, userPaid:true, providerId:'P001', providerRate:0.70,  start:'2025-11-10', end:'2025-11-12', driverConfirmed:true, userConfirmed:true},
-  {id:'BK101', total: 1200000, userPaid:true, providerId:'P002', providerRate:0.65, start:'2025-11-11', end:'2025-11-11', driverConfirmed:true, userConfirmed:true}
-];
-let payments = [
-  {id:1, booking_id:'BK101', total_amount:1200000, provider_share:780000, provider_id:'P002', admin_share:420000, payment_status:'paid', paid_at:'2025-11-12T10:00:00'},
-  {id:2, booking_id:'BK100', total_amount:2000000, provider_share:1400000, provider_id:'P001', admin_share:600000, payment_status:'pending', paid_at:null}
-];
-let paymentIdCounter = 6;
-const bizRequests = [
-  {id:'BIZ001', company:'Công ty TNHH A', rep:'Nguyễn Văn A', phone:'0912345678', email:'a@company.com', info:'Đăng ký dịch vụ vận chuyển', status:'pending'},
-  {id:'BIZ002', company:'Công ty TNHH B', rep:'Trần Thị B', phone:'0987654321', email:'b@company.com', info:'Đăng ký đối tác', status:'pending'},
-  {id:'BIZ003', company:'Công ty TNHH C', rep:'Lê Văn C', phone:'0909123456', email:'c@company.com', info:'Đăng ký vận tải', status:'approved'},
-];
+    /* =========================
+       MOCK DATA
+    ========================= */
+    const users = [
+      { id: 1, first_name: 'Nguyễn', last_name: 'Văn A', email: 'a@example.com', phone: '0912345678', role: 'user', active: true },
+      { id: 2, first_name: 'Trần', last_name: 'Thị B', email: 'b@example.com', phone: '0987654321', role: 'user', active: true },
+      { id: 3, first_name: 'Lê', last_name: 'Văn C', email: 'c@example.com', phone: '0909123456', role: 'admin', active: true },
+    ];
+    const providerReviews = [
+      { providerId: 'P001', user: 'User1', rating: 5 },
+      { providerId: 'P001', user: 'User2', rating: 4 },
+      { providerId: 'P002', user: 'User3', rating: 3 },
+      { providerId: 'P003', user: 'User4', rating: 4 },
+    ];
+    const providers = [
+      {
+        id: 'P001',
+        name: 'Công ty Vận tải A',
+        description: 'Dịch vụ vận chuyển uy tín',
+        email: 'a@company.com',
+        phone_number: '0912345678',
+        address: '123 Đường Lê Lợi',
+        province_id: 'Hà Nội',
+        is_active: true,
+        company_representative_id: 'Nguyễn Văn A'
+      },
+      {
+        id: 'P002',
+        name: 'Công ty Vận tải B',
+        description: 'Chuyên cung cấp xe hợp đồng',
+        email: 'b@company.com',
+        phone_number: '0987654321',
+        address: '456 Đường Trần Hưng Đạo',
+        province_id: 'Hồ Chí Minh',
+        is_active: true,
+        company_representative_id: 'Trần Thị B'
+      },
+    ];
+    let banned_providers = [
+      // { id: 1, provider_id: 'P003', is_banned: true, reason: 'Hủy chuyến nhiều lần' }
+    ];
+    let banIdCounter = 1;
+    const bookings = [
+      { id: 'BK100', total: 2000000, userPaid: true, providerId: 'P001', providerRate: 0.70, start: '2025-11-10', end: '2025-11-12', driverConfirmed: true, userConfirmed: true },
+      { id: 'BK101', total: 1200000, userPaid: true, providerId: 'P002', providerRate: 0.65, start: '2025-11-11', end: '2025-11-11', driverConfirmed: true, userConfirmed: true }
+    ];
+    let payments = [
+      { id: 1, booking_id: 'BK101', total_amount: 1200000, provider_share: 780000, provider_id: 'P002', admin_share: 420000, payment_status: 'paid', paid_at: '2025-11-12T10:00:00' },
+      { id: 2, booking_id: 'BK100', total_amount: 2000000, provider_share: 1400000, provider_id: 'P001', admin_share: 600000, payment_status: 'pending', paid_at: null }
+    ];
+    let paymentIdCounter = 6;
+    const bizRequests = [
+      { id: 'BIZ001', company: 'Công ty TNHH A', rep: 'Nguyễn Văn A', phone: '0912345678', email: 'a@company.com', info: 'Đăng ký dịch vụ vận chuyển', status: 'pending' },
+      { id: 'BIZ002', company: 'Công ty TNHH B', rep: 'Trần Thị B', phone: '0987654321', email: 'b@company.com', info: 'Đăng ký đối tác', status: 'pending' },
+      { id: 'BIZ003', company: 'Công ty TNHH C', rep: 'Lê Văn C', phone: '0909123456', email: 'c@company.com', info: 'Đăng ký vận tải', status: 'approved' },
+    ];
 
-/* =========================
-   HELPERS
-========================= */
-function formatVND(n){ return n.toLocaleString('vi-VN') + ' ₫'; }
-function findProvider(id){ return providers.find(p=>p.id===id) || {name:'(Unknown)'}; }
+    /* =========================
+       HELPERS
+    ========================= */
+    function formatVND(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+    function findProvider(id) { return providers.find(p => p.id === id) || { name: '(Unknown)' }; }
 
-/* =========================
-   RENDER BOOKINGS
-========================= */
-function renderBookings(){
-  const tbody = document.querySelector('#bookingsTable tbody');
-  tbody.innerHTML = '';
-  const bookingsToShow = bookings.filter(b => b.userPaid);
-  if(bookingsToShow.length === 0){
-    tbody.innerHTML = `<tr>
+    /* =========================
+       RENDER BOOKINGS
+    ========================= */
+    function renderBookings() {
+      const tbody = document.querySelector('#bookingsTable tbody');
+      tbody.innerHTML = '';
+      const bookingsToShow = bookings.filter(b => b.userPaid);
+      if (bookingsToShow.length === 0) {
+        tbody.innerHTML = `<tr>
         <td colspan="6" style="text-align:center;color:#888;">
             Không có chuyến xe nào đã thanh toán.
         </td>
       </tr>`;
-    return;
-  }
-  bookingsToShow.forEach(b => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+        return;
+      }
+      bookingsToShow.forEach(b => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
       <td>${b.id}</td>
       <td>${b.start} → ${b.end}</td>
       <td>${formatVND(b.total)}</td>
@@ -431,71 +580,71 @@ function renderBookings(){
         </div>
       </td>
     `;
-    tbody.appendChild(tr);
-  });
-}
+        tbody.appendChild(tr);
+      });
+    }
 
-/* =========================
-   PAYMENT ACTIONS
-========================= */
-function createPaymentFromBooking(bookingId){
-  const b = bookings.find(x=>x.id===bookingId);
-  // Booking không tồn tại → bỏ qua
-  if (!b) return;
-  // User chưa thanh toán 50% → KHÔNG tạo payment, KHÔNG alert
-  if (!b.userPaid) return;
-  if(payments.some(p=>p.booking_id===bookingId)) return alert('Payment cho booking này đã tồn tại.');
-  // Tính provider share/admin share
-  const provider_share = Math.round(b.total * b.providerRate);
-  const admin_share = b.total - provider_share;
-  const newPayment = {
-    id: paymentIdCounter++,
-    booking_id: bookingId,
-    total_amount: b.total,
-    provider_share,
-    provider_id: b.providerId,
-    admin_share,
-    payment_status: 'pending',
-    paid_at: null
-  };
-  payments.push(newPayment);
-  renderPayments();
-  renderProviderSummary();
-  alert('Tạo payment thành công cho 100% tổng tiền.');
-  const btn = document.querySelector(`#bookingsTable button.btn-primary[onclick*="${bookingId}"]`);
-  if(btn) btn.classList.add('disabled');
-}
-function payProvider(paymentId){
-  const p = payments.find(x=>x.id===paymentId);
-  if(!p) return;
-  const sourceBooking = bookings.find(b=>b.id===p.booking_id);
-  if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed) {
-    return alert('Chỉ thanh toán khi driver và user xác nhận chuyến hoàn tất.');
-  }
-  p.payment_status = 'paid';
-  p.paid_at = new Date().toISOString();
-  renderPayments(); renderProviderSummary(); renderProviderHistory();
-  if (isProviderBanned(p.provider_id)) {
-  return alert("Provider đang bị cấm — không thể thanh toán.");
-  }
-  return alert(`Đã thanh toán provider ${p.provider_id} — ${formatVND(p.provider_share)}`);
-}
+    /* =========================
+       PAYMENT ACTIONS
+    ========================= */
+    function createPaymentFromBooking(bookingId) {
+      const b = bookings.find(x => x.id === bookingId);
+      // Booking không tồn tại → bỏ qua
+      if (!b) return;
+      // User chưa thanh toán 50% → KHÔNG tạo payment, KHÔNG alert
+      if (!b.userPaid) return;
+      if (payments.some(p => p.booking_id === bookingId)) return alert('Payment cho booking này đã tồn tại.');
+      // Tính provider share/admin share
+      const provider_share = Math.round(b.total * b.providerRate);
+      const admin_share = b.total - provider_share;
+      const newPayment = {
+        id: paymentIdCounter++,
+        booking_id: bookingId,
+        total_amount: b.total,
+        provider_share,
+        provider_id: b.providerId,
+        admin_share,
+        payment_status: 'pending',
+        paid_at: null
+      };
+      payments.push(newPayment);
+      renderPayments();
+      renderProviderSummary();
+      alert('Tạo payment thành công cho 100% tổng tiền.');
+      const btn = document.querySelector(`#bookingsTable button.btn-primary[onclick*="${bookingId}"]`);
+      if (btn) btn.classList.add('disabled');
+    }
+    function payProvider(paymentId) {
+      const p = payments.find(x => x.id === paymentId);
+      if (!p) return;
+      const sourceBooking = bookings.find(b => b.id === p.booking_id);
+      if (!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed) {
+        return alert('Chỉ thanh toán khi driver và user xác nhận chuyến hoàn tất.');
+      }
+      p.payment_status = 'paid';
+      p.paid_at = new Date().toISOString();
+      renderPayments(); renderProviderSummary(); renderProviderHistory();
+      if (isProviderBanned(p.provider_id)) {
+        return alert("Provider đang bị cấm — không thể thanh toán.");
+      }
+      return alert(`Đã thanh toán provider ${p.provider_id} — ${formatVND(p.provider_share)}`);
+    }
 
-/* =========================
-   RENDER PAYMENTS + PROVIDER SUMMARY
-========================= */
-function renderPayments(list = payments){
-  const tbody = document.querySelector('#paymentsTable tbody');
-  tbody.innerHTML = '';
-  list.forEach(p=>{
-    const provider = findProvider(p.provider_id);
-    const sourceBooking = bookings.find(b=>b.id===p.booking_id);
-    let statusText = p.payment_status==='paid' ? '100%' : 'Pending';
-    if(sourceBooking.userPaid && p.payment_status==='pending') statusText='0%';
-    if(sourceBooking.userPaid && sourceBooking.driverConfirmed && p.payment_status==='paid') statusText='100%';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>PMT${String(p.id).padStart(4,'0')}</td>
+    /* =========================
+       RENDER PAYMENTS + PROVIDER SUMMARY
+    ========================= */
+    function renderPayments(list = payments) {
+      const tbody = document.querySelector('#paymentsTable tbody');
+      tbody.innerHTML = '';
+      list.forEach(p => {
+        const provider = findProvider(p.provider_id);
+        const sourceBooking = bookings.find(b => b.id === p.booking_id);
+        let statusText = p.payment_status === 'paid' ? '100%' : 'Pending';
+        if (sourceBooking.userPaid && p.payment_status === 'pending') statusText = '0%';
+        if (sourceBooking.userPaid && sourceBooking.driverConfirmed && p.payment_status === 'paid') statusText = '100%';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td>PMT${String(p.id).padStart(4, '0')}</td>
       <td>${p.booking_id}</td>
       <td>${formatVND(p.total_amount)}</td>
       <td>${formatVND(p.provider_share)}</td>
@@ -510,55 +659,55 @@ function renderPayments(list = payments){
         </div>
       </td>
     `;
-    tbody.appendChild(tr);
-    const payBtn = document.getElementById(`payBtn${p.id}`);
-    if(!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed || p.payment_status==='paid'){
-        payBtn.classList.add('disabled');
-    } else {
-        payBtn.classList.remove('disabled');
+        tbody.appendChild(tr);
+        const payBtn = document.getElementById(`payBtn${p.id}`);
+        if (!sourceBooking.driverConfirmed || !sourceBooking.userConfirmed || p.payment_status === 'paid') {
+          payBtn.classList.add('disabled');
+        } else {
+          payBtn.classList.remove('disabled');
+        }
+      });
     }
-  });
-}
-function renderProviderSummary(){
-  const summary = {};
-  payments.forEach(p=>{
-    if(p.payment_status !== 'paid'){
-      summary[p.provider_id] = (summary[p.provider_id]||0) + p.provider_share;
+    function renderProviderSummary() {
+      const summary = {};
+      payments.forEach(p => {
+        if (p.payment_status !== 'paid') {
+          summary[p.provider_id] = (summary[p.provider_id] || 0) + p.provider_share;
+        }
+      });
+      const ul = document.getElementById('providerSummary');
+      ul.innerHTML = '';
+      providers.forEach(prov => {
+        const amt = summary[prov.id] || 0;
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${prov.name}</strong><div class="muted-small">Chưa trả: ${formatVND(amt)} — Tài khoản: ${prov.account} (${prov.bankName})</div>`;
+        ul.appendChild(li);
+      });
     }
-  });
-  const ul = document.getElementById('providerSummary');
-  ul.innerHTML = '';
-  providers.forEach(prov=>{
-    const amt = summary[prov.id] || 0;
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${prov.name}</strong><div class="muted-small">Chưa trả: ${formatVND(amt)} — Tài khoản: ${prov.account} (${prov.bankName})</div>`;
-    ul.appendChild(li);
-  });
-}
 
-/* =========================
-   RENDER Providers
-========================= */
-function renderProviders(){
-  const tbody = document.querySelector('#providersTable tbody');
-  tbody.innerHTML = '';
-  providers.forEach(p=>{
-    // Lấy các payment đã thanh toán
-    const providerPayments = payments.filter(pay => pay.provider_id === p.id && pay.payment_status === 'paid');
-    const totalEarnings = providerPayments.reduce((sum,pay)=>sum + pay.provider_share, 0);
-    const totalOrders = providerPayments.length;
-    // Tính đánh giá trung bình
-    const reviews = providerReviews.filter(r => r.providerId === p.id);
-    const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : '-';
-    const banned = isProviderBanned(p.id);
-    const banBadge = banned 
-      ? `<span style="color:#dc3545;">Bị cấm</span>` 
-      : `<span style="color:#28a745;">Hoạt động</span>`;
-    const banButton = banned
-      ? `<button class="btn small btn-success" onclick="unbanProvider('${p.id}')">Gỡ cấm</button>`
-      : `<button class="btn small btn-danger" onclick="banProvider('${p.id}')">Cấm</button>`;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    /* =========================
+       RENDER Providers
+    ========================= */
+    function renderProviders() {
+      const tbody = document.querySelector('#providersTable tbody');
+      tbody.innerHTML = '';
+      providers.forEach(p => {
+        // Lấy các payment đã thanh toán
+        const providerPayments = payments.filter(pay => pay.provider_id === p.id && pay.payment_status === 'paid');
+        const totalEarnings = providerPayments.reduce((sum, pay) => sum + pay.provider_share, 0);
+        const totalOrders = providerPayments.length;
+        // Tính đánh giá trung bình
+        const reviews = providerReviews.filter(r => r.providerId === p.id);
+        const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : '-';
+        const banned = isProviderBanned(p.id);
+        const banBadge = banned
+          ? `<span style="color:#dc3545;">Bị cấm</span>`
+          : `<span style="color:#28a745;">Hoạt động</span>`;
+        const banButton = banned
+          ? `<button class="btn small btn-success" onclick="unbanProvider('${p.id}')">Gỡ cấm</button>`
+          : `<button class="btn small btn-danger" onclick="banProvider('${p.id}')">Cấm</button>`;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
       <td>${p.name || '-'}</td>
       <td>${p.company_representative_id || '-'}</td>
       <td>${p.description || '-'}</td>
@@ -572,43 +721,43 @@ function renderProviders(){
       <td>${banBadge}</td>
       <td>${banButton}</td>
     `;
-    tbody.appendChild(tr);
-  });
-}
-function banProvider(providerId) {
-  const reason = prompt("Lý do cấm provider?");
-  if (!reason) return;
-  banned_providers.push({
-    id: banIdCounter++,
-    provider_id: providerId,
-    is_banned: true,
-    reason: reason
-  });
-  alert("Đã cấm provider " + providerId);
-  renderProviders();
-}
-function unbanProvider(providerId) {
-  banned_providers = banned_providers.filter(b => b.provider_id !== providerId);
-  alert("Đã gỡ cấm provider " + providerId);
-  renderProviders();
-}
-function isProviderBanned(providerId) {
-  return banned_providers.some(b => b.provider_id === providerId && b.is_banned);
-}
+        tbody.appendChild(tr);
+      });
+    }
+    function banProvider(providerId) {
+      const reason = prompt("Lý do cấm provider?");
+      if (!reason) return;
+      banned_providers.push({
+        id: banIdCounter++,
+        provider_id: providerId,
+        is_banned: true,
+        reason: reason
+      });
+      alert("Đã cấm provider " + providerId);
+      renderProviders();
+    }
+    function unbanProvider(providerId) {
+      banned_providers = banned_providers.filter(b => b.provider_id !== providerId);
+      alert("Đã gỡ cấm provider " + providerId);
+      renderProviders();
+    }
+    function isProviderBanned(providerId) {
+      return banned_providers.some(b => b.provider_id === providerId && b.is_banned);
+    }
 
-/* =========================
-   RENDER Users
-========================= */
-function renderUsers(){
-  const tbody = document.querySelector('#usersTable tbody');
-  tbody.innerHTML = '';
-  users.forEach(u=>{
-    const tr = document.createElement('tr');
-    const status = u.active ? '<span style="color:green;">Hoạt động</span>' : '<span style="color:red;">Bị khóa</span>';
-    const toggleBtn = u.active 
-      ? `<button class="btn small btn-danger" onclick="toggleUser(${u.id})">Khóa</button>` 
-      : `<button class="btn small btn-success" onclick="toggleUser(${u.id})">Mở khóa</button>`;
-    tr.innerHTML = `
+    /* =========================
+       RENDER Users
+    ========================= */
+    function renderUsers() {
+      const tbody = document.querySelector('#usersTable tbody');
+      tbody.innerHTML = '';
+      users.forEach(u => {
+        const tr = document.createElement('tr');
+        const status = u.active ? '<span style="color:green;">Hoạt động</span>' : '<span style="color:red;">Bị khóa</span>';
+        const toggleBtn = u.active
+          ? `<button class="btn small btn-danger" onclick="toggleUser(${u.id})">Khóa</button>`
+          : `<button class="btn small btn-success" onclick="toggleUser(${u.id})">Mở khóa</button>`;
+        tr.innerHTML = `
       <td>${u.id}</td>
       <td>${u.first_name} ${u.last_name}</td>
       <td>${u.email}</td>
@@ -617,134 +766,195 @@ function renderUsers(){
       <td>${status}</td>
       <td>${toggleBtn}</td>
     `;
-    tbody.appendChild(tr);
-  });
-}
+        tbody.appendChild(tr);
+      });
+    }
 
-function toggleUser(userId){
-  const u = users.find(x=>x.id===userId);
-  if(!u) return;
-  u.active = !u.active;
-  renderUsers();
-}
+    function toggleUser(userId) {
+      const u = users.find(x => x.id === userId);
+      if (!u) return;
+      u.active = !u.active;
+      renderUsers();
+    }
 
-/* =========================
-   INIT FILTERS + PROVIDER HISTORY
-========================= */
-function initFiltersAndProviders(){
-  // Fill filter tháng (1-12)
-  const monthSelect = document.getElementById('filterMonth');
-  for(let m=1; m<=12; m++){
-    const opt = document.createElement('option');
-    opt.value = m;
-    opt.text = m;
-    monthSelect.appendChild(opt);
-  }
-  // Fill filter năm (ví dụ 2024-2026)
-  const yearSelect = document.getElementById('filterYear');
-  for(let y=2024; y<=2026; y++){
-    const opt = document.createElement('option');
-    opt.value = y;
-    opt.text = y;
-    yearSelect.appendChild(opt);
-  }
-  // Fill provider history select
-  const provSelect = document.getElementById('providerHistorySelect');
-  providers.forEach(p=>{
-    const opt = document.createElement('option');
-    opt.value = p.id;
-    opt.text = p.name;
-    provSelect.appendChild(opt);
-  });
-}
+    /* =========================
+       INIT FILTERS + PROVIDER HISTORY
+    ========================= */
+    function initFiltersAndProviders() {
+      // Fill filter tháng (1-12)
+      const monthSelect = document.getElementById('filterMonth');
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.text = m;
+        monthSelect.appendChild(opt);
+      }
+      // Fill filter năm (ví dụ 2024-2026)
+      const yearSelect = document.getElementById('filterYear');
+      for (let y = 2024; y <= 2026; y++) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.text = y;
+        yearSelect.appendChild(opt);
+      }
+      // Fill provider history select
+      const provSelect = document.getElementById('providerHistorySelect');
+      providers.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.text = p.name;
+        provSelect.appendChild(opt);
+      });
+    }
 
-/* =========================
-   PROVIDER HISTORY
-========================= */
-function renderProviderHistory(){
-  const select = document.getElementById('providerHistorySelect');
-  const providerId = select.value;
-  const tbody = document.getElementById('providerHistoryBody');
-  tbody.innerHTML = '';
-  if(!providerId) return;
-  payments.filter(p=>p.provider_id===providerId && p.payment_status==='paid')
-          .forEach(p=>{
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>PMT${String(p.id).padStart(4,'0')}</td>
+    /* =========================
+       PROVIDER HISTORY
+    ========================= */
+    function renderProviderHistory() {
+      const select = document.getElementById('providerHistorySelect');
+      const providerId = select.value;
+      const tbody = document.getElementById('providerHistoryBody');
+      tbody.innerHTML = '';
+      if (!providerId) return;
+      payments.filter(p => p.provider_id === providerId && p.payment_status === 'paid')
+        .forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>PMT${String(p.id).padStart(4, '0')}</td>
               <td>${p.booking_id}</td>
               <td>${formatVND(p.provider_share)}</td>
               <td>${p.paid_at ? (new Date(p.paid_at).toLocaleString()) : '-'}</td>
             `;
+          tbody.appendChild(tr);
+        });
+    }
+
+    /* =========================
+       BIZ REQUESTS
+    ========================= */
+    function renderBizRequests() {
+      const tbody = document.querySelector('#bizTable tbody');
+      tbody.innerHTML = '';
+      const unverifiedProviders = async () => {
+        try {
+          const res = await fetch('/admin/unverified-providers');
+          const result = await res.json();
+          return result;
+        } catch (error) {
+          console.error(error);
+        };
+      };
+
+
+      const fetchData = async () => {
+        const { data } = await unverifiedProviders();
+        const { providers, representatives } = data;
+        representatives.forEach((rep, idx) => {
+          const provider = providers[idx];
+          if (provider.user_id === rep.id) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${provider.id}</td>
+              <td>${provider.name}</td>
+              <td>${rep.last_name + rep.first_name}</td>
+              <td>${provider.verified_at == null &&
+              `<span style="display: inline - block; padding: 3px 8px; background: #fff7cd; border: 1px solid #facc15;
+              color: #b45309;
+              border-radius: 12px;
+              font-size: 12px;
+              font-weight: 600;
+            ">
+          Chờ duyệt
+        </span >`}</td>
+              <td>
+               <button class="btn small btn-ghost" data-provider='${JSON.stringify(provider)}'
+                data-rep='${JSON.stringify(rep)}'
+                 onclick="openBizModal(this)"
+              >
+                Chi tiết
+              </button>
+
+              </td>
+            `;
             tbody.appendChild(tr);
-          });
-}
+          }
+        })
 
-/* =========================
-   BIZ REQUESTS
-========================= */
-function renderBizRequests(){
-  const tbody = document.querySelector('#bizTable tbody');
-  tbody.innerHTML = '';
-  bizRequests.forEach(b=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${b.id}</td>
-      <td>${b.company}</td>
-      <td>${b.rep}</td>
-      <td>${b.status}</td>
-      <td>
-        <button class="btn small btn-ghost" onclick="openBizModal('${b.id}')">Chi tiết</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+      };
 
-/* =========================
-   MODAL BIZ
-========================= */
-function openBizModal(bizId){
-  const b = bizRequests.find(x=>x.id===bizId);
-  if(!b) return;
-  let currentBizId = bizId;
-  document.getElementById('bizDetail').innerHTML = `
-    <p><strong>Doanh nghiệp:</strong> ${b.company}</p>
-    <p><strong>Người đại diện:</strong> ${b.rep}</p>
-    <p><strong>Phone:</strong> ${b.phone}</p>
-    <p><strong>Email:</strong> ${b.email}</p>
-    <p><strong>Thông tin:</strong> ${b.info}</p>
-  `;
-  document.getElementById('bizModal').style.display='flex';
-}
-function closeBizModal(){ currentBizId=null; document.getElementById('bizModal').style.display='none'; }
-function approveBiz(){ 
-  if(!currentBizId) return;
-  const b = bizRequests.find(x=>x.id===currentBizId);
-  if(!b) return;
-  b.status='approved';
-  renderBizRequests();
-  closeBizModal();
-}
-function rejectBiz(){ 
-  if(!currentBizId) return;
-  const b = bizRequests.find(x=>x.id===currentBizId);
-  if(!b) return;
-  b.status='rejected';
-  renderBizRequests();
-  closeBizModal();
-}
+      fetchData();
+    }
 
-/* =========================
-   INIT
-========================= */
-initFiltersAndProviders();
-renderBookings();
-renderPayments();
-renderProviderSummary();
-renderBizRequests();
-renderProviderHistory();
-renderProviders();
-renderUsers();
-</script>
-{% endblock %}
+    /* =========================
+       MODAL BIZ
+    ========================= */
+    function openBizModal(btn) {
+      const provider = JSON.parse(btn.dataset.provider);
+      const rep = JSON.parse(btn.dataset.rep);
+      const btnApprove = document.getElementById('binzDetail-approve');
+      document.getElementById('bizDetail').innerHTML = `
+        <p><strong>Người đại diện:</strong> ${rep.last_name + rep.first_name}</p>
+        <p><strong>CCCD:</strong> ${rep.CCCD}</p>
+        <p><strong>SĐT:</strong> ${rep.phone_number}</p>
+        <p><strong>Email:</strong> ${rep.email}</p>
+        <p><strong>Địa chỉ:</strong> ${rep.address}</p>
+        <div style="display: flex;">*****<div style="width: 100%; height:1px; background-color:black"></div>*****</div>
+        <div>
+          <p><strong>Logo:</strong> </p>  
+          <img src='${provider.logo_url}' alt = 'logo-${provider.name}' style ='height: 80px; width: 80px; border-radius: 100%' />
+        </div>
+        <p><strong>Doanh nghiệp:</strong> ${provider.name}</p>
+        <p><strong>Mô tả:</strong> ${provider.description}</p>
+        <p><strong>Địa chỉ:</strong> ${provider.address}</p>
+        `;
+
+      document.getElementById('bizModal').style.display = 'flex';
+      btnApprove.onclick = () => approveBiz(provider.id);
+    }
+    function closeBizModal() { currentBizId = null; document.getElementById('bizModal').style.display = 'none'; }
+    function approveBiz(id) {
+      const api = async () => {
+        try {
+          const res = await fetch(`/admin/providers/${id}`, { method: 'PATCH' });
+
+          const data = await res.json(); // read JSON
+          console.log(data);
+
+          if (data.status === "success") {
+            console.log("Provider approved!");
+          } else {
+            console.warn("Failed:", data.message);
+          }
+
+        } catch (error) {
+          console.error("Network error:", error);
+        }
+
+      };
+
+      api();
+      renderBizRequests();
+      closeBizModal();
+    }
+    function rejectBiz() {
+      if (!currentBizId) return;
+      const b = bizRequests.find(x => x.id === currentBizId);
+      if (!b) return;
+      b.status = 'rejected';
+      renderBizRequests();
+      closeBizModal();
+    }
+
+    /* =========================
+       INIT
+    ========================= */
+    initFiltersAndProviders();
+    renderBookings();
+    renderPayments();
+    renderProviderSummary();
+    renderBizRequests();
+    renderProviderHistory();
+    renderProviders();
+    renderUsers();
+  </script>
+  {% endblock %}
