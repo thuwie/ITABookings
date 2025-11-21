@@ -89,6 +89,7 @@ class ProviderService implements ProviderServicePort {
         $result = $this->providerRepositoryPort->getProvidersByVerified($filter_value);
         return $result;
     }
+    
 
     public function getProviderById(int $id): array {
         $result = $this->providerRepositoryPort->findById($id)->toArray();

@@ -5,6 +5,8 @@ $capsule = require __DIR__ . '/../src/bootstrap.php';
 use Twig\Loader\FilesystemLoader;
 use Twig\Environment;
 use Slim\Factory\AppFactory;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Khai báo thư mục templates
 $loader = new FilesystemLoader(__DIR__ . '/../src/templates');
@@ -39,4 +41,6 @@ require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/users.php')($app, $twig);
 (require __DIR__ . '/../src/routes/provider.php')($app, $twig);
 (require __DIR__ . '/../src/routes/driver.php')($app, $twig);
+(require __DIR__ . '/../src/routes/admin.php')($app, $twig);
+
 $app->run();
