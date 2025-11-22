@@ -12,6 +12,8 @@ return function(App $app, $twig) {
 
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
+    $redirectUrl = $_SESSION['redirect_after_login'] ?? '/';
+    unset($_SESSION['redirect_after_login']);
 
 
     try {
@@ -22,7 +24,7 @@ return function(App $app, $twig) {
         $result = [
             'status' => 'success',
             'message' => 'Đăng nhập thành công',
-            'redirect' => '/'  // JS sẽ xử lý chuyển trang
+            'redirect' =>  $redirectUrl
         ];
 
     } catch (\Exception $e) {

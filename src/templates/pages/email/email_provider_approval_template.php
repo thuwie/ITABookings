@@ -30,6 +30,9 @@
                             <p style="line-height:1.6; font-size:16px;">
                                 <strong>Ngày duyệt:</strong> <?= htmlspecialchars($formatted) ?>
                             </p>
+                            <a href="" style="line-height:1.6; font-size:16px;">
+                                Một số thông tin cũng như quy định về lợi nhuận khi trở thành nhà cung cấp tại hệ thống ITABookings.
+                            </a>
                             <p style="line-height:1.6; font-size:14px; color:#777;">
                                 Vui lòng không phản hồi email này.
                             </p>

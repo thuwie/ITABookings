@@ -11,4 +11,5 @@ interface ProviderServicePort {
     public function getProviderById(int $id): array;
     public function saveVehicle($vehicleInfo, $imgs, $id): bool;
     public function getUtilities(): array;
+    public function saveProviderExtraCosts($data, $providerId): bool;
 }

@@ -12,6 +12,7 @@ use App\Domain\Entity\Vehicle;
 use App\Domain\Entity\Utility;
 use App\Domain\Entity\VehicleImage;
 use App\Domain\Entity\VehicleUtility;
+use App\Domain\Entity\CostsRelatedProvider;
 
 
 class ProviderService implements ProviderServicePort {
@@ -222,5 +223,17 @@ class ProviderService implements ProviderServicePort {
     public function getUtilities(): array {
         $result = $this->providerRepositoryPort->getUtilities();
         return $result;
+    }
+
+    public function saveProviderExtraCosts($data, $providerId): bool {
+        $driver_fee_per_hour = (float) $data['driver_fee_per_hour'];
+        $profit_margin = (float)  $data['profit_margin'];
+        $id = (int)  $providerId; 
+        $entity = new CostsRelatedProvider (0, $id,  $driver_fee_per_hour, $profit_margin);
+        $result = $this->providerRepositoryPort->saveProviderExtraCosts($entity);
+        if(!$result) {
+            return false;
+        }
+        return true;
     }
 }

@@ -6,6 +6,7 @@ use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
 use App\Domain\Entity\Utility;
+use App\Domain\Entity\CostsRelatedProvider;
 use Psr\Http\Message\UploadedFileInterface;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Helper\FileHelper;
@@ -173,5 +174,10 @@ class ProviderRepository implements ProviderRepositoryPort {
         $result = DB::table('utilities')->get();
         return $result->toArray(); 
    }
+
+    public function saveProviderExtraCosts(CostsRelatedProvider $costsRelatedProvider): bool {
+        $result = DB::table('costs_related_providers')->insertGetId($costsRelatedProvider->toInsertArray());
+         return $result > 0;
+    }
 }
 

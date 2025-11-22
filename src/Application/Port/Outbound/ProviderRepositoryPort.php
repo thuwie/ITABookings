@@ -2,6 +2,7 @@
 namespace App\Application\Port\Outbound;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
+use App\Domain\Entity\CostsRelatedProvider;
 use Psr\Http\Message\UploadedFileInterface;
 interface ProviderRepositoryPort {
     public function save(Provider $provider): Provider;
@@ -16,4 +17,5 @@ interface ProviderRepositoryPort {
     public function saveUtilities(array $utilities): array;
     public function saveVehicleWithUtilities(array $data): bool;
     public function getUtilities(): array;
+      public function saveProviderExtraCosts(CostsRelatedProvider $costsRelatedProvider): bool;
 }
