@@ -19,6 +19,7 @@ class EmailRepository implements EmailRepositoryPort {
 
         $emailUser = $emailer['email'];
         $userName =  $emailer['userName'];
+        $userId = $emailer['userId'];
         $approvedAt = $emailer['approvedAt'];
 
         $date = new \DateTime($approvedAt);

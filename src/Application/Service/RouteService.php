@@ -38,5 +38,14 @@ class RouteService implements RouteServicePort {
         ? ['status' => 'success', 'data' => $route, 'message' => 'Route found successfully']
         : ['status' => 'failed', 'message' => 'Route not found'];
     }
+
+     public function findVehiclesByRoute($data): array {
+        // $from = $data['from'];
+        // $to = $data['to'];
+        // $route = $this->routeRepositoryPort->getRoute($from, $to);
+       
+       $providersWithVehicles = $this->routeRepositoryPort->getProvidersWithVehicles();
+       return  $providersWithVehicles;
+    }
     
 }
