@@ -41,7 +41,7 @@ class User
         $this->email       = $email;
         $this->phoneNumber = $phoneNumber;
         $this->portrait    = $portrait;
-         $this->gender      = $gender;
+        $this->gender      = $gender;
         $this->dateOfBirth = $dateOfBirth;
         $this->cccd        = $cccd;
         $this->address     = $address;
@@ -50,7 +50,8 @@ class User
         $this->updatedAt = $updatedAt ?? new \DateTimeImmutable();
     }
 
-    // ===== Getters =====
+    // ====== Getters ======
+    public function getId(): int { return $this->id; }
     public function getFirstName(): string { return $this->firstName; }
     public function getLastName(): string { return $this->lastName; }
     public function getPassword(): string { return $this->password; }
@@ -78,7 +79,7 @@ class User
         ?\DateTimeImmutable $dateOfBirth = null,
         ?string $cccd = null,
         ?string $address = null,
-        ?int $provinceId = null,
+        ?int $provinceId = null
     ): void {
         if ($firstName !== null) $this->firstName = $firstName;
         if ($lastName !== null) $this->lastName = $lastName;
@@ -89,6 +90,7 @@ class User
         if ($cccd !== null) $this->cccd = $cccd;
         if ($address !== null) $this->address = $address;
         if ($provinceId !== null) $this->provinceId = $provinceId;
+
         $this->touch();
     }
 
@@ -102,8 +104,8 @@ class User
             'id'           => $this->id,
             'first_name'   => $this->firstName,
             'last_name'    => $this->lastName,
-            'email'        => $this->email,         // string
-            'password'     => $this->password,      // string hash
+            'email'        => $this->email,
+            'password'     => $this->password,
             'phone_number' => $this->phoneNumber,
             'portrait'     => $this->portrait,
             'gender'       => $this->gender,
@@ -116,12 +118,12 @@ class User
         ];
     }
 
-     public function toInsertArray(): array {
+    public function toInsertArray(): array {
         return [
             'first_name'   => $this->firstName,
             'last_name'    => $this->lastName,
-            'email'        => $this->email,         // string
-            'password'     => $this->password,      // string hash
+            'email'        => $this->email,
+            'password'     => $this->password,
             'phone_number' => $this->phoneNumber,
             'portrait'     => $this->portrait,
             'gender'       => $this->gender,
@@ -134,19 +136,19 @@ class User
         ];
     }
 
-   public static function fromArray(array $data): User {
+    public static function fromArray(array $data): User {
         return new User(
             $data['id'],
             $data['first_name'],
             $data['last_name'],
             $data['password'],
             $data['email'],
-            $data['phone_number'],
-            $data['portrait'] ?? '',
+            $data['phone_number'] ?? null,
+            $data['portrait'] ?? null,
             $data['gender'],
             isset($data['date_of_birth']) ? new \DateTimeImmutable($data['date_of_birth']) : null,
-            $data['CCCD'] ?? '',
-            $data['address'] ?? '',
+            $data['CCCD'] ?? null,
+            $data['address'] ?? null,
             $data['province_id'] ?? null,
             isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null

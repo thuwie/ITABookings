@@ -65,10 +65,11 @@ class AdminService implements AdminServicePort {
 
             $userEmail = $userInfo->getEmail();
             $userName = $userInfo->getFirstName() . " " . $userInfo->getLastName();
+            $userId = $userInfo->getId();
             $array = (array) $updatedProvider;
             $approvedAt = $array['verified_at'];
 
-            $emailer = ['email'=> $userEmail, 'userName' => $userName, 'approvedAt' => $approvedAt];
+            $emailer = ['email'=> $userEmail, 'userName' => $userName, 'userId' => $userId, 'approvedAt' => $approvedAt];
             $isEmailSent = $this->emailRepository->providerEmailSending($emailer);
 
             

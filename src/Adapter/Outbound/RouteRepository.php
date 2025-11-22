@@ -24,7 +24,7 @@ class RouteRepository implements RouteRepositoryPort {
         return $routeToArray;
      }
 
-     public function getRoute(string $from, string $to): ?array {
+    public function getRoute(string $from, string $to): ?array {
 
        $sql = "SELECT *
         FROM routes
@@ -42,6 +42,27 @@ class RouteRepository implements RouteRepositoryPort {
         $routeArray = (array) $route;
 
         return $routeArray;
+    }
+
+    public function getProvidersWithVehicles () : array {
+        $result = DB::table('providers')
+        ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
+        ->select(
+            // Provider fields
+            'providers.id as provider_id',
+            'providers.name as provider_name',
+            'providers.logo_url as provider_logo',
+
+            // Vehicle fields
+            'vehicles.id as vehicle_id',
+            DB::raw("CONCAT(vehicles.brand, ' ', vehicles.model) AS vehicle_name"),
+            'vehicles.seat_count',
+            'vehicles.fuel_consumption',
+            'vehicles.maintenance_per_km'
+        )
+        ->get();
+
+        return $result->toArray();
     }
 
 }

@@ -221,8 +221,10 @@
             <div class="field">
                 <label for="maintenance_per_km">Phí bảo dưỡng/km (VNĐ)</label>
                 <input type="text" id="maintenance_per_km" name="maintenance_per_km" placeholder="6,500" required>
-
             </div>
+            <p class="note">
+                *Vui lòng nhập chính xác thông tin này, vì nó có liên quan đến khoảng lợi nhuận chi phí của bạn.*
+            </p>
         </div>
 
         <div class="field-single">
@@ -273,7 +275,7 @@
 
         <input type="text" class="d-none" name="user_id" id="user_id" value="{{authUser.id}}">
         <!-- Nộp đơn -->
-        <button type="submit">Nộp đơn đăng ký doanh nghiệp</button>
+        <button type="submit">Nộp đơn đăng ký phương tiện</button>
     </form>
 
     <!-- Toast message container -->

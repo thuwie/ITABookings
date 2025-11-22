@@ -12,6 +12,12 @@ return function(App $app, $twig) {
         $service = $this->get(ProvinceServicePort::class); 
 
         $provinces = $service->getProvinces();
+        $routeServices = $this->get(RouteServicePort::class);
+        $data['from'] = $from;
+        $data['to'] = $to;
+
+        $result =   $routeServices->findVehiclesByRoute($data);
+
 
         $html = $twig->render('pages/routes/searching.html.twig', [
             'provinces' => $provinces,
@@ -23,17 +29,17 @@ return function(App $app, $twig) {
         return $response;
     });
 
-    $app->get('/routes', function ($request, $response, $args) use ($twig) {
+    // $app->get('/routes', function ($request, $response, $args) use ($twig) {
 
-        $params = $request->getQueryParams();
-        $from = $params['from'] ?? null;
-        $to = $params['to'] ?? null;
+    //     $params = $request->getQueryParams();
+    //     $from = $params['from'] ?? null;
+    //     $to = $params['to'] ?? null;
 
-        $routes = $this->get(RouteServicePort::class)->findRoutes($from, $to);
+    //     $routes = $this->get(RouteServicePort::class)->findRoutes($from, $to);
 
-        $response->getBody()->write(json_encode($routes));
-        return $response->withHeader('Content-Type', 'application/json');
-    });
+    //     $response->getBody()->write(json_encode($routes));
+    //     return $response->withHeader('Content-Type', 'application/json');
+    // });
 
     $app->get('/create-routes', function ($request, $response, $args) use ($twig) {
         $service = $this->get(ProvinceServicePort::class); 

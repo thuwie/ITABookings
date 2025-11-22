@@ -303,6 +303,21 @@
       z-index: 2000;
       /* cao hơn toast và form */
     }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 4px solid #ddd;
+      border-top-color: #007bff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 
@@ -950,16 +965,21 @@
       const fetchData = async () => {
         const { data } = await unverifiedProviders();
         const { providers, representatives } = data;
-        representatives.forEach((rep, idx) => {
-          const provider = providers[idx];
-          if (provider.user_id === rep.id) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
+        const tr = document.createElement('tr');
+        if (providers.length == 0 || representatives.length == 0) {
+          tr.innerHTML = `<td colspan="10" style="text-align:center; padding:20px;">
+            Không có đơn đăng ký nào.
+          </td>`;
+        } else {
+          representatives.forEach((rep, idx) => {
+            const provider = providers[idx];
+            if (provider.user_id === rep.id) {
+              tr.innerHTML = `
               <td>${provider.id}</td>
               <td>${provider.name}</td>
               <td>${rep.last_name + rep.first_name}</td>
               <td>${provider.verified_at == null &&
-              `<span style="display: inline - block; padding: 3px 8px; background: #fff7cd; border: 1px solid #facc15;
+                `<span style="display: inline - block; padding: 3px 8px; background: #fff7cd; border: 1px solid #facc15;
               color: #b45309;
               border-radius: 12px;
               font-size: 12px;
@@ -977,10 +997,10 @@
 
               </td>
             `;
-            tbody.appendChild(tr);
-          }
-        })
-
+            }
+          });
+        }
+        tbody.appendChild(tr);
       };
 
       fetchData();
@@ -1013,28 +1033,27 @@
       btnApprove.onclick = () => approveBiz(provider.id);
     }
     function closeBizModal() { currentBizId = null; document.getElementById('bizModal').style.display = 'none'; }
-    function approveBiz(id) {
-      const api = async () => {
-        try {
-          const res = await fetch(`/admin/providers/${id}`, { method: 'PATCH' });
+    async function approveBiz(id) {
+      showLoading();
+      closeBizModal();
 
-          const data = await res.json(); // read JSON
+      try {
+        const res = await fetch(`/admin/providers/${id}`, { method: 'PATCH' });
+        const data = await res.json();
 
-          if (data.status === "success") {
-            console.log("Provider approved!");
-          } else {
-            console.warn("Failed:", data.message);
-          }
-
-        } catch (error) {
-          console.error("Network error:", error);
+        if (data.status === "success") {
+          console.log("Provider approved!");
+        } else {
+          console.warn("Failed:", data.message);
+          return; // stop if failed
         }
 
-      };
+        // run these AFTER API success
+        await renderBizRequests();
 
-      api();
-      renderBizRequests();
-      closeBizModal();
+      } catch (error) {
+        console.error("Network error:", error);
+      }
     }
     function rejectBiz() {
       if (!currentBizId) return;
@@ -1055,7 +1074,6 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form); // <-- use form here
-        console.log(formData);
 
         try {
           const res = await fetch('/admin/extra-costs', {
@@ -1078,6 +1096,19 @@
       });
 
     }
+
+    function showLoading() {
+      const tbody = document.querySelector('#bizTable tbody');
+      tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align:center; padding:20px;">
+          <div class="spinner"></div>
+          Đang tải dữ liệu mới...
+        </td>
+      </tr>
+    `;
+    }
+
 
     function showMessage(message, type = 'success', duration = 3000) {
       // Tạo container nếu chưa có
