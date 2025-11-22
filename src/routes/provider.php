@@ -5,6 +5,7 @@ use Slim\Routing\RouteCollectorProxy;
 use App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\ProviderServicePort;
 use App\Application\Port\Inbound\InformationPaymentServicePort;
+use App\Application\Port\Inbound\AdminServicePort;
 use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
@@ -19,7 +20,7 @@ return function (App $app, $twig) {
         $provinceService = $container->get(ProvinceServicePort::class);
         $providerService = $container->get(ProviderServicePort::class);
         $paymentService  = $container->get(InformationPaymentServicePort::class);
-
+        $adminServices  = $container->get(AdminServicePort::class);
 
         /** ---------------------------
          * GET /provider/register
@@ -88,22 +89,64 @@ return function (App $app, $twig) {
 
 
         /** ---------------------------
-         * GET /provider/{id}
+         * GET /provider/extra-costs-form
          * --------------------------- */
-        $group->get('/{id}', function ($request, $response) 
-            use ( $providerService) {
+        $group->get('/{id}/extra-costs', function ($request, $response) 
+            use ($twig, $adminServices) {
+            
+            $extraCosts = $adminServices->getExtraCost();
 
-            $id = $request->getAttribute('id');
+              $html = $twig->render('pages/provider/costs_related_providers.html.twig', ['extraCosts' => $extraCosts]);
 
-            $provider = $providerService->getProviderById($id);
 
-            $response->getBody()->write(json_encode([
-                'success' => true,
-                'provider' => $provider,
-            ]));
 
-            return $response->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write($html);
+            return $response;
         });
+
+
+         /** ---------------------------
+         * POST /provider/extra-costs-form
+         * --------------------------- */
+        $group->post('/{id}/extra-costs', function ($request, $response, $args) use ($providerService) {
+
+        $id = $args['id'];
+
+        // Read JSON body
+        $rawBody = $request->getBody()->getContents();
+        $body = json_decode($rawBody, true); 
+
+        if ($body === null) {
+    
+            $payload = [
+                'status' => 'error',
+                'message' => 'Invalid JSON payload'
+            ];
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        }
+
+        try {
+           
+            $providerService->saveProviderExtraCosts($body, $id);
+
+            $payload = [
+                'status'  => 'success',
+                'message' => 'Chi phí đã được lưu',
+                'redirect' => '/'
+            ];
+
+        } catch (\Exception $e) {
+            $payload = [
+                'status'  => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+
+        // Return JSON
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
 
 
         /** ---------------------------

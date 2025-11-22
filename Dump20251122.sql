@@ -44,6 +44,35 @@ LOCK TABLES `banned_providers` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `costs_related_providers`
+--
+
+DROP TABLE IF EXISTS `costs_related_providers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `costs_related_providers` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `provider_id` int unsigned NOT NULL,
+  `driver_fee_per_hour` decimal(10,2) NOT NULL,
+  `profit_margin` decimal(5,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_provider_extra_cost` (`provider_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `costs_related_providers`
+--
+
+LOCK TABLES `costs_related_providers` WRITE;
+/*!40000 ALTER TABLE `costs_related_providers` DISABLE KEYS */;
+INSERT INTO `costs_related_providers` VALUES (1,3,80000.00,10.00,'2025-11-22 05:40:32','2025-11-22 05:40:32');
+/*!40000 ALTER TABLE `costs_related_providers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `drivers`
 --
 
@@ -77,6 +106,34 @@ LOCK TABLES `drivers` WRITE;
 /*!40000 ALTER TABLE `drivers` DISABLE KEYS */;
 INSERT INTO `drivers` VALUES (7,5,13,'D123456789','B2','2025-10-30','2029-11-15','valid',NULL,0,NULL,'2025-11-18 04:39:29','2025-11-18 04:39:29');
 /*!40000 ALTER TABLE `drivers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `extra_costs`
+--
+
+DROP TABLE IF EXISTS `extra_costs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `extra_costs` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `extra_cost` decimal(10,2) NOT NULL,
+  `platform_fee_percent` decimal(5,2) NOT NULL,
+  `fuel_price` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `extra_costs`
+--
+
+LOCK TABLES `extra_costs` WRITE;
+/*!40000 ALTER TABLE `extra_costs` DISABLE KEYS */;
+INSERT INTO `extra_costs` VALUES (1,50000.00,12.05,23000.00,'2025-11-22 03:23:47','2025-11-22 03:23:47');
+/*!40000 ALTER TABLE `extra_costs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -211,7 +268,7 @@ CREATE TABLE `providers` (
 
 LOCK TABLES `providers` WRITE;
 /*!40000 ALTER TABLE `providers` DISABLE KEYS */;
-INSERT INTO `providers` VALUES (13,3,'A Po thương mại','/uploads/providers/a-po-thuong-mai/provider_691aee6d08f662.77508200_Screenshot_2025-04-24_171602.png','Doanh nghiệp chúng tôi là 1 doanh nghiệp cung cấp dịch vụ về thuê xe','thanhhang@abc','0123456789','79 Hồ CHí Minh',15,NULL,0,NULL,'2025-11-17 09:44:12','2025-11-17 09:44:13'),(14,4,'Công ty cổ phần 1 thành viên','/uploads/providers/cong-ty-co-phan-1-thanh-vien/provider_691aef04ccdba8.85948081_place-icon.png','Doanh nghiệp hiện tại cung cấp phương tiện và dịch vụ cho ngời dùng có 102','gideonzz246@gmail.com','0123654799','Phú Yên, Lạng Sơn',11,NULL,0,NULL,'2025-11-17 09:46:44','2025-11-17 09:46:44');
+INSERT INTO `providers` VALUES (13,3,'A Po thương mại','/uploads/providers/a-po-thuong-mai/provider_691aee6d08f662.77508200_Screenshot_2025-04-24_171602.png','Doanh nghiệp chúng tôi là 1 doanh nghiệp cung cấp dịch vụ về thuê xe','thanhhang@abc','0123456789','79 Hồ CHí Minh',15,NULL,0,'2025-11-21 09:19:17','2025-11-17 09:44:12','2025-11-21 09:19:17'),(14,4,'Công ty cổ phần 1 thành viên','/uploads/providers/cong-ty-co-phan-1-thanh-vien/provider_691aef04ccdba8.85948081_place-icon.png','Doanh nghiệp hiện tại cung cấp phương tiện và dịch vụ cho ngời dùng có 102','gideonzz246@gmail.com','0123654799','Phú Yên, Lạng Sơn',11,NULL,0,'2025-11-21 09:37:31','2025-11-17 09:46:44','2025-11-21 09:37:31');
 /*!40000 ALTER TABLE `providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -451,7 +508,7 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,4,'2025-11-18 10:15:14','2025-11-18 10:15:14');
+INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,2,'2025-11-21 09:19:17','2025-11-21 09:19:17'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,2,'2025-11-21 09:37:31','2025-11-21 09:37:31'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,4,'2025-11-18 10:15:14','2025-11-18 10:15:14');
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -615,4 +672,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-20 16:44:56
+-- Dump completed on 2025-11-22 13:04:08

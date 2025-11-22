@@ -1,0 +1,151 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký doanh nghiệp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Toast container góc trên phải */
+        #messageContainer {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1080;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* màn hình tối */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            /* cao hơn toast và form */
+        }
+    </style>
+</head>
+
+<body class="bg-light py-5">
+    <!-- OTHER CONTENT ABOVE -->
+    <div class="container">
+        <p>Chào <span class="fw-bold">{{ authUser.first_name }} {{
+                authUser.last_name}} </span> !!!</p>
+        <p>Rất vui khi bạn đã trở thành nhà cung cấp cho hệ thống của chúng tôi, </p>
+        <p>Để bạn hiểu rõ hơn về chính sách về các khoản thanh toán cũng như là lợi nhuận bạn muốn,
+            vui lòng đọc kỹ thông tin bên dưới.</p>
+        <p>Sau đây là những khoản phí bắt buộc bạn sẽ phải đóng để duy trì hệ thống.</p>
+        <p>Ngoài những khoản phí bắt buộc, chúng tôi cần biết thêm những khoản phí liên quan như mức lương tài xế và
+            khoản lợi nhuận mà bạn mong muốn (trích từ tổng của 1 booking).
+        </p>
+        <p class="text-danger">Lưu ý: chi phí có thể thay đổi trong tương lai</p>
+
+
+        <div class="d-flex justify-content-center mt-5">
+            <div class="w-100" style="max-width: 600px;">
+                <table class="table table-bordered table-striped text-center align-middle shadow-sm">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Chi phí cầu đường</th>
+                            <th>Phần trăm hoa hồng</th>
+                            <th>Giá nhiên liệu</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>{{ extraCosts.extra_cost|number_format(0, '.', ',') }} ₫</td>
+                            <td>{{extraCosts.platform_fee_percent}}%</td>
+                            <td>{{ extraCosts.fuel_price|number_format(0, '.', ',') }} ₫</td>
+                        </tr>
+                    </tbody>
+                </table>
+                Giải thích chi tiết
+                <ol>
+                    <li class="fw-bold">Chi phí cầu đường: <p class="fw-normal">Đây là khoản chi phí sẽ đóng cho nhà
+                            nước (bắt buộc)</p>
+                    </li>
+                    <li class="fw-bold">Hoa hồng: <p class="fw-normal">Đây là khoản chi phí hệ thống sẽ nhận được trích
+                            phần trăm
+                            từ tổng hóa đơn khi khách hàng thanh toán.</p>
+                    </li>
+                    <li class="fw-bold">Giá nhiên liệu <p class="fw-normal">Dựa trên giá nhiên liệu của thị trường, hệ
+                            thống sẽ cập nhật và thay đổi, giúp cho việc tính toán giá trị đơn hàng một cách chính xác,
+                            mang
+                            lợi nhuận cho cả 2 bên.</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Centered wrapper -->
+    <div class="d-flex justify-content-center" style="min-height: 100vh;">
+        <div class="w-100" style="max-width: 500px;">
+            <h2 class="mb-4 fw-bold text-center">Bổ sung các chi phí liên quan</h2>
+
+            <div class="card shadow-sm p-4 rounded-3">
+                <form id="provider-related-costs" action="insert_costs_provider.php" method="POST">
+
+                    <input type="text" class="d-none" id="user_id" name="user_id" value="{{ authUser.id }}">
+                    <!-- Driver Fee -->
+                    <div class="mb-3">
+                        <label for="driver_fee_per_hour" class="form-label fw-semibold">
+                            <i class="bi bi-cash-coin me-1"></i> Lương tài xế / Giờ
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                            <input type="number" step="0.01" class="form-control" id="driver_fee_per_hour"
+                                name="driver_fee_per_hour" required>
+                        </div>
+                    </div>
+
+                    <!-- Profit Margin -->
+                    <div class="mb-3">
+                        <label for="profit_margin" class="form-label fw-semibold">
+                            <i class="bi bi-graph-up-arrow me-1"></i> % Lợi nhuận
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                            <input type="number" step="0.01" class="form-control" id="profit_margin"
+                                name="profit_margin" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        <i class="bi bi-plus-circle me-1"></i> Bổ sung
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- OTHER CONTENT BELOW -->
+
+    <div id="messageContainer"></div>
+
+    <div id="loadingOverlay" style="display:none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+</body>
+
+<script src="/js/providers-related-costs.js"></script>
+
+</html>
+
+{% endblock %}

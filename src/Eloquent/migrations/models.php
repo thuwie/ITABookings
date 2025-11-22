@@ -338,6 +338,37 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'extra_costs' => function ($table) {
+        $table->increments('id');
+        $table->decimal('extra_cost', 10, 2); // Chi phí khác, cầu cống
+        $table->decimal('platform_fee_percent', 5, 2); // % hoa hồng hệ thống
+        $table->decimal('fuel_price', 10, 2); // Giá nhiên liệu hiện tại trên thị trường
+
+        $table->timestamps();
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
+    'costs_related_providers' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('provider_id');
+        $table->decimal('driver_fee_per_hour', 10, 2);
+        $table->decimal('profit_margin', 5, 2);
+
+        $table->timestamps();
+
+        // Optional: unique constraint to avoid duplicate provider entries
+        $table->unique(['provider_id'], 'unique_provider_extra_cost');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
+
 ];
 
 

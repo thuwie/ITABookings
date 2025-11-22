@@ -24,9 +24,6 @@ return function (App $app, $twig) {
         $userServices  = $container->get(UserServicePort::class);
         $adminServices  = $container->get(AdminServicePort::class);
 
-
-
-
         /** ---------------------------
          * GET /admin/dashboard
          * --------------------------- */
@@ -38,7 +35,7 @@ return function (App $app, $twig) {
         });
 
          /** ---------------------------
-         * API GET /admin/unverifiedProviders
+         *  GET /admin/unverifiedProviders
          * --------------------------- */
         $group->get('/unverified-providers', function ($request, $response) use ($providerService, $userServices) {
             $unverifiedProviders = $providerService->getProviders(false);
@@ -54,34 +51,62 @@ return function (App $app, $twig) {
                             ->withStatus(200);
         });
 
-         /** ---------------------------
-         * API POST /admin/providers/{id}
+        /** ---------------------------
+         *  POST /admin/extra-costs
          * --------------------------- */
-      $group->patch('/providers/{id}', function ($request, $response, $args) use ($adminServices) {
-        $id = (int) $args['id'];
-
-        try {
-            $result = $adminServices->approveProvider($id);
-
-            if ($result) {
-                $payload = ['status' => 'success'];
-                $statusCode = 200;
-            } else {
-                $payload = ['status' => 'fail', 'message' => 'Duyệt thất bại'];
-                $statusCode = 404;
+        $group->post('/extra-costs', function ($request, $response) 
+            use ($adminServices) {
+                $data = $request->getParsedBody(); // <-- get JSON body
+                try {
+                     $result = $adminServices->saveExtraCosts($data);
+                if ($result) {
+                    $payload = ['status' => 'success'];
+                    $statusCode = 200;
+                } else {
+                    $payload = ['status' => 'fail', 'message' => 'Duyệt thất bại'];
+                    $statusCode = 404;
+                }
+            } catch (\Exception $e) {
+                $payload = [
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ];
+                $statusCode = 500;
             }
-        } catch (\Exception $e) {
-            $payload = [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
-            $statusCode = 500;
-        }
 
-        $response->getBody()->write(json_encode($payload));
-        return $response->withHeader('Content-Type', 'application/json')
-                        ->withStatus($statusCode);
-    });
+            $response->getBody()->write(json_encode($payload));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus($statusCode);
+        });
+
+         /** ---------------------------
+         *  PATCH /admin/providers/{id}
+         * --------------------------- */
+         $group->patch('/providers/{id}', function ($request, $response, $args) use ($adminServices) {
+            $id = (int) $args['id'];
+
+            try {
+                $result = $adminServices->approveProvider($id);
+
+                if ($result) {
+                    $payload = ['status' => 'success'];
+                    $statusCode = 200;
+                } else {
+                    $payload = ['status' => 'fail', 'message' => 'Duyệt thất bại'];
+                    $statusCode = 404;
+                }
+            } catch (\Exception $e) {
+                $payload = [
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ];
+                $statusCode = 500;
+            }
+
+            $response->getBody()->write(json_encode($payload));
+            return $response->withHeader('Content-Type', 'application/json')
+                            ->withStatus($statusCode);
+        });
 
 
 

@@ -11,21 +11,22 @@ class AuthMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // BẮT BUỘC: phải start session
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Kiểm tra session user
         if (!isset($_SESSION['user'])) {
-            // Chưa đăng nhập → redirect
+            // Get the URL user is trying to access
+            $_SESSION['redirect_after_login'] = (string)$request->getUri()->getPath();
+
+            // Redirect to login with redirect query parameter
             $response = new \Slim\Psr7\Response();
             return $response
                 ->withHeader('Location', '/login')
                 ->withStatus(302);
         }
 
-        // Đã đăng nhập → cho vào route
         return $handler->handle($request);
     }
+
 }

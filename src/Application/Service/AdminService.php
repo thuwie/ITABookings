@@ -8,6 +8,7 @@ use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Application\Port\Outbound\AdminRepositoryPort;
 use App\Application\Port\Outbound\EmailRepositoryPort;
 use App\Domain\Entity\UserRole;
+use App\Domain\Entity\ExtraCost;
 use Carbon\Exceptions\Exception as ExceptionsException;
 use Illuminate\Database\Capsule\Manager as DB;
 use Exception;
@@ -34,9 +35,8 @@ class AdminService implements AdminServicePort {
         $this->emailRepository = $emailRepository;
     }
 
-
-public function approveProvider($id): bool
-{
+    public function approveProvider($id): bool
+    {
         return DB::transaction(function () use ($id) {
             $provider = $this->providerRepository->findById($id);
             if (!$provider) {
@@ -64,7 +64,7 @@ public function approveProvider($id): bool
             };
 
             $userEmail = $userInfo->getEmail();
-            $userName = $userInfo->getFirstName() . $userInfo->getLastName();
+            $userName = $userInfo->getFirstName() . " " . $userInfo->getLastName();
             $array = (array) $updatedProvider;
             $approvedAt = $array['verified_at'];
 
@@ -79,4 +79,21 @@ public function approveProvider($id): bool
         });
     }
 
+    public function saveExtraCosts($data): bool {
+       $extraCost = $data['extra_cost'];
+       $platformFee = $data['platform_fee_percent'];
+       $fuelPrice = $data['fuel_price'];
+
+       $newExtraCost = new ExtraCost(0, $extraCost, $platformFee, $fuelPrice);
+       $addedExtraCost = $this->adminRepository->saveExtraCosts($newExtraCost);
+       if(!$addedExtraCost) {
+        return false;
+       }
+       return true;
+    }
+
+    public function getExtraCost() {
+        $data = $this->adminRepository->getExtraCost();
+        return $data->toArray();
+    }
 }
