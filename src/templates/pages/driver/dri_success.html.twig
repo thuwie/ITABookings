@@ -1,0 +1,60 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký thành công</title>
+  <style>
+    body { 
+      font-family: Arial; 
+      background:#f6f7fb; 
+      margin:0; padding:0; 
+      display:flex; 
+      justify-content:center; 
+      align-items:center; 
+      height:100vh;
+    }
+    .card {
+      background:white;
+      padding:30px;
+      border-radius:10px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      width:90%;
+      max-width:450px;
+      text-align:center;
+    }
+    h2 { color:#002b5c; }
+    p { color:#333; line-height:1.5; }
+    a.btn {
+      display:inline-block;
+      margin-top:20px;
+      background: #002b5c;
+      color:white;
+      padding:10px 18px;
+      border-radius:6px;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    a.btn:hover { background: #004080; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Đăng ký thành công</h2>
+    <p>
+      "Đơn đăng ký tài xế" của bạn đã được gửi đến nhà cung cấp.<br>
+    </p>
+    <p>
+      Vui lòng chờ đến khi nhận được kết quả. Quá trình này thường mất vài ngày để kiểm tra và xét duyệt.
+    </p>
+    <p>
+      Kết quả sẽ được gửi thông qua email, vui lòng kiểm tra email thường xuyên.
+    </p>
+
+    <a href="index.php" class="btn">Trở về trang chính</a>
+  </div>
+</body>
+</html>
+
+{% endblock %}

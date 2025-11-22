@@ -137,17 +137,15 @@ const VehicleRegisterHandler = {
 
         allUtilityRadio.forEach(radio => {
             radio.addEventListener('change', (e) => {
-                const target = e.target.value;
-
-                if (target === "0") {
+                if (e.target.value === "0") {
                     this.enableUtilities(containerAddNewUtilities);
                     this.disableUtilities(selectAvailableUtilitiesElement);
                 } else {
                     this.enableUtilities(selectAvailableUtilitiesElement);
                     this.disableUtilities(containerAddNewUtilities);
                 }
-            })
-        })
+            });
+        });
 
         containerAddNewUtilities.addEventListener('click', function (e) {
             if (e.target.classList.contains("plus-icon")) {
@@ -158,25 +156,19 @@ const VehicleRegisterHandler = {
     },
 
     addUtilityRow() {
-        const containerAddNewUtilities = this.elements.containerAddNewUtilities;
-        const childCounting = containerAddNewUtilities.children.length;
-        if (childCounting <= 4) {
-            const newDiv = document.createElement('div');
-            const iTag = document.createElement('i');
-            const newInput = document.createElement('input');
+    const container = this.elements.containerAddNewUtilities;
+    const childCounting = container.children.length;
 
-            newDiv.classList.add('d-flex', 'gap-2', 'align-items-center');
-            newInput.setAttribute("type", "text");
-            newInput.setAttribute('required', true);
-            newInput.id = `utility-${childCounting + 1}`;
-            newInput.name = `utility-${childCounting + 1}`;
+    if (childCounting <= 4) {
+        const newDiv = document.createElement('div');
+        newDiv.classList.add('utility-item');
 
-            iTag.className = "bi bi-plus fw-bold text-success fs-5 plus-icon";
+        newDiv.innerHTML = `
+            <input type="text" class="utility-input" required>
+            <i class="bi bi-plus plus-icon"></i>
+        `;
 
-            newDiv.appendChild(newInput);
-            newDiv.appendChild(iTag);
-
-            containerAddNewUtilities.appendChild(newDiv);
+        container.appendChild(newDiv);
         }
     },
 
@@ -345,4 +337,3 @@ const VehicleRegisterHandler = {
 }
 
 document.addEventListener('DOMContentLoaded', () => VehicleRegisterHandler.init());
-

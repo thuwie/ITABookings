@@ -10,7 +10,7 @@
   --accent: #0256b0;
   --accent-2: #4dabff;
 }
-body { font-family: Arial; margin:0; padding:0; background:#f9f9f9; height:100%; }
+body { font-family: Arial; margin:0; padding:0; background:#f9f9f9 }
 
 /* Dashboard layout */
 .dashboard-wrapper { display:flex; min-height:100vh; }
@@ -66,14 +66,28 @@ body { font-family: Arial; margin:0; padding:0; background:#f9f9f9; height:100%;
 
 .spacer { flex:1; } /* push logout down */
 .logout-btn {
-  margin-top:8px;
-  padding:10px 14px;
-  border-radius:10px;
-  background:#df3131;
-  color: #ffffff;
-  border:none;
-  font-weight:700;
-  cursor:pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 6px;             /* giống button form */
+  background-color: #dc3545;      /* màu đỏ nhẹ */
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.logout-btn span {
+  font-size: 18px;
+  line-height: 1;
+}
+.logout-btn:hover {
+  background-color: #c82333;       /* đỏ đậm khi hover */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 /* MAIN CONTENT */
@@ -81,7 +95,6 @@ body { font-family: Arial; margin:0; padding:0; background:#f9f9f9; height:100%;
   flex:1;
   padding:20px;
   background:#f9f9f9;
-  min-height:100vh;
 }
 
 /* TAB CONTENT */
@@ -122,6 +135,7 @@ tfoot td { font-weight:bold; }
   .main-content { padding:14px; }
 }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
 </head>
 <body>
 
@@ -155,7 +169,11 @@ tfoot td { font-weight:bold; }
     </nav>
 
     <div class="spacer"></div>
-    <button class="logout-btn" onclick="alert('Đăng xuất')">Đăng xuất</button>
+    <a href="logout.php" class="logout-btn">
+      <span class="material-symbols-rounded">logout</span>
+      Đăng xuất
+    </a>
+
   </div>
 
   <!-- MAIN CONTENT (giữ code bảng của bạn) -->
@@ -220,7 +238,6 @@ tfoot td { font-weight:bold; }
         <select id="filterMonth"><option value="all">Tất cả</option></select>
         <label>Năm:</label>
         <select id="filterYear"><option value="all">Tất cả</option></select>
-        <button id="applyFilterBtn" class="view-btn">Lọc</button>
         <table>
           <thead>
             <tr>
@@ -249,20 +266,6 @@ tfoot td { font-weight:bold; }
   </div>
 </div>
 
-<!-- QR Modal -->
-<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; backdrop-filter: blur(8px); z-index:5000;">
-  <div style="background:white; padding:20px; border-radius:12px; width:360px; text-align:center; position:relative;">
-    <span style="position:absolute; top:8px; right:12px; cursor:pointer; font-size:22px;" onclick="closeQR()">×</span>
-    <h3>Thanh toán 50% còn lại</h3>
-    <p>Booking: <span id="modalBookingId"></span></p>
-    <img id="qrImage" width="200">
-    <p>Tên TK: <strong>Nguyen Van A</strong></p>
-    <p>Số TK: <strong>0123456789</strong></p>
-    <p>Số tiền: <strong id="modalAmount"></strong> VND</p>
-    <button style="background-color:#28a745; color:white; padding:8px 14px; border:none; border-radius:8px;" onclick="confirmPayment()">Xác nhận đã thanh toán</button>
-  </div>
-</div>
-
 <script>
 /* ---------- Tab switching sidebar ---------- */
 function openTabFromSidebar(evt){
@@ -275,28 +278,29 @@ function openTabFromSidebar(evt){
   if(target) target.classList.add('active');
 }
 
-/* Dữ liệu & render (giữ nguyên từ code của bạn) */
+/* ---------- Dữ liệu ---------- */
 let currentBookingId = '';
 const bookings = [
-  {id:'BK001', from:'Hà Nội', to:'Hải Phòng', start:'2025-11-16', end:'2025-11-19', payment:'paid', completed:false, total:1500000},
+  {id:'BK001', from:'Hà Nội', to:'Hải Phòng', start:'2025-11-16', end:'2025-11-20', payment:'paid', completed:false, total:1500000},
   {id:'BK002', from:'Đà Nẵng', to:'Huế', start:'2025-11-22', end:'2025-11-28', payment:'paid', completed:false, total:1200000},
 ];
 
+/* ---------- Xác nhận hoàn thành chuyến (THU 100% LUÔN) ---------- */
 function confirmTrip(id){
-  currentBookingId=id;
-  const b = bookings.find(x=>x.id===id);
-  if(!b) return;
-  document.getElementById('qrModal').style.display='flex';
-  document.getElementById('modalBookingId').innerText=b.id;
-  document.getElementById('modalAmount').innerText=(b.total/2).toLocaleString();
-  document.getElementById('qrImage').src=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Payment+${b.id}`;
-}
-function closeQR(){ document.getElementById('qrModal').style.display='none'; }
-function confirmPayment(){
-  const b = bookings.find(x=>x.id===currentBookingId);
-  if(b){ b.completed=true; alert(`Booking ${b.id} đã thanh toán 100%`); closeQR(); renderBookingList(); renderRevenueList(); renderCompletionList(); }
+  const b = bookings.find(x => x.id === id);
+  if (!b) return;
+
+  b.completed = true;
+  b.payment = 'paid';
+
+  alert(`Chuyến ${b.id} đã được xác nhận hoàn thành và thanh toán 100%.`);
+
+  renderBookingList();
+  renderRevenueList();
+  renderCompletionList();
 }
 
+/* ---------- Status ---------- */
 function getStatus(start,end,completed){
   let text='',cls='';
   if(completed){text='Hoàn thành';cls='status-done';}
@@ -304,70 +308,145 @@ function getStatus(start,end,completed){
     const today=new Date(); today.setHours(0,0,0,0);
     const s=new Date(start); s.setHours(0,0,0,0);
     const e=new Date(end); e.setHours(0,0,0,0);
-    if(today<s){ const diff=Math.ceil((s-today)/(1000*60*60*24)); text=`Sắp đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`; cls='status-upcoming'; }
-    else if(today>=s&&today<=e){ const diff=Math.ceil((e-today)/(1000*60*60*24)); text=`Đang đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`; cls='status-going'; }
-    else{text='Hoàn thành';cls='status-done';}
+    if(today<s){
+      const diff=Math.ceil((s-today)/(1000*60*60*24));
+      text=`Sắp đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`;
+      cls='status-upcoming';
+    }
+    else if(today>=s && today<=e){
+      const diff=Math.ceil((e-today)/(1000*60*60*24));
+      text=`Đang đi${diff>0&&diff<=7?' (còn '+diff+' ngày)':''}`;
+      cls='status-going';
+    }
+    else{
+      text='Hoàn thành';
+      cls='status-done';
+    }
   }
   return `<span class="status ${cls}">${text}</span>`;
 }
-function getPaymentStatus(b){ return b.completed?"100%":"50%"; }
 
+/* ---------- Hiển thị thanh toán ---------- */
+function getPaymentStatus(b){
+  return b.completed ? "100%" : "0%";
+}
+
+/* ---------- Render danh sách bookings ---------- */
 function renderBookingList(filter='all'){
-  const tbody=document.getElementById('bookingList'); if(!tbody) return; tbody.innerHTML='';
+  const tbody=document.getElementById('bookingList');
+  if(!tbody) return;
+  tbody.innerHTML='';
+
   bookings.forEach(b=>{
     if(filter==='pending' && b.completed) return;
     if(filter==='paid' && !b.completed) return;
     tbody.innerHTML+=`
       <tr>
-        <td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.start}</td><td>${b.end}</td>
-        <td>${getStatus(b.start,b.end,b.completed)}</td><td>${b.total.toLocaleString()} VND</td>
+        <td>${b.id}</td>
+        <td>${b.from}</td>
+        <td>${b.to}</td>
+        <td>${b.start}</td>
+        <td>${b.end}</td>
+        <td>${getStatus(b.start,b.end,b.completed)}</td>
+        <td>${b.total.toLocaleString()} VND</td>
         <td>${getPaymentStatus(b)}</td>
         <td><button class="view-btn" onclick="alert('Xem chi tiết ${b.id}')">Xem</button></td>
       </tr>`;
   });
 }
 
+/* ---------- Render Revenue ---------- */
 function renderRevenueList(month='all',year='all'){
-  const tbody=document.getElementById('revenueList'); if(!tbody) return; tbody.innerHTML=''; let total=0;
+  const tbody=document.getElementById('revenueList');
+  if(!tbody) return;
+  tbody.innerHTML='';
+  let total=0;
+
   bookings.forEach(b=>{
     if(!b.completed) return;
-    const d=new Date(b.start), m=d.getMonth()+1, y=d.getFullYear();
+    const d=new Date(b.start);
+    const m=d.getMonth()+1;
+    const y=d.getFullYear();
     if(month!=='all' && String(m)!==String(month)) return;
     if(year!=='all' && String(y)!==String(year)) return;
+
     total+=b.total;
-    tbody.innerHTML+=`<tr><td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.start}</td><td>${b.end}</td><td>Hoàn thành</td><td>${b.total.toLocaleString()} VND</td><td><button class="view-btn" onclick="alert('Xem chi tiết ${b.id}')">Xem</button></td></tr>`;
+    tbody.innerHTML+=`
+      <tr>
+        <td>${b.id}</td>
+        <td>${b.from}</td>
+        <td>${b.to}</td>
+        <td>${b.start}</td>
+        <td>${b.end}</td>
+        <td>Hoàn thành</td>
+        <td>${b.total.toLocaleString()} VND</td>
+        <td><button class="view-btn" onclick="alert('Xem ${b.id}')">Xem</button></td>
+      </tr>`;
   });
-  const totalEl=document.getElementById('totalRevenue'); if(totalEl) totalEl.innerText=total.toLocaleString()+' VND';
+
+  document.getElementById('totalRevenue').innerText = total.toLocaleString() + ' VND';
 }
 
+/* ---------- Filter ---------- */
 function applyRevenueFilter(){
   const m=document.getElementById('filterMonth').value;
   const y=document.getElementById('filterYear').value;
   renderRevenueList(m,y);
 }
 
+/* ---------- Completion list ---------- */
 function renderCompletionList(){
   const tbody=document.getElementById('completionList');
   const emptyMsg=document.getElementById('noActiveTrip');
-  if(!tbody) return; tbody.innerHTML=''; let hasTrip=false;
+  tbody.innerHTML='';
+  let hasTrip=false;
+
   bookings.forEach(b=>{
     const now=new Date(); now.setHours(0,0,0,0);
     const s=new Date(b.start); s.setHours(0,0,0,0);
     const e=new Date(b.end); e.setHours(0,0,0,0);
+
     if(now>=s && now<=e && !b.completed){
       hasTrip=true;
-      tbody.innerHTML+=`<tr><td>${b.id}</td><td>${b.from}</td><td>${b.to}</td><td>${b.end}</td><td><button class="complete-btn" onclick="confirmTrip('${b.id}')">Hoàn thành</button></td></tr>`;
+      tbody.innerHTML+=`
+        <tr>
+          <td>${b.id}</td>
+          <td>${b.from}</td>
+          <td>${b.to}</td>
+          <td>${b.end}</td>
+          <td><button class="complete-btn" onclick="confirmTrip('${b.id}')">Hoàn thành</button></td>
+        </tr>`;
     }
   });
-  emptyMsg.style.display=hasTrip?"none":"block";
+
+  emptyMsg.style.display = hasTrip ? "none" : "block";
 }
 
+/* ---------- Init ---------- */
 document.addEventListener('DOMContentLoaded',()=>{
-  const monthSel=document.getElementById('filterMonth'); for(let m=1;m<=12;m++){ const opt=document.createElement('option'); opt.value=m; opt.text=m; monthSel.appendChild(opt);}
-  const yearSel=document.getElementById('filterYear'); const currentYear=new Date().getFullYear(); for(let y=currentYear-5;y<=currentYear;y++){ const opt=document.createElement('option'); opt.value=y; opt.text=y; yearSel.appendChild(opt);}
-  const paymentFilter=document.getElementById('paymentStatusFilter'); if(paymentFilter) paymentFilter.addEventListener('change',e=>renderBookingList(e.target.value||'all'));
-  const applyBtn=document.getElementById('applyFilterBtn'); if(applyBtn) applyBtn.addEventListener('click',applyRevenueFilter);
-  renderBookingList(); renderRevenueList(); renderCompletionList();
+  // months
+  const monthSel=document.getElementById('filterMonth');
+  for(let m=1;m<=12;m++){
+    const opt=document.createElement('option'); opt.value=m; opt.text=m;
+    monthSel.appendChild(opt);
+  }
+  // years
+  const yearSel=document.getElementById('filterYear');
+  const currentYear=new Date().getFullYear();
+  for(let y=currentYear-5;y<=currentYear;y++){
+    const opt=document.createElement('option'); opt.value=y; opt.text=y;
+    yearSel.appendChild(opt);
+  }
+  // Filter bookings
+  document.getElementById('paymentStatusFilter')
+    .addEventListener('change',e=>renderBookingList(e.target.value));
+  // --- Mới: tự động lọc doanh thu khi thay đổi tháng hoặc năm ---
+  monthSel.addEventListener('change',()=>applyRevenueFilter());
+  yearSel.addEventListener('change',()=>applyRevenueFilter());
+  // render ban đầu
+  renderBookingList();
+  renderRevenueList();
+  renderCompletionList();
 });
 </script>
 </body>

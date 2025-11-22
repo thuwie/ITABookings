@@ -1,0 +1,359 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provider Dashboard</title>
+<link rel="stylesheet" href="\xampp\htdocs\ITABookings\public\css\pro_dash.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="profile">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+      <div>
+        <div class="name">Nguyen Van A</div>
+        <div style="font-size:12px;color:#888;">Doanh nghiệp</div>
+      </div>
+    </div>
+
+    <div class="side-title">Main Menu</div>
+
+    <nav class="side-nav">
+    <button class="side-item active" data-tab="tabBookings" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=VeUo27LTyt8A&format=png&color=000000">
+        <span>Danh sách đơn đặt</span>
+    </button>
+    <button class="side-item" data-tab="tabVehicles" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=61579&format=png&color=000000">
+        <span>Đăng ký phương tiện</span>
+    </button>
+    <button class="side-item" data-tab="tabManageVehicles" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=16559&format=png&color=000000">
+        <span>Quản lý phương tiện</span>
+    </button>
+    <button class="side-item" data-tab="tabDrivers" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=qgQGGYaaHG8F&format=png&color=000000">
+        <span>DS tài xế đăng ký</span>
+    </button>
+    <button class="side-item" data-tab="tabManageDrivers" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=22117&format=png&color=000000">
+        <span>Quản lý tài xế</span>
+    </button>
+    <button class="side-item" data-tab="tabDriverPayments" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=ckrjM2xjKegD&format=png&color=000000">
+        <span>Thanh toán tài xế</span>
+    </button>
+    <button class="side-item" data-tab="tabRevenue" onclick="openTabFromSidebar(event)">
+        <img class="icon" src="https://img.icons8.com/?size=100&id=3005&format=png&color=000000">
+        <span>Tổng doanh thu</span>
+    </button>
+    </nav>
+
+    <div class="spacer"></div>
+    <a href="logout.php" class="logout-btn">
+        <span class="material-symbols-rounded">logout</span>
+        <span class="text">Đăng xuất</span>
+    </a>
+
+  </div>
+    <div class="main-content">
+    <!-- TAB 1 -->
+    <div id="tabBookings" class="tab-content active">
+      <div class="container">
+        <h2>Danh sách đơn đặt</h2>
+        <label>Trạng thái thanh toán:</label>
+        <select id="paymentStatusFilter">
+          <option value="all">Tất cả</option>
+          <option value="pending">Chưa thanh toán</option>
+          <option value="paid">Đã thanh toán</option>
+        </select>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Booking</th>
+              <th>Nơi đi</th>
+              <th>Nơi đến</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Tổng tiền</th>
+              <th>Thanh toán</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="bookingList"></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- TAB 2 -->
+    <div id="tabVehicles" class="tab-content">
+        <div class="container">
+            <!-- FORM ĐĂNG KÝ PHƯƠNG TIỆN -->
+            <form id="vehicle-form">
+
+                <h3>Thông tin phương tiện</h3>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="brand">Thương hiệu xe</label>
+                        <input type="text" id="brand" name="brand" placeholder="Ví du: Honda..." required>
+                    </div>
+                    <div class="field">
+                        <label for="model">Dòng xe</label>
+                        <input type="tel" id="model" name="model" placeholder="Ví dụ: CR-V" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="year_of_manufacture">Năm sản xuất</label>
+                        <input type="text" id="year_of_manufacture" name="year_of_manufacture" placeholder="2011" required>
+                    </div>
+                    <div class="field">
+                        <label for="license_plate">Biển số xe</label>
+                        <input type="text" id="license_plate" name="license_plate" placeholder="VD: 30A-123.45" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="seat_counting">Số chỗ ngồi</label>
+                        <select name="seat_counting" id="seat_counting" required>
+                            <option value="">-- Chọn số chỗ --</option>
+                            <option value="4">4</option>
+                            <option value="7">7</option>
+                            <option value="16">16</option>
+                            <option value="24">24</option>
+                            <option value="35">35</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="fuel_consumption">Nhiên liệu tiêu thụ/100km (L)</label>
+                        <input type="text" id="fuel_consumption" name="fuel_consumption" placeholder="6.5" required>
+                    </div>
+                    <div class="field">
+                        <label for="maintenance_per_km">Phí bảo dưỡng/km (VNĐ)</label>
+                        <input type="text" id="maintenance_per_km" name="maintenance_per_km" placeholder="6,500" required>
+                    </div>
+                </div>
+
+                <div class="field-single">
+                    <label for="description">Mô tả</label>
+                    <textarea id="description" name="description" rows="3" placeholder="Giới thiệu ngắn..." required></textarea>
+                </div>
+
+                <div class="field-single">
+                    <label for="files">Hình ảnh liên quan</label>
+                    <input type="file" id="files" name="files" accept="image/*" multiple required>
+                    <div id="imagesPreview" style="display:none; margin-top: 10px;"></div>
+                </div>
+
+                <h3>Tiện ích của phương tiện</h3>
+
+                <div class="utility-row">
+                  <div class="utility-col">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                          <input type="radio" name="utility" id="utilities" value="1" style="width:12px;height:12px;" checked>
+                          <label for="utilities" style="margin:0;">Tiện ích sẵn có</label>
+                      </div>
+
+                      <div id="utilities-radio" class="border rounded-2 p-2"></div>
+                  </div>
+
+                  <div class="utility-col">
+                      <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                          <input type="radio" name="utility" id="new-utilities" value="0" style="width:12px;height:12px;">
+                          <label for="new-utilities" style="margin:0;">Thêm mới tiện ích</label>
+                      </div>
+
+                      <div id="multiple_utilities" class="utility-input-group" style="pointer-events:none; opacity:0.6;">
+                          <div class="utility-item">
+                              <input type="text" class="utility-input" disabled>
+                              <i class="bi bi-plus plus-icon"></i>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="representative" id="representative">
+                    {{ authUser.gender == 'female' ? 'Bà' : 'Ông' ?? 'Ông/Bà' }}
+                    <span id="repName">{{ authUser.first_name }} {{
+                        authUser.last_name}}</span> là chủ sở hữu của phương tiện này.
+                </div>
+
+                <input type="text" class="d-none" name="user_id" id="user_id" value="{{authUser.id}}">
+                <!-- Nộp đơn -->
+                <button type="submit">Đăng ký phương tiện</button>
+            </form>
+
+            <!-- Toast message container -->
+            <div id="messageContainer"></div>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" style="display:none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <script src="vehicles-register.js"></script>
+        </div>
+    </div>
+        <!-- TAB 3 -->
+        <div id="tabManageVehicles" class="tab-content">
+        <div class="container">
+            <h2>Quản lý phương tiện</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thương hiệu</th>
+                        <th>Dòng xe</th>
+                        <th>Biển số</th>
+                        <th>Năm SX</th>
+                        <th>Số chỗ</th>
+                        <th>Tiêu thụ nhiên liệu</th>
+                        <th>Phí bảo dưỡng</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="manageVehicleList">
+                    <!-- Render từ backend -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- TAB 4 -->
+     <div id="tabDrivers" class="tab-content">
+        <div class="container">
+            <h2>Danh sách tài xế đăng ký</h2>
+            <table>
+            <thead>
+                <tr>
+                <th>Tên tài xế</th>
+                <th>Tuổi</th>
+                <th>Loại GPLX</th>
+                <th>Kinh nghiệm</th>
+                <th>Ngày nộp đơn</th>
+                <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="driverList">
+                <!-- Render backend -->
+            </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- TAB 4 -->
+    <div id="tabManageDrivers" class="tab-content">
+      <div class="container">
+          <h2>Quản lý tài xế</h2>
+          <table>
+              <thead>
+                  <tr>
+                      <th>Tên tài xế</th>
+                      <th>GPLX</th>
+                      <th>Ngày cấp</th>
+                      <th>Ngày hết hạn</th>
+                      <th>Trạng thái</th>
+                      <th>Kinh nghiệm</th>
+                      <th>Đánh giá trung bình</th>
+                      <th>Hành động</th>
+                  </tr>
+              </thead>
+              <tbody id="manageDriverList">
+                  <!-- Render từ backend -->
+              </tbody>
+          </table>
+      </div>
+  </div>
+    <!-- TAB 5 -->
+    <div id="tabDriverPayments" class="tab-content">
+      <div class="container">
+          <h2>Thanh toán tài xế</h2>
+
+          <label>Lọc trạng thái:</label>
+          <select id="paymentFilter">
+              <option value="all">Tất cả</option>
+              <option value="pending">Chưa thanh toán</option>
+              <option value="paid">Đã thanh toán</option>
+          </select>
+
+          <table>
+              <thead>
+                  <tr>
+                      <th>Mã Booking</th>
+                      <th>Nơi đi</th>
+                      <th>Nơi đến</th>
+                      <th>Bắt đầu</th>
+                      <th>Kết thúc</th>
+                      <th>Trạng thái</th>
+                      <th>Tài xế</th>
+                      <th>Tổng tiền</th>
+                      <th>Thanh toán</th>
+                      <th>Hành động</th>
+                  </tr>
+              </thead>
+              <tbody id="paymentDriverList"></tbody>
+          </table>
+      </div>
+  </div>
+    <!-- TAB 6 -->
+    <div id="tabRevenue" class="tab-content">
+      <div class="container">
+        <h2>Tổng doanh thu theo tháng/năm</h2>
+        <label>Tháng:</label>
+        <select id="filterMonth"><option value="all">Tất cả</option></select>
+        <label>Năm:</label>
+        <select id="filterYear"><option value="all">Tất cả</option></select>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Booking</th>
+              <th>Nơi đi</th>
+              <th>Nơi đến</th>
+              <th>Ngày bắt đầu</th>
+              <th>Ngày kết thúc</th>
+              <th>Trạng thái</th>
+              <th>Tổng tiền</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="revenueList"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6">Tổng doanh thu</td>
+              <td id="totalRevenue">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    </div>
+</div>        
+
+<script>
+/* ---------- Tab switching sidebar ---------- */
+function openTabFromSidebar(evt){
+  document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
+  const btn = evt.currentTarget;
+  btn.classList.add('active');
+  const tabId = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if(target) target.classList.add('active');
+}
+</script>
+<script src="\xampp\htdocs\ITABookings\public\js\list-of-registered-drivers.js"></script>
+</body>
+
+</html>
+{% endblock %}
