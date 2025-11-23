@@ -179,5 +179,56 @@ class ProviderRepository implements ProviderRepositoryPort {
         $result = DB::table('costs_related_providers')->insertGetId($costsRelatedProvider->toInsertArray());
          return $result > 0;
     }
+
+    public function getProvidersWithVehicles(?int $seat = null, ?int $provider = null): array
+    {
+        $query = DB::table('providers')
+            ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
+            ->select(
+                'providers.user_id as provider_id',
+                'providers.name as provider_name',
+                'providers.logo_url as provider_logo',
+                'vehicles.id as vehicle_id',
+                DB::raw("CONCAT(vehicles.brand, ' ', vehicles.model) AS vehicle_name"),
+                'vehicles.seat_count',
+                'vehicles.fuel_consumption',
+                'vehicles.maintenance_per_km'
+            );
+
+        $query->when($seat !== null, function ($q) use ($seat) {
+            $q->where('vehicles.seat_count', $seat);
+        });
+
+        $query->when($provider !== null, function ($q) use ($provider) {
+            $q->where('providers.user_id', $provider);
+        });
+
+        $result = $query->get();
+
+        return $result->toArray();
+    }
+
+
+    public function providersRelatedCosts () : array {
+        $costs = DB::table('costs_related_providers')
+        ->orderBy('id', 'asc')
+        ->get();
+
+        return $costs->toArray();
+    }
+
+    public function getExtraCosts() {
+        $extraCosts= DB::table('extra_costs')->first();
+        return $extraCosts;
+    }
+
+    public function getSeatCounting():array {
+        $seatCounting = DB::table('vehicles')
+        ->select('seat_count')
+        ->distinct()
+        ->get();
+
+        return $seatCounting->toArray();
+    }
 }
 

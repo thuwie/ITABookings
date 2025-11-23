@@ -2,31 +2,51 @@
 use Slim\App;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\RouteServicePort;
+use App\Application\Port\Inbound\ProviderServicePort;
+
 return function(App $app, $twig) {
     $app->get('/searching-routes', function ($request, $response, $args) use ($twig) {
-
-        $params = $request->getQueryParams();
-        $from = $params['from'] ?? null;
-        $to = $params['to'] ?? null;
-
         $service = $this->get(ProvinceServicePort::class); 
+        $providerServices = $this->get(ProviderServicePort::class);
 
         $provinces = $service->getProvinces();
-        $routeServices = $this->get(RouteServicePort::class);
-        $data['from'] = $from;
-        $data['to'] = $to;
-
-        $result =   $routeServices->findVehiclesByRoute($data);
+        $providers = $providerServices->getProviders(true);
+        $seatCounting =   $providerServices->getSeatCounting();
 
 
         $html = $twig->render('pages/routes/searching.html.twig', [
             'provinces' => $provinces,
-            'from' => $from,
-            'to' => $to,
+            'providers' =>$providers,
+            'seat_counting' => $seatCounting
         ]);
 
         $response->getBody()->write($html);
         return $response;
+    });
+
+    $app->get('/routes', function ($request, $response, $args) use ($twig) {
+
+        $params = $request->getQueryParams();
+        $from = $params['from'] ?? null;
+        $to = $params['to'] ?? null;
+        $seat_counting = $params['seat_counting'] ?? null;
+        $provider = $params['provider'] ?? null;
+
+        $routeServices = $this->get(RouteServicePort::class);
+        $result = null;
+
+        if($from && $to) {
+            $data['from'] = $from;
+            $data['to'] = $to;
+            $data['seat_counting'] = $seat_counting;
+            $data['provider'] = $provider;
+            $result =  $routeServices->findVehiclesByRoute($data);
+        }
+
+       $payload = json_encode(['data' => $result]);
+
+        $response->getBody()->write($payload);
+        return $response->withHeader('Content-Type', 'application/json');
     });
 
     // $app->get('/routes', function ($request, $response, $args) use ($twig) {
