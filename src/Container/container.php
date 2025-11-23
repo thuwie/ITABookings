@@ -126,7 +126,10 @@ return function (): Container {
 
         //Inbound Port Binding
         $container->set(RouteServicePort::class, function() use ($container) {
-            return new RouteService($container->get(RouteRepositoryPort::class));
+            return new RouteService($container->get(RouteRepositoryPort::class),
+            $container->get(ProviderRepositoryPort::class),
+            $container->get(ProvinceRepositoryPort::class),
+        );
         });
 
 

@@ -17,5 +17,9 @@ interface ProviderRepositoryPort {
     public function saveUtilities(array $utilities): array;
     public function saveVehicleWithUtilities(array $data): bool;
     public function getUtilities(): array;
-      public function saveProviderExtraCosts(CostsRelatedProvider $costsRelatedProvider): bool;
+    public function saveProviderExtraCosts(CostsRelatedProvider $costsRelatedProvider): bool;
+    public function getProvidersWithVehicles(?int $seat = null, ?int $provider = null): array;
+    public function providersRelatedCosts () : array;
+    public function getExtraCosts();
+     public function getSeatCounting():array;
 }

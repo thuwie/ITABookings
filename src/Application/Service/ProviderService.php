@@ -236,4 +236,9 @@ class ProviderService implements ProviderServicePort {
         }
         return true;
     }
+
+    public function getSeatCounting():array {
+        $result = $this->providerRepositoryPort->getSeatCounting();
+        return $result;
+     }
 }

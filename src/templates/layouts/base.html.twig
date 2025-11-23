@@ -8,8 +8,35 @@
     <link rel="stylesheet" href="/css/custom.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+
+    <style>
+        #messageContainer {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1080;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* màn hình tối */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            /* cao hơn toast và form */
+        }
+    </style>
 </head>
 
 <body>
@@ -18,7 +45,15 @@
     <main class="w-100">
         {% block body %}{% endblock %}
     </main>
+    <!-- Toast message container -->
+    <div id="messageContainer"></div>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display:none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     {% include 'components/footer.html.twig' %}
 </body>
 
