@@ -30,7 +30,7 @@
                             <p style="line-height:1.6; font-size:16px;">
                                 <strong>Ngày duyệt:</strong> <?= htmlspecialchars($formatted) ?>
                             </p>
-                            <a href="https://46e1609e70e8.ngrok-free.app/provider/<?= htmlspecialchars($userId) ?>/extra-costs" style="line-height:1.6; font-size:16px;">
+                            <a href="http://localhost:3000/provider/<?= htmlspecialchars($userId) ?>/extra-costs" style="line-height:1.6; font-size:16px;">
                                 Bạn cần xem qua một vài thông tin cũng như quy định về lợi nhuận khi trở thành nhà cung cấp tại hệ thống ITABookings.
                             </a>
                             <p style="line-height:1.6; font-size:14px; color:#777;">
