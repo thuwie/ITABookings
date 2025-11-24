@@ -73,6 +73,8 @@ class RouteService implements RouteServicePort {
         $routeInformation->from = $placeFromName;
         $routeInformation->to = $placeToName ;
         $routeInformation->route_name = $routeName ;
+        $routeInformation->km = $route['distance_km'] ;
+
 
 
         $providersWithVehicles = null;

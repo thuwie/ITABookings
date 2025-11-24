@@ -20,6 +20,7 @@ const RouteSearch = {
         const form = document.querySelector("#searching-form");
         const seatFilter = document.querySelector("#seats");
         const providerFilter = document.querySelector("#providers");
+        const userId = document.getElementById('user_id').value;
         let from;
         let to;
 
@@ -37,7 +38,7 @@ const RouteSearch = {
                 const res = await fetch(`/routes?from=${from}&to=${to}&seat_counting=${seat}&provider=${id}`);
                 const routes = await res.json();
                 const { data } = routes;
-                this.renderRoutes(data);
+                this.renderRoutes(data, userId);
                 RouteSearch.hideLoading();
             }
         });
@@ -56,7 +57,7 @@ const RouteSearch = {
                 const res = await fetch(`/routes?from=${from}&to=${to}&provider=${id}&seat_counting=${seat}`);
                 const routes = await res.json();
                 const { data } = routes;
-                this.renderRoutes(data);
+                this.renderRoutes(data, userId);
                 RouteSearch.hideLoading();
             }
         });
@@ -99,7 +100,7 @@ const RouteSearch = {
             const res = await fetch(`/routes?from=${from}&to=${to}`);
             const routes = await res.json();
             const { data } = routes;
-            this.renderRoutes(data);
+            this.renderRoutes(data, userId);
             RouteSearch.hideLoading();
         })
 
@@ -113,7 +114,7 @@ const RouteSearch = {
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.style.display = 'none';
     },
-    renderRoutes(data) {
+    renderRoutes(data, userId) {
         const { result, route } = data;
         const textHeading = document.getElementById('heading-place');
         const content = `Xe đi từ ${route.from} đến ${route.to} theo đường ${route.route_name}`;
@@ -155,10 +156,11 @@ const RouteSearch = {
                     </div>
                     <div class="col-3">
                         <div class="d-flex justify-content-center align-items-center h-100 w-100">
-                            <a href="booking-now" class="w-full rounded-2 border-0 py-2"
-                               style="all: unset; display: inline-block; background-color: orange; color: white; text-align: center; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
-                               Đặt xe ngay
-                            </a>
+                            <a href="/booking/confirming?user=${userId}&provider=${providerBlock.provider.id}&vehicle=${vehicle.id}&route=${encodeURIComponent(route.route_name)}&from=${encodeURIComponent(route.from)}&to=${encodeURIComponent(route.to)}&km=${route.km}&price=${vehicle.price_per_day}"
+                                    style="all: unset; display: inline-block; background-color: orange; color: white; 
+                                        text-align: center; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
+                                    Đặt xe ngay
+                                </a>
                         </div>
                     </div>
                 </div>

@@ -120,13 +120,13 @@ const DriverRegisterHandler = {
                 if (result.status === 'success') {
                     this.showMessage(result.message, 'success');
 
-                    // // Chuyển trang sau 1 giây
-                    // setTimeout(() => {
-                    //     window.location.href = result.redirect;
-                    // }, 1000);
+                    // Chuyển trang sau 1 giây
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 1000);
 
                 } else {
-                    this.showMessage(result.message, 'error');
+                    window.location.href = result.redirect;
                 }
 
             } catch (err) {

@@ -13,4 +13,5 @@ interface ProviderServicePort {
     public function getUtilities(): array;
     public function saveProviderExtraCosts($data, $providerId): bool;
     public function getSeatCounting():array;
+    public function getProviderWithVehicle($providerId, $vehicleId): array;
 }

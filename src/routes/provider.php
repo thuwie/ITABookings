@@ -72,6 +72,49 @@ return function (App $app, $twig) {
         });
 
          /** ---------------------------
+         * GET /provider/register-successfully
+         * --------------------------- */        
+        $group->get('/register-successfully', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/pro_success.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+
+        /** ---------------------------
+         * GET /provider/register-failed
+         * --------------------------- */        
+        $group->get('/register-failed', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/pro_failed.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+        
+        /** ---------------------------
+         * GET /provider/dashboard
+         * --------------------------- */        
+        $group->get('/dashboard', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/provider.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+
+
+         /** ---------------------------
          * GET /provider/utilities
          * --------------------------- */        
         $group->get('/utilities', function ($request, $response) 
@@ -177,18 +220,21 @@ return function (App $app, $twig) {
                         'message' => $resultPayment
                             ? 'Đăng ký doanh nghiệp thành công'
                             : 'Đăng ký doanh nghiệp thất bại',
+                        'redirect' => '/provider/register-successfully',
                     ];
                 } else {
                     $payload = [
                         'status'  => 'error',
                         'message' => 'Đăng ký doanh nghiệp thất bại',
+                        'redirect' => '/provider/register-failed',
                     ];
                 }
 
             } catch (\Exception $e) {
                 $payload = [
                     'status'  => 'error',
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
+                    'redirect' => '/provider/register-failed',
                 ];
             }
 

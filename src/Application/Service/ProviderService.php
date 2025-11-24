@@ -15,6 +15,7 @@ use App\Domain\Entity\VehicleUtility;
 use App\Domain\Entity\CostsRelatedProvider;
 
 
+
 class ProviderService implements ProviderServicePort {
     private ProviderRepositoryPort  $providerRepositoryPort;
     private SessionManagerInterfacePort $sessionManager;
@@ -35,6 +36,7 @@ class ProviderService implements ProviderServicePort {
     }
 
     public function save($provider, $logo): bool { 
+        return DB::transaction(function () use ($provider, $logo) {
         $name = $provider['name'];
         $email = $provider['email'];
         $phoneNumber = $provider['phone_number'];
@@ -48,13 +50,13 @@ class ProviderService implements ProviderServicePort {
         $newProvider = $this->providerRepositoryPort->save($newProvider);
 
         if(!$newProvider) {
-             throw new \Exception('Failed to register provider information');
+             throw new \Exception('Đăng ký thất bại');
         };
 
         $uploadedLogoUrl = $this->providerRepositoryPort->saveLogo($logo, $newProvider->getName());
 
         if(!$uploadedLogoUrl) {
-             throw new \Exception('Failed to save logo');
+             throw new \Exception('Lưu logo thất bại');
         }
 
         $result = $this->providerRepositoryPort->savePathLogo($uploadedLogoUrl, $newProvider);
@@ -65,6 +67,8 @@ class ProviderService implements ProviderServicePort {
         }
         
         return $result ? true : false;
+
+         });
     }
    
     public function getRegisterForm(): array {
@@ -240,5 +244,10 @@ class ProviderService implements ProviderServicePort {
     public function getSeatCounting():array {
         $result = $this->providerRepositoryPort->getSeatCounting();
         return $result;
-     }
-}
+    }
+
+    public function getProviderWithVehicle($providerId, $vehicleId): array {
+        $result = $this->providerRepositoryPort->getProviderWithVehicle($providerId, $vehicleId);
+        return $result;
+    }
+    }

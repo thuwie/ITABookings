@@ -95,4 +95,11 @@ class UserService implements UserServicePort {
         $users = $this->userRepositoryPort->getUsersById($ids);
         return $users;
     }
+    public function getUserById($id): array {
+        $user= $this->userRepositoryPort->findById($id);
+        $arrayUser = ['full_name' => $user->getLastName() . "" . $user->getFirstName(), 'phone' => $user->getPhoneNumber(),
+        'email' => $user->getEmail()];
+
+        return $arrayUser;
+    }
 }

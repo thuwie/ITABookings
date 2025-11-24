@@ -75,13 +75,17 @@ const ProviderRegisterHandler = {
                 if (result.status === 'success') {
                     this.showMessage(result.message, 'success');
 
+                    console.log(result.redirect);
+
                     // // Chuyển trang sau 1 giây
-                    // setTimeout(() => {
-                    //     window.location.href = result.redirect;
-                    // }, 1000);
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 1000);
 
                 } else {
-                    this.showMessage(result.message, 'error');
+                    console.log(result.redirect);
+
+                    window.location.href = result.redirect;
                 }
 
             } catch (err) {

@@ -38,6 +38,24 @@ return function (App $app, $twig) {
             return $response;
         });
 
+         // GET
+        $group->get('/register-successfully', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
+        
+            $html = $twig->render('pages/driver/dri_success.html.twig');
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+         // GET
+        $group->get('/register-failed', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
+
+            $html = $twig->render('pages/driver/dri_failed.html.twig');
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
         // POST
         $group->post('/register', function ($request, $response) use ($paymentService, $driverServices) {
 
@@ -60,18 +78,21 @@ return function (App $app, $twig) {
                         'message' => $paymentResult  
                             ? 'Đăng ký tài xế thành công'
                             : 'Đăng ký tài xế thất bại'
+                        , 'redirect' => '/driver/register-successfully'
                     ];
                 } else {
                     $payload = [
                         'status' => 'error',
-                        'message' => 'Đăng ký tài xế thất bại'
+                        'message' => 'Đăng ký tài xế thất bại',
+                        'redirect' => '/driver/register-failed'
                     ];
                 }
 
             } catch (\Exception $e) {
                 $payload = [
                     'status' => 'error',
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
+                    'redirect' => '/driver/register-failed'
                 ];
             }
 
