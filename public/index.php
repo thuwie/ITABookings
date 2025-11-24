@@ -42,5 +42,7 @@ require __DIR__ . '/../src/routes/files.php';
 (require __DIR__ . '/../src/routes/provider.php')($app, $twig);
 (require __DIR__ . '/../src/routes/driver.php')($app, $twig);
 (require __DIR__ . '/../src/routes/admin.php')($app, $twig);
+(require __DIR__ . '/../src/routes/booking.php')($app, $twig);
+
 
 $app->run();

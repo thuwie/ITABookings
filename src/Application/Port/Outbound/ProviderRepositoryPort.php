@@ -21,5 +21,6 @@ interface ProviderRepositoryPort {
     public function getProvidersWithVehicles(?int $seat = null, ?int $provider = null): array;
     public function providersRelatedCosts () : array;
     public function getExtraCosts();
-     public function getSeatCounting():array;
+    public function getSeatCounting():array;
+    public function getProviderWithVehicle($providerId, $vehicleId): array;
 }

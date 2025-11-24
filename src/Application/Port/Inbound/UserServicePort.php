@@ -6,4 +6,5 @@ interface UserServicePort {
     public function createUser($user): array;
     public function getUserInformation(): array;
     public function getUsersById($ids): array;
+    public function getUserById($id): array;
 }

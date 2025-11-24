@@ -98,6 +98,22 @@ return function (App $app, $twig) {
             return $response;
         });
 
+        
+        /** ---------------------------
+         * GET /provider/dashboard
+         * --------------------------- */        
+        $group->get('/dashboard', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/provider.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+
+
          /** ---------------------------
          * GET /provider/utilities
          * --------------------------- */        

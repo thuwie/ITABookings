@@ -230,5 +230,72 @@ class ProviderRepository implements ProviderRepositoryPort {
 
         return $seatCounting->toArray();
     }
+
+    public function getProviderWithVehicle($providerId, $vehicleId): array
+    {
+       
+        $row = DB::table('providers')
+        ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
+        ->leftJoin('provinces', 'provinces.id', '=', 'providers.province_id')
+        ->leftJoin('vehicle_utilities', 'vehicle_utilities.vehicle_id', '=', 'vehicles.id')
+        ->leftJoin('utilities', 'utilities.id', '=', 'vehicle_utilities.utility_id')
+        ->where('providers.user_id', $providerId)
+        ->where('vehicles.id', $vehicleId)
+        ->select(
+            'providers.name as provider_name',
+            'providers.phone_number',
+            'provinces.name as province_name',
+            'vehicles.brand',
+            'vehicles.model',
+            'vehicles.seat_count',
+            DB::raw("GROUP_CONCAT(utilities.name SEPARATOR ',') as utilities_list"),
+
+            // Lấy một ảnh duy nhất của xe
+            DB::raw("(
+                SELECT url 
+                FROM vehicle_imgs 
+                WHERE vehicle_imgs.vehicle_id = vehicles.id 
+                ORDER BY id ASC 
+                LIMIT 1
+            ) as vehicle_img")
+        )
+        ->groupBy(
+            'providers.id',
+            'providers.name',
+            'providers.phone_number',
+            'provinces.name',
+            'vehicles.id',
+            'vehicles.brand',
+            'vehicles.model',
+            'vehicles.seat_count'
+        )
+        ->first();
+
+
+        if (!$row) {
+            return [];
+        }
+
+        // Chuyển utilities_list (chuỗi) thành mảng, loại bỏ rỗng
+        $utilities = [];
+        if (!empty($row->utilities_list)) {
+            $utilities = array_filter(array_map('trim', explode(',', $row->utilities_list)));
+            // reset keys
+            $utilities = array_values($utilities);
+        }
+
+        return [
+            'provider_name' => $row->provider_name,
+            'phone_number'  => $row->phone_number,
+            'province_name' => $row->province_name,
+            'brand'         => $row->brand,
+            'model'         => $row->model,
+            'seat_count'    => (int) $row->seat_count,
+            'utilities'     => $utilities,
+            'vehicle_img' => $row->vehicle_img,
+        ];
+    }
+
+
 }
 

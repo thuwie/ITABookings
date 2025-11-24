@@ -3,6 +3,7 @@ use Slim\App;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\RouteServicePort;
 use App\Application\Port\Inbound\ProviderServicePort;
+use App\Middleware\AuthMiddleware;
 
 return function(App $app, $twig) {
     $app->get('/searching-routes', function ($request, $response, $args) use ($twig) {
@@ -22,7 +23,7 @@ return function(App $app, $twig) {
 
         $response->getBody()->write($html);
         return $response;
-    });
+    })->add(new AuthMiddleware());
 
     $app->get('/routes', function ($request, $response, $args) use ($twig) {
 
@@ -47,7 +48,7 @@ return function(App $app, $twig) {
 
         $response->getBody()->write($payload);
         return $response->withHeader('Content-Type', 'application/json');
-    });
+    })->add(new AuthMiddleware());
 
     // $app->get('/routes', function ($request, $response, $args) use ($twig) {
 
@@ -71,7 +72,7 @@ return function(App $app, $twig) {
 
         $response->getBody()->write($html);
         return $response;
-    });
+    })->add(new AuthMiddleware());
 
     $app->post('/route', function ($request, $response, $args) use ($twig) {
 
@@ -87,6 +88,6 @@ return function(App $app, $twig) {
          
         // Đặt header Content-Type cho chuẩn REST
         return $response->withHeader('Content-Type', 'application/json');
-    });
+    })->add(new AuthMiddleware());
 
 };

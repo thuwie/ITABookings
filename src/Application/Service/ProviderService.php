@@ -244,5 +244,10 @@ class ProviderService implements ProviderServicePort {
     public function getSeatCounting():array {
         $result = $this->providerRepositoryPort->getSeatCounting();
         return $result;
-     }
-}
+    }
+
+    public function getProviderWithVehicle($providerId, $vehicleId): array {
+        $result = $this->providerRepositoryPort->getProviderWithVehicle($providerId, $vehicleId);
+        return $result;
+    }
+    }
