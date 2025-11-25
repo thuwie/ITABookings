@@ -44,6 +44,44 @@ LOCK TABLES `banned_providers` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bookings` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `provider_id` int unsigned NOT NULL,
+  `vehicle_id` int unsigned NOT NULL,
+  `from_location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `destination` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `distance` int unsigned NOT NULL,
+  `from_date` datetime NOT NULL,
+  `to_date` datetime NOT NULL,
+  `total_days` int NOT NULL DEFAULT '1',
+  `total_amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `bookings_user_id_provider_id_index` (`user_id`,`provider_id`),
+  KEY `bookings_vehicle_id_index` (`vehicle_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bookings`
+--
+
+LOCK TABLES `bookings` WRITE;
+/*!40000 ALTER TABLE `bookings` DISABLE KEYS */;
+INSERT INTO `bookings` VALUES (6,3,3,19,'C?? Mau','?????ng Th??p',221,'2025-11-26 00:00:00','2025-11-28 00:00:00',2,5325858.00,'pending','2025-11-25 05:29:46','2025-11-25 05:29:46');
+/*!40000 ALTER TABLE `bookings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `costs_related_providers`
 --
 
@@ -59,7 +97,7 @@ CREATE TABLE `costs_related_providers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_provider_extra_cost` (`provider_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,8 +106,39 @@ CREATE TABLE `costs_related_providers` (
 
 LOCK TABLES `costs_related_providers` WRITE;
 /*!40000 ALTER TABLE `costs_related_providers` DISABLE KEYS */;
-INSERT INTO `costs_related_providers` VALUES (1,3,80000.00,10.00,'2025-11-22 05:40:32','2025-11-22 05:40:32');
+INSERT INTO `costs_related_providers` VALUES (1,3,80000.00,10.00,'2025-11-22 05:40:32','2025-11-22 05:40:32'),(2,4,85000.00,10.00,'2025-11-22 11:23:01','2025-11-22 11:23:01');
 /*!40000 ALTER TABLE `costs_related_providers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `driver_trips`
+--
+
+DROP TABLE IF EXISTS `driver_trips`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `driver_trips` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `driver_id` int unsigned NOT NULL,
+  `booking_id` int unsigned NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'assigned',
+  `start_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `driver_trips_driver_id_index` (`driver_id`),
+  KEY `driver_trips_booking_id_index` (`booking_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `driver_trips`
+--
+
+LOCK TABLES `driver_trips` WRITE;
+/*!40000 ALTER TABLE `driver_trips` DISABLE KEYS */;
+/*!40000 ALTER TABLE `driver_trips` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -95,7 +164,7 @@ CREATE TABLE `drivers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,8 +173,38 @@ CREATE TABLE `drivers` (
 
 LOCK TABLES `drivers` WRITE;
 /*!40000 ALTER TABLE `drivers` DISABLE KEYS */;
-INSERT INTO `drivers` VALUES (7,5,13,'D123456789','B2','2025-10-30','2029-11-15','valid',NULL,0,NULL,'2025-11-18 04:39:29','2025-11-18 04:39:29');
+INSERT INTO `drivers` VALUES (7,5,13,'D123456789','B2','2025-10-30','2029-11-15','valid',NULL,0,NULL,'2025-11-18 04:39:29','2025-11-18 04:39:29'),(10,7,14,'D123456789','B2','2025-10-30','2025-11-05','valid',NULL,0,NULL,'2025-11-24 05:41:10','2025-11-24 05:41:10');
 /*!40000 ALTER TABLE `drivers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `drivers_working_history`
+--
+
+DROP TABLE IF EXISTS `drivers_working_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `drivers_working_history` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `driver_id` int unsigned NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'idle',
+  `total_trips` int NOT NULL DEFAULT '0',
+  `last_trip_end` datetime DEFAULT NULL,
+  `last_assigned` datetime DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_driver_history` (`driver_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `drivers_working_history`
+--
+
+LOCK TABLES `drivers_working_history` WRITE;
+/*!40000 ALTER TABLE `drivers_working_history` DISABLE KEYS */;
+/*!40000 ALTER TABLE `drivers_working_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -222,7 +321,7 @@ CREATE TABLE `information_payments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +330,7 @@ CREATE TABLE `information_payments` (
 
 LOCK TABLES `information_payments` WRITE;
 /*!40000 ALTER TABLE `information_payments` DISABLE KEYS */;
-INSERT INTO `information_payments` VALUES (7,3,'NGUYEN HONG PHONG','123131231321313','ACB','/uploads/QRs/hong-phongnguyen/QR_691aee6d2153d2.75927344_Screenshot_2025-04-24_171602.png','2025-11-17 09:44:13','2025-11-17 09:44:13'),(8,4,'PHAM THI THUY NGAN','12345678910','TPB','/uploads/QRs/thuy-nganpham/QR_691aef04dd8390.12470732_download.jpg','2025-11-17 09:46:44','2025-11-17 09:46:44'),(13,5,'NGUYEN HONG PHONG','1231123464','VCB','/uploads/QRs/nguyenthanh-hieu/QR_691bf8822fabc3.53335949_illustration.png','2025-11-18 04:39:30','2025-11-18 04:39:30');
+INSERT INTO `information_payments` VALUES (7,3,'NGUYEN HONG PHONG','123131231321313','ACB','/uploads/QRs/hong-phongnguyen/QR_691aee6d2153d2.75927344_Screenshot_2025-04-24_171602.png','2025-11-17 09:44:13','2025-11-17 09:44:13'),(8,4,'PHAM THI THUY NGAN','12345678910','TPB','/uploads/QRs/thuy-nganpham/QR_691aef04dd8390.12470732_download.jpg','2025-11-17 09:46:44','2025-11-17 09:46:44'),(13,5,'NGUYEN HONG PHONG','1231123464','VCB','/uploads/QRs/nguyenthanh-hieu/QR_691bf8822fabc3.53335949_illustration.png','2025-11-18 04:39:30','2025-11-18 04:39:30'),(14,7,'NGUYEN THỊ TẸT','123131231321313','ACB','/uploads/QRs/trungnguyen/QR_6923e2bcd427b4.56484927_534836160_762788869861987_1088223343079877207_n.jpg','2025-11-24 04:44:44','2025-11-24 04:44:44'),(15,7,'PHAM THI THUY NGAN','0326526264','MB','/uploads/QRs/trungnguyen/QR_6923eff6e24e98.57329971_2-removebg-preview.png','2025-11-24 05:41:10','2025-11-24 05:41:10');
 /*!40000 ALTER TABLE `information_payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -259,7 +358,7 @@ CREATE TABLE `providers` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `providers_user_id_unique` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -268,7 +367,7 @@ CREATE TABLE `providers` (
 
 LOCK TABLES `providers` WRITE;
 /*!40000 ALTER TABLE `providers` DISABLE KEYS */;
-INSERT INTO `providers` VALUES (13,3,'A Po thương mại','/uploads/providers/a-po-thuong-mai/provider_691aee6d08f662.77508200_Screenshot_2025-04-24_171602.png','Doanh nghiệp chúng tôi là 1 doanh nghiệp cung cấp dịch vụ về thuê xe','thanhhang@abc','0123456789','79 Hồ CHí Minh',15,NULL,0,'2025-11-21 09:19:17','2025-11-17 09:44:12','2025-11-21 09:19:17'),(14,4,'Công ty cổ phần 1 thành viên','/uploads/providers/cong-ty-co-phan-1-thanh-vien/provider_691aef04ccdba8.85948081_place-icon.png','Doanh nghiệp hiện tại cung cấp phương tiện và dịch vụ cho ngời dùng có 102','gideonzz246@gmail.com','0123654799','Phú Yên, Lạng Sơn',11,NULL,0,'2025-11-21 09:37:31','2025-11-17 09:46:44','2025-11-21 09:37:31');
+INSERT INTO `providers` VALUES (13,3,'A Po thương mại','/uploads/providers/a-po-thuong-mai/provider_691aee6d08f662.77508200_Screenshot_2025-04-24_171602.png','Doanh nghiệp chúng tôi là 1 doanh nghiệp cung cấp dịch vụ về thuê xe','thanhhang@abc','0123456789','79 Hồ CHí Minh',15,NULL,0,'2025-11-21 09:19:17','2025-11-17 09:44:12','2025-11-21 09:19:17'),(14,4,'Công ty cổ phần 1 thành viên','/uploads/providers/cong-ty-co-phan-1-thanh-vien/provider_691aef04ccdba8.85948081_place-icon.png','Doanh nghiệp hiện tại cung cấp phương tiện và dịch vụ cho ngời dùng có 102','gideonzz246@gmail.com','0123654799','Phú Yên, Lạng Sơn',11,NULL,0,'2025-11-22 11:47:08','2025-11-17 09:46:44','2025-11-22 11:47:08'),(18,7,'A Trung','/uploads/providers/a-trung/provider_6923e2bcbc3f22.48437211_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','thanhhang@abc','','1234567898','79 Tân Phú',16,NULL,0,NULL,'2025-11-24 04:44:44','2025-11-24 04:44:44');
 /*!40000 ALTER TABLE `providers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -508,7 +607,7 @@ CREATE TABLE `user_roles` (
 
 LOCK TABLES `user_roles` WRITE;
 /*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
-INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,2,'2025-11-21 09:19:17','2025-11-21 09:19:17'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,2,'2025-11-21 09:37:31','2025-11-21 09:37:31'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,4,'2025-11-18 10:15:14','2025-11-18 10:15:14');
+INSERT INTO `user_roles` VALUES (1,4,'2025-11-15 08:44:32','2025-11-15 08:44:32'),(2,4,'2025-11-16 12:41:11','2025-11-16 12:41:11'),(3,2,'2025-11-21 09:19:17','2025-11-21 09:19:17'),(3,4,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,2,'2025-11-22 11:47:08','2025-11-22 11:47:08'),(4,4,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,4,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,4,'2025-11-18 10:15:14','2025-11-18 10:15:14'),(7,4,'2025-11-24 04:43:31','2025-11-24 04:43:31');
 /*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -536,7 +635,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -545,7 +644,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (3,'Hong Phong','Nguyen','$2y$12$pVb0CD0zUpAm/hZxZEhn4OZzqrxEIEpEoXmJa2yVeKqLt99t3RCei','nguyenhongphong4151050139@gmail.com','0387792293','','male','2000-07-24','012345649789','79 Tân Phú',15,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,'Thúy Ngân','Phạm','$2y$12$.wtOyGaPlC.2HZAuYhm8/eYsDR.a6BXHWC6g73G6nxwTd7i4wpDOi','phongnguyenwn123@gmail.com','0123456789','','female','2002-04-23','0231466491','Phú Yên',11,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,'Nguyễn','Thanh Hiếu','$2y$12$zUuR0PUSsm.tAK0N.JoHfet1tmTtwE1oV6VoAtunRkwIvasezGV7S','newbierhp2000@gmail.com','1234567891','','male','2002-10-23','1234564898','QNBD',15,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,'Nguyễn','Phong Ku Teo','$2y$12$bAu2AVqW08nByIlU2oA0yOMXzgDaaP9v3qO/FI76m5lDPD4HSSNC2','kuteo@xxx.xx','0987654321','','female','2028-10-18','q','q',1,'2025-11-18 10:15:14','2025-11-18 10:15:14');
+INSERT INTO `users` VALUES (3,'Hong Phong','Nguyen','$2y$12$pVb0CD0zUpAm/hZxZEhn4OZzqrxEIEpEoXmJa2yVeKqLt99t3RCei','nguyenhongphong4151050139@gmail.com','0387792293','','male','2000-07-24','012345649789','79 Tân Phú',15,'2025-11-17 09:40:29','2025-11-17 09:40:29'),(4,'Thúy Ngân','Phạm','$2y$12$.wtOyGaPlC.2HZAuYhm8/eYsDR.a6BXHWC6g73G6nxwTd7i4wpDOi','phongnguyenwn123@gmail.com','0123456789','','female','2002-04-23','0231466491','Phú Yên',11,'2025-11-17 09:41:53','2025-11-17 09:41:53'),(5,'Nguyễn','Thanh Hiếu','$2y$12$zUuR0PUSsm.tAK0N.JoHfet1tmTtwE1oV6VoAtunRkwIvasezGV7S','newbierhp2000@gmail.com','1234567891','','male','2002-10-23','1234564898','QNBD',15,'2025-11-17 09:48:09','2025-11-17 09:48:09'),(6,'Nguyễn','Phong Ku Teo','$2y$12$bAu2AVqW08nByIlU2oA0yOMXzgDaaP9v3qO/FI76m5lDPD4HSSNC2','kuteo@xxx.xx','0987654321','','female','2028-10-18','q','q',1,'2025-11-18 10:15:14','2025-11-18 10:15:14'),(7,'Trung','Nguyen ','$2y$12$T4EtbhV1TTnCVT.9vJsfluFDQ9dOEWSwqyTwwX.6Iystln6bNlqz2','learningemail10000dollars@gmail.com','1131231313','','male','2025-10-30','1234564898','79 Tân Thắng',1,'2025-11-24 04:43:31','2025-11-24 04:43:31');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -590,7 +689,7 @@ CREATE TABLE `vehicle_imgs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -599,7 +698,35 @@ CREATE TABLE `vehicle_imgs` (
 
 LOCK TABLES `vehicle_imgs` WRITE;
 /*!40000 ALTER TABLE `vehicle_imgs` DISABLE KEYS */;
+INSERT INTO `vehicle_imgs` VALUES (19,19,'/uploads/vehicles/vios/vios69218984ea02b3.35651757_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','vios69218984ea02b3.35651757_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','2025-11-22 09:59:33','2025-11-22 09:59:33'),(20,20,'/uploads/vehicles/cr-v/cr-v692189ee525505.96516650_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','cr-v692189ee525505.96516650_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','2025-11-22 10:01:18','2025-11-22 10:01:18'),(21,21,'/uploads/vehicles/transit/transit69218a2ddb3fe1.08110358_place.png','transit69218a2ddb3fe1.08110358_place.png','2025-11-22 10:02:21','2025-11-22 10:02:21'),(22,22,'/uploads/vehicles/accent/accent69218a67172b56.62068360_download.jpg','accent69218a67172b56.62068360_download.jpg','2025-11-22 10:03:19','2025-11-22 10:03:19'),(23,23,'/uploads/vehicles/sedona/sedona69218aa97033b6.44557722_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','sedona69218aa97033b6.44557722_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','2025-11-22 10:04:25','2025-11-22 10:04:25'),(24,23,'/uploads/vehicles/sedona/sedona69218aa9785816.90865640_logo.png','sedona69218aa9785816.90865640_logo.png','2025-11-22 10:04:25','2025-11-22 10:04:25'),(25,24,'/uploads/vehicles/cx-5/cx-569218b8730c701.20861846_S____ho__n_h___o_s____kh__ng_c___n___u_ta_kh__ng_b___t______u_-_H___ng_Phong_-_podcast_-_t__m_s___.png','cx-569218b8730c701.20861846_S____ho__n_h___o_s____kh__ng_c___n___u_ta_kh__ng_b___t______u_-_H___ng_Phong_-_podcast_-_t__m_s___.png','2025-11-22 10:08:07','2025-11-22 10:08:07'),(26,25,'/uploads/vehicles/mu-x/mu-x69218bcc4370e1.52097014_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','mu-x69218bcc4370e1.52097014_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','2025-11-22 10:09:16','2025-11-22 10:09:16'),(27,26,'/uploads/vehicles/sprinter/sprinter69218c046b0437.29968180_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','sprinter69218c046b0437.29968180_White_and_Yellow_India_Travel_Vlog_YouTube_Thumbnail.png','2025-11-22 10:10:12','2025-11-22 10:10:12'),(28,27,'/uploads/vehicles/innova/innova69218c379a3df2.28078184_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','innova69218c379a3df2.28078184_z7212804659174_d0bb0b97e8e3cf62883c589b095543bc.jpg','2025-11-22 10:11:03','2025-11-22 10:11:03'),(29,28,'/uploads/vehicles/lux-sa2-0/lux-sa2-069218c65e407b0.12973479_food.png','lux-sa2-069218c65e407b0.12973479_food.png','2025-11-22 10:11:49','2025-11-22 10:11:49');
 /*!40000 ALTER TABLE `vehicle_imgs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_status`
+--
+
+DROP TABLE IF EXISTS `vehicle_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vehicle_status` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `vehicle_id` int unsigned NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_vehicle_status` (`vehicle_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_status`
+--
+
+LOCK TABLES `vehicle_status` WRITE;
+/*!40000 ALTER TABLE `vehicle_status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -617,7 +744,7 @@ CREATE TABLE `vehicle_utilities` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_vehicle_utility` (`utility_id`,`vehicle_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -626,6 +753,7 @@ CREATE TABLE `vehicle_utilities` (
 
 LOCK TABLES `vehicle_utilities` WRITE;
 /*!40000 ALTER TABLE `vehicle_utilities` DISABLE KEYS */;
+INSERT INTO `vehicle_utilities` VALUES (1,7,19,'2025-11-22 09:59:33','2025-11-22 09:59:33'),(2,9,19,'2025-11-22 09:59:33','2025-11-22 09:59:33'),(3,8,20,'2025-11-22 10:01:18','2025-11-22 10:01:18'),(4,11,20,'2025-11-22 10:01:18','2025-11-22 10:01:18'),(5,12,20,'2025-11-22 10:01:18','2025-11-22 10:01:18'),(6,10,21,'2025-11-22 10:02:21','2025-11-22 10:02:21'),(7,11,21,'2025-11-22 10:02:21','2025-11-22 10:02:21'),(8,12,22,'2025-11-22 10:03:19','2025-11-22 10:03:19'),(9,13,22,'2025-11-22 10:03:19','2025-11-22 10:03:19'),(10,8,23,'2025-11-22 10:04:25','2025-11-22 10:04:25'),(11,10,23,'2025-11-22 10:04:25','2025-11-22 10:04:25'),(12,9,24,'2025-11-22 10:08:07','2025-11-22 10:08:07'),(13,10,24,'2025-11-22 10:08:07','2025-11-22 10:08:07'),(14,10,25,'2025-11-22 10:09:16','2025-11-22 10:09:16'),(15,11,25,'2025-11-22 10:09:16','2025-11-22 10:09:16'),(16,12,25,'2025-11-22 10:09:16','2025-11-22 10:09:16'),(17,8,26,'2025-11-22 10:10:12','2025-11-22 10:10:12'),(18,9,26,'2025-11-22 10:10:12','2025-11-22 10:10:12'),(19,10,26,'2025-11-22 10:10:12','2025-11-22 10:10:12'),(20,14,26,'2025-11-22 10:10:12','2025-11-22 10:10:12'),(21,10,27,'2025-11-22 10:11:03','2025-11-22 10:11:03'),(22,11,27,'2025-11-22 10:11:03','2025-11-22 10:11:03'),(23,10,28,'2025-11-22 10:11:49','2025-11-22 10:11:49'),(24,11,28,'2025-11-22 10:11:49','2025-11-22 10:11:49');
 /*!40000 ALTER TABLE `vehicle_utilities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -651,7 +779,7 @@ CREATE TABLE `vehicles` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_license_plate` (`license_plate`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -660,6 +788,7 @@ CREATE TABLE `vehicles` (
 
 LOCK TABLES `vehicles` WRITE;
 /*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+INSERT INTO `vehicles` VALUES (19,'Xe gia đình, chạy êm, tiết kiệm nhiên liệu.','51A-123.45','Toyota','Vios',2018,4,3,6.30,6500.00,'2025-11-22 09:59:32','2025-11-22 09:59:32'),(20,'SUV rộng rãi, phù hợp đi xa và đường xấu.','51G-567.89','Honda','CR-V',2020,7,3,7.10,7000.00,'2025-11-22 10:01:18','2025-11-22 10:01:18'),(21,'Xe du lịch 16 chỗ, ghế ngồi thoải mái, thích hợp cho tour.','60B-222.88','Ford','Transit',2017,16,3,9.50,8500.00,'2025-11-22 10:02:21','2025-11-22 10:02:21'),(22,'Xe mới, tiết kiệm, nội thất sạch đẹp.','72C-345.22','Hyundai','Accent',2021,4,3,6.00,6200.00,'2025-11-22 10:03:18','2025-11-22 10:03:18'),(23,'Xe phù hợp gia đình và nhóm du lịch 7 người.','43A-998.23','Kia','Sedona',2019,7,3,8.20,7500.00,'2025-11-22 10:04:25','2025-11-22 10:04:25'),(24,'SUV thể thao, an toàn, bám đường tốt.','30F-445.66','Mazda','CX-5',2020,4,4,7.00,6800.00,'2025-11-22 10:08:06','2025-11-22 10:08:06'),(25,'Xe máy dầu mạnh mẽ, phù hợp địa hình khó.','63A-212.77','Isuzu','mu-X',2018,7,4,7.80,8000.00,'2025-11-22 10:09:16','2025-11-22 10:09:16'),(26,'Dòng xe du lịch cao cấp, chỗ ngồi thoải mái.','65B-556.11','Mercedes','Sprinter',2016,16,4,10.20,9000.00,'2025-11-22 10:10:12','2025-11-22 10:10:12'),(27,'Xe chạy dịch vụ, bảo dưỡng định kỳ, sạch sẽ.','50A-111.99','Toyota','Innova',2019,7,4,8.00,7200.00,'2025-11-22 10:11:03','2025-11-22 10:11:03'),(28,'SUV mạnh mẽ, sang trọng, trải nghiệm cao cấp.','88A-789.66','VinFast','Lux SA2.0',2021,7,4,8.50,7800.00,'2025-11-22 10:11:49','2025-11-22 10:11:49');
 /*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -672,4 +801,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-22 13:04:08
+-- Dump completed on 2025-11-25 12:31:07
