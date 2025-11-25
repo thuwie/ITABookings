@@ -1,0 +1,67 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đặt xe thất bại</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f6f7fb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #c62828;
+        }
+
+        p {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        a.btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #c62828;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.btn:hover {
+            background: #a71f1f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>Đặt xe thất bại</h2>
+        <p>Quá trình "đặt xe" thất bại, vui lòng thử lại.</p>
+
+        <a href="/booking/confirming" class="btn">Trở về trang đặt xe</a>
+    </div>
+</body>
+
+</html>
+{% endblock %}
