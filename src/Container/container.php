@@ -58,6 +58,12 @@ use App\Adapter\Outbound\EmailRepository;
 
 use App\Domain\Entity\MailerService;
 
+use App\Application\Port\Inbound\BookingServicePort;
+use App\Application\Port\Outbound\BookingRepositoryPort;
+use App\Application\Service\BookingService;
+use App\Adapter\Outbound\BookingRepository;
+
+
 use DI\Container;
 
 return function (): Container {
@@ -232,6 +238,20 @@ return function (): Container {
                 $container->get(UserRepositoryPort::class),
                 $container->get(AdminRepositoryPort::class),
                 $container->get(EmailRepositoryPort::class),
+        );
+        });
+
+
+          //BOOKING
+        // Outbound Port Binding
+        $container->set(BookingRepositoryPort::class, function() {
+            return new BookingRepository();
+        });
+
+        //Inbound Port Binding
+        $container->set(BookingServicePort::class, function() use ($container) {
+            return new BookingService(
+                $container->get(BookingRepositoryPort::class),
         );
         });
         

@@ -367,6 +367,88 @@ $tables = [
         $table->collation = 'utf8mb4_unicode_ci';
     },
 
+    'bookings' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('user_id');
+        $table->unsignedInteger('provider_id');
+        $table->unsignedInteger('vehicle_id');
+
+        $table->string('from_location');
+        $table->string('destination');
+        $table->unsignedInteger('distance');
+
+        $table->dateTime('from_date');
+        $table->dateTime('to_date');
+
+        $table->integer('total_days')->default(1);
+
+        $table->decimal('total_amount', 12, 2)->default(0); 
+
+        $table->string('status')->default('pending');
+
+        $table->timestamps();
+
+        $table->index(['user_id', 'provider_id']);
+        $table->index('vehicle_id');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+
+    'vehicle_status' => function ($table) {
+        $table->increments('id');
+        $table->unsignedInteger('vehicle_id');
+        $table->string('status'); // available, busy, maintenance…
+
+        $table->timestamps();
+
+        $table->unique('vehicle_id', 'unique_vehicle_status');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'drivers_working_history' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('driver_id');
+
+        $table->string('status')->default('idle'); 
+        $table->integer('total_trips')->default(0);
+
+        $table->dateTime('last_trip_end')->nullable();
+        $table->dateTime('last_assigned')->nullable();
+
+        $table->timestamps();
+
+        $table->unique('driver_id', 'unique_driver_history');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
+    'driver_trips' => function ($table) {
+        $table->increments('id');
+
+        $table->unsignedInteger('driver_id');
+        $table->unsignedInteger('booking_id');
+
+        $table->string('status')->default('assigned'); // assigned / started / ended…
+
+        $table->dateTime('start_time')->nullable();
+        $table->dateTime('end_time')->nullable();
+
+        $table->timestamps();
+
+        $table->index('driver_id');
+        $table->index('booking_id');
+
+        $table->charset = 'utf8mb4';
+        $table->collation = 'utf8mb4_unicode_ci';
+    },
+
 
 
 ];

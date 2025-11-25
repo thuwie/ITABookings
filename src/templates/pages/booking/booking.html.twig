@@ -52,46 +52,46 @@
                 hiển thị
                 khi bạn chọn
                 tổng số ngày sẽ thuê xe.</p>
-            <form class="row g-3">
+            <form id="booking" class="row g-3">
                 <div class="col-md-6">
                     <label for="fullName" class="form-label">Họ tên</label>
                     <input type="text" class="form-control" id="fullName" name="full_name" value="{{user.full_name}}"
-                        disabled>
+                        readonly>
                 </div>
 
                 <div class="col-md-6">
                     <label for="phoneNumber" class="form-label">Số điện thoại</label>
                     <input type="text" class="form-control" id="phoneNumber" name="phone_number" value="{{user.phone}}"
-                        disabled>
+                        readonly>
                 </div>
 
                 <div class="col-12">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" disabled>
+                    <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" readonly>
                 </div>
 
                 <div class="col-md-6">
                     <label for="pickupPoint" class="form-label">Điểm đón</label>
                     <input type="text" class="form-control" id="pickupPoint" name="pickup_point"
-                        value="{{routeDetail.from}}" disabled>
+                        value="{{routeDetail.from}}" readonly>
                 </div>
 
                 <div class="col-md-6">
                     <label for="destinationPoint" class="form-label">Điểm đến</label>
                     <input type="text" class="form-control" id="destinationPoint" name="destination_point"
-                        value="{{routeDetail.to}}" disabled>
+                        value="{{routeDetail.to}}" readonly>
                 </div>
 
                 <div class="col-md-6">
                     <label for="route" class="form-label">Tuyến đường</label>
                     <input type="text" class="form-control" id="route" name="route" value="{{routeDetail.route}}"
-                        disabled>
+                        readonly>
                 </div>
 
                 <div class="col-md-6">
                     <label for="total_km" class="form-label">Tổng số km:</label>
                     <input type="text" class="form-control" id="total_km" name="total_km" value="{{routeDetail.km}}"
-                        disabled>
+                        readonly>
                 </div>
 
                 <div class="col-md-6">
@@ -101,7 +101,7 @@
 
                 <div class="col-md-6">
                     <label for="startTime" class="form-label">Giờ khởi hành</label>
-                    <input type="text" class="form-control" id="startTime" name="start_time" disabled value="8:00 AM">
+                    <input type="text" class="form-control" id="startTime" name="start_time" readonly value="8:00 AM">
                 </div>
 
                 <div class="col-md-6">
@@ -111,15 +111,18 @@
 
                 <div class="col-md-6">
                     <label for="endTime" class="form-label">Giờ kết thúc</label>
-                    <input type="text" class="form-control" id="endTime" name="end_time" disabled value="17:00 PM">
+                    <input type="text" class="form-control" id="endTime" name="end_time" readonly value="17:00 PM">
                 </div>
+                <input type="text" class="d-none" id="user_id" name="user_id" value="{{ authUser.id }}">
 
                 <input id="price_one_day" type="text" class="d-none" value="{{routeDetail.price}}" />
                 <p>Tổng chi phí bạn phải thanh toán là: <span class="note fw-bolder" id="total_price">0đ</span></p>
 
                 <div class="col-12 mt-2">
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="submit" class="btn text-white" style="background-color: #54bf21;">Xác nhận đặt
+                        <button type="submit" id="btn-submit" class="btn text-white" style="background-color: #54bf21; opacity: 0.5;
+                        pointer-events: none;
+                        ">Xác nhận đặt
                             xe</button>
                         <button type="button" class="btn border rounded-1">Hủy</button>
                     </div>
