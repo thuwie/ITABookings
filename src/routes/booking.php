@@ -81,6 +81,27 @@ return function (App $app, $twig) {
         });
 
         /** ---------------------------
+         * GET /booking/payment/callback
+         * --------------------------- */
+        $group->get('/payment/callback', function ($request, $response) 
+        {
+            $params = $request->getQueryParams();
+            $responseCode = $params['vnp_ResponseCode'] ?? null;
+
+            // Thành công
+            if ($responseCode === "00") {
+                return $response
+                    ->withHeader('Location', '/booking/register-successfully?status=success')
+                    ->withStatus(302);
+            }
+
+            // Thất bại (timeout, hủy, lỗi bank, hash sai…)
+            return $response
+                ->withHeader('Location', '/booking/register-failed?status=fail')
+                ->withStatus(302);
+        });
+
+        /** ---------------------------
          * POST /booking/{id}
          * --------------------------- */
        $group->post('/{id}', function ($request, $response, $args) use ($bookingServices) {
@@ -101,9 +122,9 @@ return function (App $app, $twig) {
             $result =  $bookingServices->save($body, $id);
 
             $payload = [
-                'status'  => $result ? 'success' : 'error',
-                'message' => $result ? 'Đặt xe thành công' : 'Đặt xe thất bại',
-                'redirect' => $result ? '/booking/register-successfully' : '/booking/register-failed'
+                'status'  => $result['status'] === 200 ? 'success' : 'error',
+                'message' => $result['status'] === 200 ? 'Đặt xe thành công' : 'Đặt xe thất bại',
+                'redirect' => $result['status'] === 200 ? $result['re-directUrl'] : '/booking/register-failed'
             ];
 
         } catch (\Exception $e) {

@@ -4,6 +4,7 @@ namespace App\Application\Service;
 use App\Application\Port\Inbound\BookingServicePort;
 use App\Application\Port\Outbound\BookingRepositoryPort;
 use App\Domain\Entity\Booking;
+use App\Domain\Entity\VNPAY;
 
 class BookingService implements BookingServicePort {
     private BookingRepositoryPort $booking_repository;
@@ -14,7 +15,7 @@ class BookingService implements BookingServicePort {
         $this->booking_repository = $booking_repository;
     }
 
-   public function save($data, $id): bool {
+   public function save($data, $id): array {
         $userId = (int) $id;
         $providerId = (int) $data['providerId'];
         $vehicleId = (int) $data['vehicleId'];
@@ -29,8 +30,12 @@ class BookingService implements BookingServicePort {
 
         $newBooking = new Booking(0,  $userId, $providerId, $vehicleId, $from, $to, $distance, $fromDate, $toDate, $totalDays, $totalAmount, $status);
         $result = $this->booking_repository->save($newBooking);
-        
-        return $result ? true : false;
+        $dataRequest = ['vnp_TxnRef' => $result['id'], 'vnp_OrderInfo' => 'Thanh toan hoa don booking-id ' . $result['id'] . ' so tien ' . number_format($totalAmount, 0, ',', '.') . ' VND',
+        'vnp_OrderType' => 'booking_order', 'vnp_Amount' => $totalAmount];
+
+        $VNPay = new VNPAY($dataRequest);
+        $url = $VNPay->buildUrl();
+        return $result ? ['status' => 200, 're-directUrl' => $url] : ['status:' => 500, 'message' => 'Lỗi server'];
    }
    
 }
