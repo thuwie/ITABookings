@@ -1,0 +1,164 @@
+{% block body %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hóa đơn đặt xe</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #eef2f7;
+      padding: 30px;
+    }
+
+    .invoice-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+      border-top: 6px solid #002b5c;
+    }
+
+    h2.title {
+      text-align: center;
+      color: #002b5c;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #002b5c;
+      border-bottom: 2px solid #ccd3db;
+      padding-bottom: 5px;
+      margin-top: 25px;
+    }
+
+    .info-box {
+      background: #f4f7fb;
+      border-left: 4px solid #004080;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #002b5c;
+    }
+
+    .value {
+      color: #333;
+    }
+
+    .total-box {
+      margin-top: 25px;
+      padding: 20px;
+      background: #e6eef7;
+      border-radius: 10px;
+      border-left: 5px solid #002b5c;
+    }
+
+    .total-price {
+      font-size: 22px;
+      color: #002b5c;
+      font-weight: bold;
+    }
+
+    .btn-print {
+      background: #002b5c;
+      color: #fff;
+      border-radius: 6px;
+      padding: 12px;
+      width: 100%;
+      margin-top: 25px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .btn-print:hover {
+      background: #004080;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="invoice-container">
+
+    <h2 class="title"><i class="bi bi-receipt-cutoff"></i> HÓA ĐƠN ĐẶT XE</h2>
+
+    <!-- Thông tin người đặt -->
+    <div class="section-title">Thông tin người đặt</div>
+    <div class="info-box">
+      <p><span class="label">Họ tên:</span> <span id="userName" class="value"></span></p>
+      <p><span class="label">Số điện thoại:</span> <span id="userPhone" class="value"></span></p>
+      <p><span class="label">Email:</span> <span id="userEmail" class="value"></span></p>
+      <p><span class="label">Địa chỉ đón:</span> <span id="pickup" class="value"></span></p>
+      <p><span class="label">Địa chỉ đến:</span> <span id="dropoff" class="value"></span></p>
+      <p><span class="label">Ngày đi - Ngày về:</span> <span id="dates" class="value"></span></p>
+      <p><span class="label">Số ngày thuê:</span> <span id="days" class="value"></span></p>
+    </div>
+
+    <!-- Thông tin xe -->
+    <div class="section-title">Thông tin xe</div>
+    <div class="info-box">
+      <p><span class="label">Hãng xe:</span> <span id="carBrand" class="value"></span></p>
+      <p><span class="label">Mẫu xe:</span> <span id="carModel" class="value"></span></p>
+      <p><span class="label">Số chỗ:</span> <span id="seats" class="value"></span></p>
+      <p><span class="label">Biển số:</span> <span id="licensePlate" class="value"></span></p>
+      <p><span class="label">Tài xế:</span> <span id="driver" class="value"></span></p>
+    </div>
+
+    <!-- Tổng tiền -->
+    <div class="total-box">
+      <div class="total-price">
+        Tổng thanh toán: <span id="totalPrice"></span>
+      </div>
+    </div>
+
+    <button class="btn btn-print" onclick="window.print()">
+      <i class="bi bi-printer"></i> In hóa đơn
+    </button>
+
+  </div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem("bookingData"));
+
+    if (!data) {
+      document.body.innerHTML = "<h3 style='text-align:center;color:#c00'>Không có dữ liệu hóa đơn!</h3>";
+    } else {
+      document.getElementById("userName").innerText = data.userName;
+      document.getElementById("userPhone").innerText = data.userPhone;
+      document.getElementById("userEmail").innerText = data.userEmail;
+
+      document.getElementById("pickup").innerText = data.pickup;
+      document.getElementById("dropoff").innerText = data.dropoff;
+
+      document.getElementById("dates").innerText = data.startDate + " → " + data.endDate;
+      document.getElementById("days").innerText = data.days;
+
+      document.getElementById("carBrand").innerText = data.carBrand;
+      document.getElementById("carModel").innerText = data.carModel;
+      document.getElementById("seats").innerText = data.seats;
+      document.getElementById("licensePlate").innerText = data.licensePlate;
+
+      document.getElementById("driver").innerText = data.driver === "yes" ? "Có tài xế" : "Không";
+
+      document.getElementById("totalPrice").innerText = data.totalPrice;
+    }
+  </script>
+
+</body>
+</html>
+{% endblock %}

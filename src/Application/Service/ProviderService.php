@@ -45,7 +45,7 @@ class ProviderService implements ProviderServicePort {
         $description = $provider['description'];
         $userSession = $this->sessionManager->get('user');
         $userId = $userSession['id'];
-        $newProvider = new Provider(0, $userId, $name, '', $description, $email, $phoneNumber, $address, $province);
+        $newProvider = new Provider(0, $userId, $name, $email, null, $description, $phoneNumber, $address, $province);
 
         $newProvider = $this->providerRepositoryPort->save($newProvider);
 
