@@ -23,4 +23,8 @@ interface ProviderRepositoryPort {
     public function getExtraCosts();
     public function getSeatCounting():array;
     public function getProviderWithVehicle($providerId, $vehicleId): array;
+    public function saveVehicleStatus($vehicle_id): bool;
+    public function getDriversByProvider($providerId) : array;
+    public function getDriversByIds(array $driverIds): array;
+    public function getDriverWorkingHistory(array $driverIds): array;
 }

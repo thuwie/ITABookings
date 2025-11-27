@@ -5,11 +5,14 @@ namespace App\Adapter\Outbound;
 use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
+use App\Domain\Entity\Driver;
 use App\Domain\Entity\Utility;
 use App\Domain\Entity\CostsRelatedProvider;
 use Psr\Http\Message\UploadedFileInterface;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Helper\FileHelper;
+use Illuminate\Support\Carbon;
+
 
 class ProviderRepository implements ProviderRepositoryPort {
     public function save(Provider $provider): Provider
@@ -208,7 +211,6 @@ class ProviderRepository implements ProviderRepositoryPort {
         return $result->toArray();
     }
 
-
     public function providersRelatedCosts () : array {
         $costs = DB::table('costs_related_providers')
         ->orderBy('id', 'asc')
@@ -296,6 +298,59 @@ class ProviderRepository implements ProviderRepositoryPort {
         ];
     }
 
+    public function saveVehicleStatus($vehicle_id): bool 
+    {
+        try {
+            return DB::table('vehicle_status')->insert([
+                'vehicle_id' => (int) $vehicle_id,
+                'status'     => 'assigned',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        } catch (\Exception $e) {
+            // log lỗi nếu cần
+            // Log::error($e->getMessage());
+            return false;
+        }
+    }
+
+    public function getDriversByProvider($providerId) : array {
+        // Lấy danh sách drivers theo provider_id
+        $drivers = DB::table('drivers')
+            ->where('provider_id', (int) $providerId)
+            ->get();
+
+        // Không có driver → trả về mảng rỗng
+        if ($drivers->isEmpty()) {
+            return [];
+        }
+
+        // Convert mỗi row stdClass thành array
+        return $drivers->map(function ($item) {
+            return (array) $item;
+        })->toArray();
+    }
+
+    public function getDriversByIds(array $driverIds): array
+    {
+         return DB::table('drivers')
+        ->whereIn('id', $driverIds)
+        ->get()
+        ->toArray();
+    }
+
+    public function getDriverWorkingHistory(array $driverIds): array
+    {
+        if (empty($driverIds)) {
+            return [];
+        }
+
+        return DB::table('drivers_working_history')
+            ->whereIn('driver_id', $driverIds)
+            ->groupBy('driver_id')
+            ->get()
+            ->toArray();
+    }
 
 }
 
