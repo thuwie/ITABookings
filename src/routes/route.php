@@ -50,17 +50,17 @@ return function(App $app, $twig) {
         return $response->withHeader('Content-Type', 'application/json');
     })->add(new AuthMiddleware());
 
-    // $app->get('/routes', function ($request, $response, $args) use ($twig) {
+    $app->get('/routes/location', function ($request, $response, $args) use ($twig) {
 
-    //     $params = $request->getQueryParams();
-    //     $from = $params['from'] ?? null;
-    //     $to = $params['to'] ?? null;
+        $params = $request->getQueryParams();
+        $from = $params['from'] ?? null;
+        $to = $params['to'] ?? null;
 
-    //     $routes = $this->get(RouteServicePort::class)->findRoutes($from, $to);
+        $routes = $this->get(RouteServicePort::class)->findRoutes($from, $to);
 
-    //     $response->getBody()->write(json_encode($routes));
-    //     return $response->withHeader('Content-Type', 'application/json');
-    // });
+        $response->getBody()->write(json_encode($routes));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
 
     $app->get('/create-routes', function ($request, $response, $args) use ($twig) {
         $service = $this->get(ProvinceServicePort::class); 

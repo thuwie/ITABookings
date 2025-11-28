@@ -75,5 +75,11 @@ class FoodCourtService implements FoodCourtServicePort {
         $result = $this->foodCourtRepositoryPort->getFoodCourtById($id);
         return $result;
      }
+     public function getProvinceByFoodCourtId($id) {
+        $foodCourt = $this->getFoodCourtById($id);
+        $foodCourtName = $foodCourt['name'];
+        $province = $this->foodCourtRepositoryPort->getProvinceByFoodCourtId($id);
+        return ['foodCourt' => $foodCourtName, 'province' => $province];
+     }
 }
 

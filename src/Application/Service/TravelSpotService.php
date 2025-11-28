@@ -75,5 +75,12 @@ class TravelSpotService implements TravelSpotPort {
       return $result;
     }
 
+    public function getProvinceByTravelSpotId($idTravelSPot) {
+        $travelSpot = $this->getById($idTravelSPot);
+        $travelSpotName = $travelSpot['name'];
+        $province = $this->travelSpotRepositoryPort->getProvinceByTravelSpotId($idTravelSPot);
+        $result = ['province' => $province, 'travelSpot' => $travelSpotName];
+        return $result;
+    }   
 }
 

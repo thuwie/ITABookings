@@ -31,7 +31,6 @@ return function(App $app, $twig) {
 
         /** @var FoodCourtServicePort $service */
         $service = $this->get(FoodCourtServicePort::class);
-
         // Lấy dữ liệu từ form
         $body = $request->getParsedBody();
 
@@ -65,6 +64,7 @@ return function(App $app, $twig) {
         $id = $args['id'];
 
         $serviceFoodCourt = $this->get(FoodCourtServicePort::class);
+        $provinces = $this->get(ProvinceServicePort::class)->getProvinces();
 
         $foodCourt = $serviceFoodCourt->getFoodCourtById($id);
             if ($foodCourt ) {
@@ -86,11 +86,22 @@ return function(App $app, $twig) {
 
         $html = $twig->render('pages/food_court/food-court-detail.html.twig', [
             'foodCourt' =>$foodCourt,
-            'relatedFoodCourts' =>$relatedFoodCourts
+            'relatedFoodCourts' =>$relatedFoodCourts,
+            'provinces' => $provinces 
         ]);
 
         $response->getBody()->write($html);
         return $response;
+    });
+
+    $app->get('/food-court/{id}/province', function ($request, $response, $args)  {
+        $id = (int) $args['id'];
+        $foodCourtServices = $this->get(FoodCourtServicePort::class);
+        $result = $foodCourtServices->getProvinceByFoodCourtId($id);
+        $payload = ['data' => $result];
+        // Write JSON to response
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
     });
 
     };

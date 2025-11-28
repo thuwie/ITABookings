@@ -17,7 +17,7 @@ class AuthMiddleware implements MiddlewareInterface
 
         if (!isset($_SESSION['user'])) {
             // Get the URL user is trying to access
-            $_SESSION['redirect_after_login'] = (string)$request->getUri()->getPath();
+            $_SESSION['redirect_after_login'] = (string)$request->getUri();
 
             // Redirect to login with redirect query parameter
             $response = new \Slim\Psr7\Response();

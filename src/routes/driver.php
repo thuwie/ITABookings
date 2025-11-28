@@ -8,7 +8,7 @@ use App\Application\Port\Inbound\ProviderServicePort;
 use App\Application\Port\Inbound\InformationPaymentServicePort;
 use App\Application\Port\Inbound\UserServicePort;
 use App\Application\Port\Inbound\DriverServicePort;
-
+use App\Middleware\AuthorizationMiddleware;
 use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
@@ -100,7 +100,8 @@ return function (App $app, $twig) {
             return $response->withHeader('Content-Type', 'application/json');
         });
 
-    })->add(new AuthMiddleware());
+    })->add(new AuthMiddleware())
+    ->add(new AuthorizationMiddleware(3));
 
 };
 

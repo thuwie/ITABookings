@@ -252,6 +252,7 @@ return function (): Container {
         $container->set(BookingServicePort::class, function() use ($container) {
             return new BookingService(
                 $container->get(BookingRepositoryPort::class),
+                $container->get(ProviderRepositoryPort::class),
         );
         });
         

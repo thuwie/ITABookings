@@ -13,12 +13,11 @@ return function(App $app, $twig) {
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
     $redirectUrl = $_SESSION['redirect_after_login'] ?? '/';
-    unset($_SESSION['redirect_after_login']);
-
-
+    
+    
     try {
         $user = $this->get(LoginUserUseCasePort::class)->login($email, $password);
-
+        
         $twig->addGlobal('authUser', $user);
         // Trả về JSON khi login thành công
         $result = [
@@ -26,6 +25,8 @@ return function(App $app, $twig) {
             'message' => 'Đăng nhập thành công',
             'redirect' =>  $redirectUrl
         ];
+        
+        unset($_SESSION['redirect_after_login']);
 
     } catch (\Exception $e) {
         $result = [
