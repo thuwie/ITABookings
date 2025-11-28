@@ -87,7 +87,7 @@ class BookingRepository implements BookingRepositoryPort {
             'to_date'       => $data->getToDate()->format('Y-m-d H:i:s'),
             'total_days'    => $data->getTotalDays(),
             'total_amount'  => $data->getTotalAmount(),
-            'status'        => $data->getStatus(),
+            'status'        => 'paid',
             'updated_at'    => date('Y-m-d H:i:s'),
         ];
 

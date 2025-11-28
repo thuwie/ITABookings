@@ -381,4 +381,13 @@ class FoodCourtRepository implements FoodCourtRepositoryPort {
         return $foodCourt->toArray();
     }
 
+    public function getProvinceByFoodCourtId($foodCourtId)
+    {
+        return DB::table('food_courts')
+            ->join('provinces', 'provinces.id', '=', 'food_courts.province_id')
+            ->where('food_courts.id', $foodCourtId)
+            ->select('provinces.id', 'provinces.name')
+            ->first(); // trả về 1 object
+    }
+
 }

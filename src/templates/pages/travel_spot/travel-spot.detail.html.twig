@@ -50,9 +50,8 @@
 
     <div class="d-flex gap-3 rounded-3 flex-column p-3" style="box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1 )">
         <div class="d-flex justify-content-center align-content-center ">
-            <button class="w-25 rounded-2 border-0 py-2" style="background-color: orange; color: white;
-             outline: none;
-            ">
+            <button id="booking_now" class="w-25 rounded-2 border-0 py-2" style="background-color: orange; color: white;
+             outline: none;" data-bs-toggle="modal" data-bs-target="#confirmLocation">
                 Đặt xe ngay
             </button>
         </div>
@@ -170,6 +169,40 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmLocation" tabindex="-1" aria-labelledby="confirmLocation" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bạn muốn đặt xe?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Để hệ thống tìm cho bạn những chuyến xe tốt nhất, vui lòng chọn điểm xuất phát.</p>
+
+                <div class="my-3"><span class="fw-bold">Điểm đến: </span> <span id="destination"></span></div>
+                <input type="text" class="d-none" name="to_location" id="to_location">
+
+                <select id="from_location" name="from_location"
+                    style="border-color: #D7D7D7; height: 40px; outline-style: none;" class="w-100 rounded-2">
+                    <option value="">Chọn nơi xuất phát</option>
+                    {% for item in provinces %}
+                    <option value="{{item.id}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a id="confirm_location" class="btn btn-primary">Xác nhận</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/handler-travel-spot.js"></script>
 
 
 {% endblock %}

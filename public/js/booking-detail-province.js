@@ -20,9 +20,11 @@ const BookingProvinceDetail = {
         };
     },
     addEventElements() {
+        const btn = this.elements.btnConfirm;
         this.elements.fromLocation.addEventListener('change', () => {
             const from = this.elements.fromLocation.value;
             const to = this.elements.toLocation.value;
+            btn.href = `/searching-routes?from=${from}&to=${to}`;
             const btnConfirm = this.elements.btnConfirm;
             if (from !== to && from !== "") {
                 btnConfirm.disabled = false;
@@ -34,7 +36,7 @@ const BookingProvinceDetail = {
         this.elements.btnConfirm.addEventListener('click', () => {
             const from = this.elements.fromLocation.value;
             const to = this.elements.toLocation.value;
-            window.location.href = `/searching-routes?from=${from}&to=${to}`;
+            this.elements.btnConfirm.href = `/searching-routes?from=${from}&to=${to}`;
         });
     },
 

@@ -10,4 +10,5 @@ interface FoodCourtRepositoryPort {
     public function getFoodCourtsWithImagesByProvinceId($provinceId):array;
     public function getFoodCourtsWithImagesByTravelSpotId($idTravelSpot):array;
     public function getFoodCourtById($id);
+    public function getProvinceByFoodCourtId($foodCourtId);
 }

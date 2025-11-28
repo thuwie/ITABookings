@@ -27,4 +27,8 @@ interface ProviderRepositoryPort {
     public function getDriversByProvider($providerId) : array;
     public function getDriversByIds(array $driverIds): array;
     public function getDriverWorkingHistory(array $driverIds): array;
+    public function getDriversAreNotInBookingSortByASC(array $ids):array;
+    public function getOptimalDriver(): ?object;
+    public function saveDriverWorkingHistory(array $data): bool;
+    public function saveDriversTrips(array $data): bool;
 }

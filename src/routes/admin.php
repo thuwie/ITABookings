@@ -8,6 +8,7 @@ use App\Application\Port\Inbound\InformationPaymentServicePort;
 use App\Application\Port\Inbound\UserServicePort;
 use App\Application\Port\Inbound\AdminServicePort;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\AuthorizationMiddleware;
 
 return function (App $app, $twig) {
 
@@ -110,6 +111,8 @@ return function (App $app, $twig) {
 
 
 
-    })->add(new AuthMiddleware());
+    })->add(new AuthMiddleware())
+    ->add(new AuthorizationMiddleware(1));   
+;
 
 };

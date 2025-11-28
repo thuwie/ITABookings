@@ -5,12 +5,20 @@ const RouteSearch = {
     },
 
     disableSearchingBtnAsRouteUnselect() {
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from");
+        const to = params.get("to");
         const fromLocationSelect = document.querySelector('#from_location');
         const toLocationSelect = document.querySelector('#to_location');
         const searchingBtn = document.querySelector("#searching-btn");
         if (fromLocationSelect.value === "" && toLocationSelect.value === "") {
             searchingBtn.disabled = true;
         };
+        if (from && to) {
+            fromLocationSelect.value = from;
+            toLocationSelect.value = to;
+            searchingBtn.disabled = false;
+        }
     },
 
     addEventElements() {
@@ -35,7 +43,7 @@ const RouteSearch = {
 
                 const seat = e.target.value;
                 RouteSearch.showLoading();
-                const res = await fetch(`/routes?from=${from}&to=${to}&seat_counting=${seat}&provider=${id}`);
+                const res = await fetch(`/routes?from=${fromLocationSelect.value}&to=${toLocationSelect.value}&seat_counting=${seat}&provider=${id}`);
                 const routes = await res.json();
                 const { data } = routes;
                 this.renderRoutes(data, userId);
@@ -54,7 +62,7 @@ const RouteSearch = {
                 };
 
                 RouteSearch.showLoading();
-                const res = await fetch(`/routes?from=${from}&to=${to}&provider=${id}&seat_counting=${seat}`);
+                const res = await fetch(`/routes?from=${fromLocationSelect.value}&to=${toLocationSelect.value}&provider=${id}&seat_counting=${seat}`);
                 const routes = await res.json();
                 const { data } = routes;
                 this.renderRoutes(data, userId);
@@ -68,8 +76,6 @@ const RouteSearch = {
                 searchingBtn.disabled = false;
                 searchingBtn.classList.toggle('searching-btn-29-10');
                 searchingBtn.classList.toggle('border-dark');
-                from = fromLocationSelect.value;
-                to = toLocationSelect.value;
             } else {
                 searchingBtn.disabled = true;
                 searchingBtn.classList.remove('searching-btn-29-10');
@@ -85,8 +91,6 @@ const RouteSearch = {
                 searchingBtn.disabled = false;
                 searchingBtn.classList.toggle('searching-btn-29-10');
                 searchingBtn.classList.toggle('border-dark');
-                from = fromLocationSelect.value;
-                to = toLocationSelect.value;
             } else {
                 searchingBtn.disabled = true;
                 searchingBtn.classList.remove('searching-btn-29-10');
@@ -97,7 +101,7 @@ const RouteSearch = {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             RouteSearch.showLoading();
-            const res = await fetch(`/routes?from=${from}&to=${to}`);
+            const res = await fetch(`/routes?from=${fromLocationSelect.value}&to=${toLocationSelect.value}`);
             const routes = await res.json();
             const { data } = routes;
             this.renderRoutes(data, userId);

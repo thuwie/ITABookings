@@ -35,7 +35,7 @@ class VNPAY
         $this->vnp_OrderType  = $data['vnp_OrderType'];
 
         $this->vnp_Amount     = $data['vnp_Amount'] * 100;
-        $this->vnp_IpAddr     = $data['vnp_IpAddr'] ?? '123.123.123.123';
+        $this->vnp_IpAddr     = $data['vnp_IpAddr'] ?? '103.28.36.45';
 
         $this->vnp_Locale     = $data['vnp_Locale']     ?? "vn";
         $this->vnp_BankCode   = $data['vnp_BankCode']   ??  "NCB";

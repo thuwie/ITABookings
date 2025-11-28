@@ -120,19 +120,29 @@ class ProviderRepository implements ProviderRepositoryPort {
         return Provider::fromArray((array)$row);
     }
 
-   public function saveVehicle(Vehicle $vehicle): array {
-        // Insert and get last ID
-        $id = DB::table('vehicles')->insertGetId(
-        $vehicle->toInsertArray()
+   public function saveVehicle(Vehicle $vehicle): array
+    {
+        // 1️⃣ Insert into vehicles table
+        $vehicleId = DB::table('vehicles')->insertGetId(
+            $vehicle->toInsertArray()
         );
 
-        // Query the inserted row
+        // 2️⃣ Insert default status for this vehicle
+        DB::table('vehicle_status')->insert([
+            'vehicle_id' => $vehicleId,
+            'status'     => 'available',   // mặc định khi tạo
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        // 3️⃣ Query the inserted vehicle row
         $newVehicle = DB::table('vehicles')
-        ->where('id', $id)
-        ->first();
+            ->where('id', $vehicleId)
+            ->first();
 
         return (array) $newVehicle;
-   }
+    }
+
 
    public function saveVehicleImgs(array $vehicles): bool {
         $rows = [];
@@ -187,6 +197,7 @@ class ProviderRepository implements ProviderRepositoryPort {
     {
         $query = DB::table('providers')
             ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
+            ->leftJoin('vehicle_status', 'vehicle_status.vehicle_id', '=', 'vehicles.id')
             ->select(
                 'providers.user_id as provider_id',
                 'providers.name as provider_name',
@@ -196,7 +207,8 @@ class ProviderRepository implements ProviderRepositoryPort {
                 'vehicles.seat_count',
                 'vehicles.fuel_consumption',
                 'vehicles.maintenance_per_km'
-            );
+            )
+            ->where('vehicle_status.status', 'available');
 
         $query->when($seat !== null, function ($q) use ($seat) {
             $q->where('vehicles.seat_count', $seat);
@@ -235,55 +247,51 @@ class ProviderRepository implements ProviderRepositoryPort {
 
     public function getProviderWithVehicle($providerId, $vehicleId): array
     {
-       
         $row = DB::table('providers')
-        ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
-        ->leftJoin('provinces', 'provinces.id', '=', 'providers.province_id')
-        ->leftJoin('vehicle_utilities', 'vehicle_utilities.vehicle_id', '=', 'vehicles.id')
-        ->leftJoin('utilities', 'utilities.id', '=', 'vehicle_utilities.utility_id')
-        ->where('providers.user_id', $providerId)
-        ->where('vehicles.id', $vehicleId)
-        ->select(
-            'providers.name as provider_name',
-            'providers.phone_number',
-            'provinces.name as province_name',
-            'vehicles.brand',
-            'vehicles.model',
-            'vehicles.seat_count',
-            DB::raw("GROUP_CONCAT(utilities.name SEPARATOR ',') as utilities_list"),
+            ->join('vehicles', 'vehicles.provider_id', '=', 'providers.user_id')
+            ->leftJoin('provinces', 'provinces.id', '=', 'providers.province_id')
+            ->leftJoin('vehicle_utilities', 'vehicle_utilities.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('utilities', 'utilities.id', '=', 'vehicle_utilities.utility_id')
+            ->where('providers.user_id', $providerId)
+            ->where('vehicles.id', $vehicleId)
+            ->select(
+                'providers.name as provider_name',
+                'providers.phone_number',
+                'provinces.name as province_name',
+                'vehicles.brand',
+                'vehicles.model',
+                'vehicles.seat_count',
+                DB::raw("GROUP_CONCAT(utilities.name SEPARATOR ',') as utilities_list"),
 
-            // Lấy một ảnh duy nhất của xe
-            DB::raw("(
-                SELECT url 
-                FROM vehicle_imgs 
-                WHERE vehicle_imgs.vehicle_id = vehicles.id 
-                ORDER BY id ASC 
-                LIMIT 1
-            ) as vehicle_img")
-        )
-        ->groupBy(
-            'providers.id',
-            'providers.name',
-            'providers.phone_number',
-            'provinces.name',
-            'vehicles.id',
-            'vehicles.brand',
-            'vehicles.model',
-            'vehicles.seat_count'
-        )
-        ->first();
-
+                // Ảnh của xe
+                DB::raw("(
+                    SELECT url
+                    FROM vehicle_imgs
+                    WHERE vehicle_imgs.vehicle_id = vehicles.id
+                    ORDER BY id ASC
+                    LIMIT 1
+                ) as vehicle_img")
+            )
+            ->groupBy(
+                'providers.id',
+                'providers.name',
+                'providers.phone_number',
+                'provinces.name',
+                'vehicles.id',
+                'vehicles.brand',
+                'vehicles.model',
+                'vehicles.seat_count'
+            )
+            ->first();
 
         if (!$row) {
             return [];
         }
 
-        // Chuyển utilities_list (chuỗi) thành mảng, loại bỏ rỗng
+        // Convert utilities_list → array
         $utilities = [];
         if (!empty($row->utilities_list)) {
-            $utilities = array_filter(array_map('trim', explode(',', $row->utilities_list)));
-            // reset keys
-            $utilities = array_values($utilities);
+            $utilities = array_values(array_filter(array_map('trim', explode(',', $row->utilities_list))));
         }
 
         return [
@@ -294,21 +302,21 @@ class ProviderRepository implements ProviderRepositoryPort {
             'model'         => $row->model,
             'seat_count'    => (int) $row->seat_count,
             'utilities'     => $utilities,
-            'vehicle_img' => $row->vehicle_img,
+            'vehicle_img'   => $row->vehicle_img,
         ];
     }
 
     public function saveVehicleStatus($vehicle_id): bool 
     {
-        try {
-            return DB::table('vehicle_status')->insert([
-                'vehicle_id' => (int) $vehicle_id,
-                'status'     => 'assigned',
-                'created_at' => Carbon::now(),
+         try {
+        return DB::table('vehicle_status')
+            ->where('vehicle_id', $vehicle_id)
+            ->update([
+                'status'     => 'booked',
                 'updated_at' => Carbon::now(),
             ]);
         } catch (\Exception $e) {
-            // log lỗi nếu cần
+            // Log lỗi nếu cần
             // Log::error($e->getMessage());
             return false;
         }
@@ -350,6 +358,80 @@ class ProviderRepository implements ProviderRepositoryPort {
             ->groupBy('driver_id')
             ->get()
             ->toArray();
+    }
+
+    public function getDriversAreNotInBookingSortByASC(array $ids):array {
+       if (empty($ids)) {
+        return [];
+       };
+
+       return DB::table('drivers')
+        ->whereIn('id', $ids)
+        ->whereNotIn('id', function ($query) {
+            $query->select('driver_id')
+                  ->from('drivers_working_history');
+        })
+        ->orderBy('id', 'ASC')  
+        ->get()
+        ->toArray();
+    }
+
+    public function getOptimalDriver(): ?object
+    {
+        $twoDaysAgo = Carbon::now()->subDays(2);
+
+        return DB::table('drivers_working_history AS dwh')
+            ->join('drivers AS d', 'd.id', '=', 'dwh.driver_id')
+
+            ->where('dwh.status', 'available')
+           
+
+            // Ưu tiên 1: total_trips thấp nhất
+            ->orderBy('dwh.total_trips', 'ASC')
+
+            // Ưu tiên 2: lâu nhất chưa được assign
+            ->orderBy('dwh.last_assigned', 'ASC')
+
+            // Tie-break cuối: id tăng dần
+            ->orderBy('dwh.driver_id', 'ASC')
+
+            ->select(
+                'd.*'
+            )
+
+            ->first(); // Chỉ trả về 1 driver tốt nhất
+    }
+
+    public function saveDriverWorkingHistory(array $data): bool
+    {
+        return DB::table('drivers_working_history')->insert([
+            'driver_id'      => $data['driver_id'],
+            'status'         => $data['status'] ?? 'idle',
+            'total_trips'    => $data['total_trips'] ?? 0,
+            'last_trip_end'  => $data['last_trip_end'] ?? null,
+            'last_assigned'  => Carbon::now(),
+            'created_at'     => Carbon::now(),
+            'updated_at'     => Carbon::now(),
+        ]);
+    }
+
+    public function saveDriversTrips(array $data): bool
+    {
+        try {
+            return DB::table('driver_trips')->insert([
+                'driver_id'   => $data['driver_id'],
+                'booking_id'  => $data['booking_id'],
+                'status'      => $data['status'],
+                'start_time'  => $data['start_time'],
+                'end_time'    => $data['end_time'],
+                'created_at'  => Carbon::now(),
+                'updated_at'  => Carbon::now(),
+            ]);
+        } catch (\Exception $e) {
+            // log lỗi nếu cần
+            // Log::error($e->getMessage());
+            return false;
+        }
     }
 
 }

@@ -33,7 +33,7 @@ class LoginUserUseCaseService implements LoginUserUseCasePort {
         $user = $this->userRepositoryPort->findUserByEmail($validationEmail);
 
         if(!$user) {
-             throw new \Exception("Email not found");
+             throw new \Exception("Email không tồn tại!!!");
         }
 
         $userId = $user->getId();
@@ -43,7 +43,7 @@ class LoginUserUseCaseService implements LoginUserUseCasePort {
         $passwordObject = Password::fromHash($passwordHashStorage);
 
         if(!$passwordObject->verify($password)) {
-             throw new \Exception("Password is not correct");
+             throw new \Exception("Mật khẩu không đúng !!!!!");
         };
 
 

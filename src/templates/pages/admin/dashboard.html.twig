@@ -965,42 +965,41 @@
       const fetchData = async () => {
         const { data } = await unverifiedProviders();
         const { providers, representatives } = data;
-        const tr = document.createElement('tr');
+
         if (providers.length == 0 || representatives.length == 0) {
+          const tr = document.createElement('tr');
           tr.innerHTML = `<td colspan="10" style="text-align:center; padding:20px;">
             Không có đơn đăng ký nào.
           </td>`;
         } else {
-          representatives.forEach((rep, idx) => {
-            const provider = providers[idx];
-            if (provider.user_id === rep.id) {
-              tr.innerHTML = `
-              <td>${provider.id}</td>
-              <td>${provider.name}</td>
-              <td>${rep.last_name + rep.first_name}</td>
-              <td>${provider.verified_at == null &&
-                `<span style="display: inline - block; padding: 3px 8px; background: #fff7cd; border: 1px solid #facc15;
-              color: #b45309;
-              border-radius: 12px;
-              font-size: 12px;
-              font-weight: 600;
-            ">
-          Chờ duyệt
-        </span >`}</td>
-              <td>
-               <button class="btn small btn-ghost" data-provider='${JSON.stringify(provider)}'
-                data-rep='${JSON.stringify(rep)}'
-                 onclick="openBizModal(this)"
-              >
-                Chi tiết
-              </button>
+          const providerMap = Object.fromEntries(
+            providers.map(p => [p.user_id, p])
+          );
 
-              </td>
-            `;
-            }
+          representatives.forEach(rep => {
+            const provider = providerMap[rep.id];
+            if (!provider) return;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+          <td>${provider.id}</td>
+          <td>${provider.name}</td>
+          <td>${rep.last_name + rep.first_name}</td>
+          <td>${provider.verified_at == null
+                ? `<span style="display:inline-block;padding:3px 8px;background:#fff7cd;border:1px solid #facc15;color:#b45309;border-radius:12px;font-size:12px;font-weight:600;">Chờ duyệt</span>`
+                : ''
+              }</td>
+          <td>
+            <button class="btn small btn-ghost"
+                    data-provider='${JSON.stringify(provider)}'
+                    data-rep='${JSON.stringify(rep)}'
+                    onclick="openBizModal(this)">
+              Chi tiết
+            </button>
+          </td>
+        `;
+            tbody.appendChild(tr);
           });
         }
-        tbody.appendChild(tr);
       };
 
       fetchData();

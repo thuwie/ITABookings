@@ -28,7 +28,7 @@ return function (App $app, $twig) {
          * GET /booking/confirming
          * --------------------------- */
         $group->get('/confirming', function ($request, $response) 
-            use ($twig, $userServices, $providerService) {
+            use ($twig, $userServices, $providerService,  $bookingServices) {
             
             $params = $request->getQueryParams();
             $userId     = (int) $params['user'] ?? null;
@@ -43,7 +43,7 @@ return function (App $app, $twig) {
             $userInformation = $userServices->getUserById($userId);
             $providerWithVehicle = $providerService->getProviderWithVehicle($providerId, $vehicleId);
             $grouping = ['route' =>$route, 'from' => $from , 'to' => $to, 'km' => $km, 'price' => $price];
-
+            $test = $bookingServices->bookingConfirming('Thanh toan hoa don booking: 6-1-4. So tien 1.200.000 VND');
            $html = $twig->render('pages/booking/booking.html.twig', [
                 'routeDetail' => $grouping,
                 'user' => $userInformation,
@@ -84,12 +84,15 @@ return function (App $app, $twig) {
          * GET /booking/payment/callback
          * --------------------------- */
         $group->get('/payment/callback', function ($request, $response) 
+         use($bookingServices)
         {
             $params = $request->getQueryParams();
             $responseCode = $params['vnp_ResponseCode'] ?? null;
-
+            $orderInfo = $params['vnp_OrderInfo'];
+            $result = $bookingServices->bookingConfirming($orderInfo);
+            
             // Thành công
-            if ($responseCode === "00") {
+            if ($responseCode === "00" && $result) {
                 return $response
                     ->withHeader('Location', '/booking/register-successfully?status=success')
                     ->withStatus(302);

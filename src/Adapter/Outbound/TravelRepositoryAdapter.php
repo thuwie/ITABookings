@@ -336,4 +336,12 @@ class TravelRepositoryAdapter implements TravelSpotRepositoryPort {
         return $travelSpot->toArray();
     }
 
+    public function getProvinceByTravelSpotId($travelSpotId)
+    {
+        return DB::table('travel_spots')
+            ->join('provinces', 'provinces.id', '=', 'travel_spots.province_id')
+            ->where('travel_spots.id', $travelSpotId)
+            ->select('provinces.id', 'provinces.name')
+            ->first(); // trả về 1 object
+    }
 }
