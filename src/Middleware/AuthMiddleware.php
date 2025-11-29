@@ -16,9 +16,14 @@ class AuthMiddleware implements MiddlewareInterface
         }
 
         if (!isset($_SESSION['user'])) {
-            // Get the URL user is trying to access
-            $_SESSION['redirect_after_login'] = (string)$request->getUri();
+            $role = $_SESSION['user']['role'];
 
+            if($role === 'admin') {
+                $_SESSION['redirect_after_login'] = '/admin/dashboard';
+            } else {
+                     // Get the URL user is trying to access
+                 $_SESSION['redirect_after_login'] = (string)$request->getUri();
+            };
             // Redirect to login with redirect query parameter
             $response = new \Slim\Psr7\Response();
             return $response
