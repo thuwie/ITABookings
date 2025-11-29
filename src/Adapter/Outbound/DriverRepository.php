@@ -30,11 +30,23 @@ class DriverRepository implements DriverRepositoryPort {
         );
     }
 
-    public function findUnVerifiedAccountByUserId(int $userId): ?Driver
+   public function findByUserIdWithVerifyFallback(int $userId): ?Driver
     {
-        $row = DB::table('drivers')->where('user_id', $userId)->where('verified_at', null)->first();
-        if (!$row) return null;
+        // 1. Ưu tiên tìm driver chưa duyệt
+        $row = DB::table('drivers')
+            ->where('user_id', $userId)
+            ->whereNull('verified_at')
+            ->first();
 
-        return Driver::fromArray((array)$row);
+        // 2. Nếu không có → lấy driver đã duyệt
+        if (!$row) {
+            $row = DB::table('drivers')
+                ->where('user_id', $userId)
+                ->whereNotNull('verified_at')
+                ->first();
+        }
+
+        return $row ? Driver::fromArray((array)$row) : null;
     }
+
 }

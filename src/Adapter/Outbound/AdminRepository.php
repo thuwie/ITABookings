@@ -52,6 +52,13 @@ class AdminRepository implements AdminRepositoryPort {
         }
 
         return ExtraCost::fromArray((array) $row);
-        }
+    }
+
+    public function isAdminLogin($userId): bool {
+        return DB::table('user_roles')
+        ->where('user_id', $userId)
+        ->where('role_id', 1)   // 1 = admin
+        ->exists();
+    }
 
 }

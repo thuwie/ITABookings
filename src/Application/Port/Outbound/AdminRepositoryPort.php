@@ -6,4 +6,5 @@ interface AdminRepositoryPort {
     public function approveProvider(int $providerId);
     public function saveExtraCosts(ExtraCost $extraCosts): bool;
     public function getExtraCost(): ?ExtraCost;
+    public function isAdminLogin($userId): bool;
 }

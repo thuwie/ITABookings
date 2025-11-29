@@ -151,7 +151,8 @@ return function (): Container {
                 $container->get(UserRepositoryPort::class),
                 $container->get(SessionManagerInterfacePort::class),
                 $container->get(ProviderRepositoryPort::class),
-                $container->get(DriverRepositoryPort::class)
+                $container->get(DriverRepositoryPort::class),
+                $container->get(AdminRepositoryPort::class)
         );
         });
 

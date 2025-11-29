@@ -9,7 +9,7 @@ interface ProviderRepositoryPort {
     public function saveLogo(?UploadedFileInterface $logo, string $providerName): string;
     public function savePathLogo($url, Provider $provider): bool;
     public function update(Provider $provider): bool;
-    public function findUnVerifiedAccountByUserId (int $userId): ?Provider;
+    public function findByUserIdWithVerifyFallback(int $userId): ?Provider;
     public function getProvidersByVerified(?bool $verified = null): array;
     public function findById(int $id): ?Provider;
     public function saveVehicle(Vehicle $vehicle): array;
