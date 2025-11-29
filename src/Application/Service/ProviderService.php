@@ -6,6 +6,7 @@ use App\Application\Port\Outbound\ProviderRepositoryPort;
 use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Application\Port\Outbound\InformationPaymentPort;
 use App\Application\Port\Outbound\UploadImageRepositoryPort;
+use App\Application\Port\Outbound\BookingRepositoryPort;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
@@ -21,18 +22,21 @@ class ProviderService implements ProviderServicePort {
     private SessionManagerInterfacePort $sessionManager;
     private InformationPaymentPort $paymentInformation;
     private UploadImageRepositoryPort $uploadImageRepository;
+    private BookingRepositoryPort $bookingRepository;
 
     public function __construct (
         ProviderRepositoryPort  $providerRepositoryPort,
         SessionManagerInterfacePort $sessionManager,
         InformationPaymentPort $paymentInformation,
-        UploadImageRepositoryPort $uploadImageRepository
+        UploadImageRepositoryPort $uploadImageRepository,
+        BookingRepositoryPort $bookingRepository
     ) 
     {
         $this->providerRepositoryPort = $providerRepositoryPort;
         $this->sessionManager = $sessionManager;
         $this->paymentInformation = $paymentInformation;
         $this->uploadImageRepository = $uploadImageRepository;
+        $this->bookingRepository = $bookingRepository;
     }
 
     public function save($provider, $logo): bool { 
@@ -75,7 +79,7 @@ class ProviderService implements ProviderServicePort {
         $userSession = $this->sessionManager->get("user");
         $userId = (int) $userSession['id'];
 
-        $formInformation = $this->providerRepositoryPort->findUnVerifiedAccountByUserId($userId);
+        $formInformation = $this->providerRepositoryPort->findByUserIdWithVerifyFallback($userId);
         $paymentInformation = $this->paymentInformation->getPaymentInformationByUserId($userId);
         
         if(!$formInformation || !$paymentInformation) {
@@ -94,7 +98,6 @@ class ProviderService implements ProviderServicePort {
         $result = $this->providerRepositoryPort->getProvidersByVerified($filter_value);
         return $result;
     }
-    
 
     public function getProviderById(int $id): array {
         $result = $this->providerRepositoryPort->findById($id)->toArray();
@@ -250,4 +253,33 @@ class ProviderService implements ProviderServicePort {
         $result = $this->providerRepositoryPort->getProviderWithVehicle($providerId, $vehicleId);
         return $result;
     }
+
+    public function getProfile():array {
+        $sessionManager = $this->sessionManager->get('user');
+        $providerId = (int) $sessionManager['id'];
+        $provider = $this->getProviderById($providerId);
+        $provider = ['id' => $provider['id'] ,'name' =>  $provider['name'], 'avt' =>$provider['logo_url']];
+        return $provider;
     }
+
+    public function getBookings(): array {
+        $sessionManager = $this->sessionManager->get('user');
+        $providerId = (int) $sessionManager['id'];
+        $result = $this->bookingRepository->getBookings( $providerId );
+        return $result;
+    }
+
+    public function getVehiclesByProviderId($providerId): array {
+        $parseProviderId = (int) $providerId;
+        $result = $this->providerRepositoryPort->getVehiclesWithStatusByProviderId($parseProviderId);
+        return $result;
+    }   
+
+    public function getDriversByProviderId( $providerId, $filter_value): array {
+        $parseFilterValue =  $filter_value === 'true' ? true : false;
+        $parseProviderId = (int) $providerId;
+        $result = $this->providerRepositoryPort->getDriversByProviderId($parseProviderId, $parseFilterValue);
+        return $result;
+    }
+}
+    

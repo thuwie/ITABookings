@@ -9,17 +9,20 @@
     <link rel="stylesheet" href="/css/pro_dash.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 
 <body>
 
     <div class="dashboard-wrapper">
         <!-- SIDEBAR -->
-        <div class="sidebar">
+        <div class="sidebar" style=" min-width: 240px;">
             <div class="profile">
-                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar">
+                <img src="{{profile.avt}}" alt="avatar">
                 <div>
-                    <div class="name">Nguyen Van A</div>
+                    <input id="provider_id" type="text" class="d-none" value="{{profile.id}}">
+                    <div class="name"> {{profile.name}}</div>
                     <div style="font-size:12px;color:#888;">Doanh nghiệp</div>
                 </div>
             </div>
@@ -75,7 +78,7 @@
                         <option value="pending">Chưa thanh toán</option>
                         <option value="paid">Đã thanh toán</option>
                     </select>
-                    <table>
+                    <table class="mt-3 table table-striped table-bordered text-center">
                         <thead>
                             <tr>
                                 <th>Mã Booking</th>
@@ -83,13 +86,37 @@
                                 <th>Nơi đến</th>
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
-                                <th>Trạng thái</th>
                                 <th>Tổng tiền</th>
-                                <th>Thanh toán</th>
+                                <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody id="bookingList"></tbody>
+                        <tbody id="bookingList">
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.id }}</td>
+                                <td>{{ booking.fromLocation }}</td>
+                                <td>{{ booking.destination }}</td>
+                                <td>{{ booking.fromDate|date('d/m/Y') }}</td>
+                                <td>{{ booking.toDate|date('d/m/Y') }}</td>
+                                <td>{{ booking.totalAmount|number_format(0, ',', '.') }} đ</td>
+
+                                <td>
+                                    {% if booking.status == 'paid' %}
+                                    <span class="badge bg-success">Đã thanh toán</span>
+                                    {% else %}
+                                    <span class="badge bg-danger text-white">Chưa thanh toán</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a href="/provider/booking/{{ booking.id }}" class="btn btn-sm btn-primary">
+                                        Xem
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -213,22 +240,22 @@
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
-                    <script src="vehicles-register.js"></script>
                 </div>
             </div>
             <!-- TAB 3 -->
             <div id="tabManageVehicles" class="tab-content">
                 <div class="container">
                     <h2>Quản lý phương tiện</h2>
-                    <table>
+                    <table class=" table table-striped table-bordered text-center">
                         <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Thương hiệu</th>
                                 <th>Dòng xe</th>
                                 <th>Biển số</th>
                                 <th>Năm SX</th>
                                 <th>Số chỗ</th>
-                                <th>Tiêu thụ nhiên liệu</th>
+                                <th>Tiêu thụ nhiên liệu (lít)/100km</th>
                                 <th>Phí bảo dưỡng</th>
                                 <th>Trạng thái</th>
                                 <th>Hành động</th>
@@ -238,20 +265,24 @@
                             <!-- Render từ backend -->
                         </tbody>
                     </table>
+                    <input class="d-none" type="text" name="providerIdentity" id="providerIdentity"
+                        value="{{authUser.id}}">
                 </div>
             </div>
             <!-- TAB 4 -->
             <div id="tabDrivers" class="tab-content">
                 <div class="container">
                     <h2>Danh sách tài xế đăng ký</h2>
-                    <table>
+                    <table class="table table-striped table-bordered text-center">
                         <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Tên tài xế</th>
                                 <th>Tuổi</th>
+                                <th>Số GPLX</th>
                                 <th>Loại GPLX</th>
-                                <th>Kinh nghiệm</th>
                                 <th>Ngày nộp đơn</th>
+                                <th>Trạng thái</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -366,7 +397,8 @@
             if (target) target.classList.add('active');
         }
     </script>
-    <script src="\xampp\htdocs\ITABookings\public\js\list-of-registered-drivers.js"></script>
+    <script src="/js/vehicles-register-handle.js"></script>
+    <script src="/js/list-of-registered-drivers.js"></script>
 </body>
 
 </html>

@@ -170,6 +170,7 @@ return function (): Container {
                 $container->get(SessionManagerInterfacePort::class),
                 $container->get(InformationPaymentPort::class),
                 $container->get(UploadImageRepositoryPort::class),
+                $container->get(BookingRepositoryPort::class),
         );  
         });
 

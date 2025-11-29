@@ -15,7 +15,10 @@
                             <span class="text-white pointer-hover">{{ authUser.first_name }} {{
                                 authUser.last_name}}</span>
                             <i class="bi bi-caret-down-fill text-white"></i>
-                            {% set translateY = authUser.temporary_role == 'provider' ? '132px' : '160px' %}
+                            {% set translateY = authUser.role == 'provider' or authUser.role == 'driver' or
+                            authUser.role == 'admin'
+                            ? '132px' :
+                            '160px' %}
                             <div class="user-dropdown position-absolute text-white bg-white w-100 rounded-1 p-2"
                                 style="right: 0; bottom: 0; transform: translateY({{translateY}});">
                                 <ul style="list-style: none; padding-left: 0;">
@@ -24,15 +27,35 @@
                                             Thông tin cá
                                             nhân</a>
                                     </li>
-                                    {% if authUser.temporary_role == 'provider' %}
+                                    {% if authUser.role == 'admin' %}
                                     <li class="border-bottom pb-1 text-black">
-                                        <a href="#"
+                                        <a href="/admin/dashboard"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Quản lý
+                                            hệ thống</a>
+                                    </li>
+                                    {% elseif authUser.role == 'provider' and authUser.status == 'unverified' %}
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="/provider/register-form-detail"
                                             style="font-size: 12px; text-decoration-line: none; color: black;">Đơn đăng
                                             ký doanh nghiệp</a>
                                     </li>
-                                    {% elseif authUser.temporary_role == 'driver' %}
+                                    {% elseif authUser.role == 'provider' and authUser.status == 'verified' %}
                                     <li class="border-bottom pb-1 text-black">
-                                        <a href="#"
+                                        <a href="/provider/dashboard"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">
+                                            Quản lý doanh nghiệp
+                                        </a>
+                                    </li>
+                                    {% elseif authUser.role == 'driver' and authUser.status == 'unverified' %}
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="driver/register-form-detail"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đơn
+                                            đăng
+                                            ký tài xế</a>
+                                    </li>
+                                    {% elseif authUser.role == 'driver' and authUser.status == 'verified' %}
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="/driver/dashboard"
                                             style="font-size: 12px; text-decoration-line: none; color: black;">Đơn đăng
                                             ký tài xế</a>
                                     </li>
