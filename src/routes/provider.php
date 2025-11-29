@@ -104,16 +104,38 @@ return function (App $app, $twig) {
          * GET /provider/dashboard
          * --------------------------- */        
         $group->get('/dashboard', function ($request, $response) 
-            use ($twig) { 
+            use ($twig, $providerService) { 
             
+            $profile = $providerService->getProfile();
+            $bookings = $providerService->getBookings();
             $html = $twig->render('pages/provider/provider.html.twig', [
+                'profile' => $profile, 'bookings' => $bookings 
             ]);
 
             $response->getBody()->write($html);
             return $response;
         });
+        
+        $group->get('/{providerId}/vehicles', function ($request, $response, $args) use ($providerService) {
+            $providerId = $args['providerId'];    
+            $vehicles = $providerService->getVehiclesByProviderId($providerId);
 
+            $response->getBody()->write(json_encode($vehicles));
 
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(200);
+        });
+
+        $group->get('/{providerId}/{type}/drivers', function ($request, $response, $args) use ($providerService) {
+            $providerId = $args['providerId'];
+            $type = $args['type'];    
+            $drivers = $providerService->getDriversByProviderId( $providerId, $type);
+
+            $response->getBody()->write(json_encode($drivers));
+
+             return $response->withHeader('Content-Type', 'application/json');
+        });
 
          /** ---------------------------
          * GET /provider/utilities
@@ -154,43 +176,43 @@ return function (App $app, $twig) {
          * --------------------------- */
         $group->post('/{id}/extra-costs', function ($request, $response, $args) use ($providerService) {
 
-        $id = $args['id'];
+            $id = $args['id'];
 
-        // Read JSON body
-        $rawBody = $request->getBody()->getContents();
-        $body = json_decode($rawBody, true); 
+            // Read JSON body
+            $rawBody = $request->getBody()->getContents();
+            $body = json_decode($rawBody, true); 
 
-        if ($body === null) {
-    
-            $payload = [
-                'status' => 'error',
-                'message' => 'Invalid JSON payload'
-            ];
+            if ($body === null) {
+        
+                $payload = [
+                    'status' => 'error',
+                    'message' => 'Invalid JSON payload'
+                ];
+                $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+                return $response->withHeader('Content-Type', 'application/json');
+            }
+
+            try {
+            
+                $providerService->saveProviderExtraCosts($body, $id);
+
+                $payload = [
+                    'status'  => 'success',
+                    'message' => 'Chi phí đã được lưu',
+                    'redirect' => '/'
+                ];
+
+            } catch (\Exception $e) {
+                $payload = [
+                    'status'  => 'error',
+                    'message' => $e->getMessage()
+                ];
+            }
+
+            // Return JSON
             $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
             return $response->withHeader('Content-Type', 'application/json');
-        }
-
-        try {
-           
-            $providerService->saveProviderExtraCosts($body, $id);
-
-            $payload = [
-                'status'  => 'success',
-                'message' => 'Chi phí đã được lưu',
-                'redirect' => '/'
-            ];
-
-        } catch (\Exception $e) {
-            $payload = [
-                'status'  => 'error',
-                'message' => $e->getMessage()
-            ];
-        }
-
-        // Return JSON
-        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-        return $response->withHeader('Content-Type', 'application/json');
-    });
+        });
 
 
         /** ---------------------------

@@ -15,7 +15,9 @@
                             <span class="text-white pointer-hover">{{ authUser.first_name }} {{
                                 authUser.last_name}}</span>
                             <i class="bi bi-caret-down-fill text-white"></i>
-                            {% set translateY = authUser.role == 'provider' or authUser.role == 'driver' ? '132px' :
+                            {% set translateY = authUser.role == 'provider' or authUser.role == 'driver' or
+                            authUser.role == 'admin'
+                            ? '132px' :
                             '160px' %}
                             <div class="user-dropdown position-absolute text-white bg-white w-100 rounded-1 p-2"
                                 style="right: 0; bottom: 0; transform: translateY({{translateY}});">
@@ -25,7 +27,13 @@
                                             Thông tin cá
                                             nhân</a>
                                     </li>
-                                    {% if authUser.role == 'provider' and authUser.status == 'unverified' %}
+                                    {% if authUser.role == 'admin' %}
+                                    <li class="border-bottom pb-1 text-black">
+                                        <a href="/admin/dashboard"
+                                            style="font-size: 12px; text-decoration-line: none; color: black;">Quản lý
+                                            hệ thống</a>
+                                    </li>
+                                    {% elseif authUser.role == 'provider' and authUser.status == 'unverified' %}
                                     <li class="border-bottom pb-1 text-black">
                                         <a href="/provider/register-form-detail"
                                             style="font-size: 12px; text-decoration-line: none; color: black;">Đơn đăng
@@ -87,9 +95,10 @@
             <img style="width: 150px; height: 150px;" src="/images/logo.png" alt="ITABookings">
             <nav class="d-flex flex-row gap-5">
                 <a class="text-decoration-none text-reset hover-underline" href="/">Trang chủ</a>
-                <a class="text-decoration-none text-reset hover-underline" href="/html/">Địa điểm</a>
-                <a class="text-decoration-none text-reset hover-underline" href="/python/">Ẩm thực</a>
-                <a class="text-decoration-none text-reset hover-underline" href="/python/">Thuê xe</a>
+                <a class="text-decoration-none text-reset hover-underline" href="/provinces">Địa điểm</a>
+                <a class="text-decoration-none text-reset hover-underline" href="/food-courts-belong-provinces">Ẩm
+                    thực</a>
+                <a class="text-decoration-none text-reset hover-underline" href="/searching-routes">Thuê xe</a>
                 <a class="text-decoration-none text-reset hover-underline" href="/python/">Thông tin về chúng tôi</a>
                 <a class="text-decoration-none text-reset hover-underline" href="/python/">Liên hệ</a>
             </nav>

@@ -108,5 +108,17 @@ class BookingRepository implements BookingRepositoryPort {
         return (array) $result;
     }
 
+    public function getBookings($userId): array {
+        $rows = DB::table('bookings')
+        ->join('providers', 'bookings.provider_id', '=', 'providers.id')
+        ->where('providers.user_id', $userId)
+        ->select(
+            'bookings.*',
+        )
+        ->get();
+
+         return array_map(fn($r) => Booking::fromArray((array)$r), $rows->toArray());
+    }
+
 
 }

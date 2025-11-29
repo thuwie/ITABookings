@@ -124,6 +124,42 @@ class ProviderRepository implements ProviderRepositoryPort {
         return array_map(fn($row) => Provider::fromArray((array)$row), $rows->toArray());
     }
 
+   public function getDriversByProviderId(int $providerId, ?bool $filter_value = null): array {
+        $query = DB::table('drivers')
+            ->join('users', 'drivers.user_id', '=', 'users.id')
+            ->select(
+                'drivers.id as driver_id',
+                'drivers.user_id',
+                'drivers.provider_id',
+                'drivers.license_number',
+                'drivers.license_class',
+                'drivers.license_issue_date',
+                'drivers.license_expiry_date',
+                'drivers.status as driver_status',
+                'drivers.average_rates',
+                'drivers.rating_count',
+                'drivers.verified_at',
+                'drivers.created_at',
+                'drivers.updated_at',
+                'users.first_name',
+                'users.last_name',
+                'users.date_of_birth'
+            )
+            ->where('drivers.provider_id', $providerId);
+
+        if ($filter_value === true) {
+            $query->whereNotNull('drivers.verified_at');
+        } elseif ($filter_value === false) {
+            $query->whereNull('drivers.verified_at');
+        }
+
+        $rows = $query->get();
+
+        // Trả về mảng dữ liệu thuần
+        return $rows->map(fn($row) => (array) $row)->toArray();
+    }
+
+
 
     public function findById(int $id): ?Provider {
         $row = DB::table('providers')->where('id', $id)->first();
@@ -446,5 +482,19 @@ class ProviderRepository implements ProviderRepositoryPort {
         }
     }
 
+    public function getVehiclesWithStatusByProviderId(int $providerId): array
+    {
+        $rows = DB::table('vehicles as v')
+            ->leftJoin('vehicle_status as vs', 'v.id', '=', 'vs.vehicle_id')
+            ->where('v.provider_id', $providerId)
+            ->orderBy('v.id', 'desc')
+            ->select(
+                'v.*',
+                'vs.status as vehicle_status'
+            )
+            ->get();
+
+        return $rows->toArray();
+    }
 }
 
