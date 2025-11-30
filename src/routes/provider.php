@@ -11,6 +11,142 @@ use App\Middleware\AuthorizationMiddleware;
 
 return function (App $app, $twig) {
 
+     /** ---------------------------
+         * GET /provider/register
+         * --------------------------- */
+        $app->get('/provider/register', function ($request, $response) 
+            use ($twig) {
+
+            $provinceService = $this->get(ProvinceServicePort::class);
+            $provinces = $provinceService->getProvinces();
+
+            $html = $twig->render('pages/provider/pro_register.html.twig', [
+                'provinces' => $provinces
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        })->add(new AuthMiddleware());
+
+
+         /** ---------------------------
+         * GET /provider/register-form
+         * --------------------------- */
+        $app->get('/provider/register-form-detail', function ($request, $response) 
+            use ($twig) { 
+            
+            $provinceService = $this->get(ProvinceServicePort::class);
+            $providerService = $this->get(ProviderServicePort::class);
+            $registeredInformation = $providerService->getRegisterForm();
+            $provinces = $provinceService->getProvinces();
+
+            $html = $twig->render('pages/provider/register.form.detail.html.twig', [
+                'information' => $registeredInformation,
+                'provinces' => $provinces
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        })->add(new AuthMiddleware());
+
+
+         /** ---------------------------
+         * GET /provider/register-successfully
+         * --------------------------- */        
+        $app->get('/provider/register-successfully', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/pro_success.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+
+        /** ---------------------------
+         * GET /provider/register-failed
+         * --------------------------- */        
+        $app->get('/provider/register-failed', function ($request, $response) 
+            use ($twig) { 
+            
+            $html = $twig->render('pages/provider/pro_failed.html.twig', [
+            ]);
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+         /** ---------------------------
+         * GET /provider/utilities
+         * --------------------------- */        
+        $app->get('/provider/utilities', function ($request, $response) 
+        { 
+            $providerService = $this->get(ProviderServicePort::class);
+            $utilities = $providerService->getUtilities();
+            $payload = [
+                'status' => 'success',
+                'data'   => $utilities,
+            ];
+
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        })->add(new AuthMiddleware());
+
+
+        /** ---------------------------
+         * POST /provider/register
+         * --------------------------- */
+        $app->post('/provider/register', function ($request, $response) 
+         {
+
+             $providerService = $this->get(ProviderServicePort::class);
+             $paymentService  = $this->get(InformationPaymentServicePort::class);
+            try {
+                $body = $request->getParsedBody();
+
+                $providerInfo = json_decode($body['provider-information'], true);
+                $paymentInfo  = json_decode($body['payment-information'], true);
+
+                // Uploaded files
+                $files = $request->getUploadedFiles();
+                $logo  = $files['logo'] ?? null;
+                $qr    = $files['qr'] ?? null;
+
+                // Save provider
+                $resultPro = $providerService->save($providerInfo, $logo);
+
+                if ($resultPro) {
+                    $resultPayment = $paymentService->save($paymentInfo, $qr);
+
+                    $payload = [
+                        'status'  => $resultPayment ? 'success' : 'error',
+                        'message' => $resultPayment
+                            ? 'Đăng ký doanh nghiệp thành công'
+                            : 'Đăng ký doanh nghiệp thất bại',
+                        'redirect' => '/provider/register-successfully',
+                    ];
+                } else {
+                    $payload = [
+                        'status'  => 'error',
+                        'message' => 'Đăng ký doanh nghiệp thất bại',
+                        'redirect' => '/provider/register-failed',
+                    ];
+                }
+
+            } catch (\Exception $e) {
+                $payload = [
+                    'status'  => 'error',
+                    'message' => $e->getMessage(),
+                    'redirect' => '/provider/register-failed',
+                ];
+            }
+
+            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
+        })->add(new AuthMiddleware());
+
+
     $app->group('/provider', function (RouteCollectorProxy $group) use ($twig) {
 
         /** -----------------------------------------
@@ -22,40 +158,6 @@ return function (App $app, $twig) {
         $providerService = $container->get(ProviderServicePort::class);
         $paymentService  = $container->get(InformationPaymentServicePort::class);
         $adminServices  = $container->get(AdminServicePort::class);
-
-        /** ---------------------------
-         * GET /provider/register
-         * --------------------------- */
-        $group->get('/register', function ($request, $response) 
-            use ($twig, $provinceService) {
-
-            $provinces = $provinceService->getProvinces();
-
-            $html = $twig->render('pages/provider/pro_register.html.twig', [
-                'provinces' => $provinces
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
-        });
-
-         /** ---------------------------
-         * GET /provider/register-form
-         * --------------------------- */
-        $group->get('/register-form-detail', function ($request, $response) 
-            use ($twig, $providerService, $provinceService) { 
-            
-            $registeredInformation = $providerService->getRegisterForm();
-            $provinces = $provinceService->getProvinces();
-
-            $html = $twig->render('pages/provider/register.form.detail.html.twig', [
-                'information' => $registeredInformation,
-                'provinces' => $provinces
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
-        });
 
          /** ---------------------------
          * GET /provider/register-vehicles
@@ -71,34 +173,6 @@ return function (App $app, $twig) {
             $response->getBody()->write($html);
             return $response;
         });
-
-         /** ---------------------------
-         * GET /provider/register-successfully
-         * --------------------------- */        
-        $group->get('/register-successfully', function ($request, $response) 
-            use ($twig) { 
-            
-            $html = $twig->render('pages/provider/pro_success.html.twig', [
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
-        });
-
-
-        /** ---------------------------
-         * GET /provider/register-failed
-         * --------------------------- */        
-        $group->get('/register-failed', function ($request, $response) 
-            use ($twig) { 
-            
-            $html = $twig->render('pages/provider/pro_failed.html.twig', [
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
-        });
-
         
         /** ---------------------------
          * GET /provider/dashboard
@@ -135,22 +209,6 @@ return function (App $app, $twig) {
             $response->getBody()->write(json_encode($drivers));
 
              return $response->withHeader('Content-Type', 'application/json');
-        });
-
-         /** ---------------------------
-         * GET /provider/utilities
-         * --------------------------- */        
-        $group->get('/utilities', function ($request, $response) 
-            use ($providerService) { 
-            
-            $utilities = $providerService->getUtilities();
-            $payload = [
-                'status' => 'success',
-                'data'   => $utilities,
-            ];
-
-            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-            return $response->withHeader('Content-Type', 'application/json');
         });
 
 
@@ -210,57 +268,6 @@ return function (App $app, $twig) {
             }
 
             // Return JSON
-            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-            return $response->withHeader('Content-Type', 'application/json');
-        });
-
-
-        /** ---------------------------
-         * POST /provider/register
-         * --------------------------- */
-        $group->post('/register', function ($request, $response) 
-            use ($providerService, $paymentService) {
-
-            try {
-                $body = $request->getParsedBody();
-
-                $providerInfo = json_decode($body['provider-information'], true);
-                $paymentInfo  = json_decode($body['payment-information'], true);
-
-                // Uploaded files
-                $files = $request->getUploadedFiles();
-                $logo  = $files['logo'] ?? null;
-                $qr    = $files['qr'] ?? null;
-
-                // Save provider
-                $resultPro = $providerService->save($providerInfo, $logo);
-
-                if ($resultPro) {
-                    $resultPayment = $paymentService->save($paymentInfo, $qr);
-
-                    $payload = [
-                        'status'  => $resultPayment ? 'success' : 'error',
-                        'message' => $resultPayment
-                            ? 'Đăng ký doanh nghiệp thành công'
-                            : 'Đăng ký doanh nghiệp thất bại',
-                        'redirect' => '/provider/register-successfully',
-                    ];
-                } else {
-                    $payload = [
-                        'status'  => 'error',
-                        'message' => 'Đăng ký doanh nghiệp thất bại',
-                        'redirect' => '/provider/register-failed',
-                    ];
-                }
-
-            } catch (\Exception $e) {
-                $payload = [
-                    'status'  => 'error',
-                    'message' => $e->getMessage(),
-                    'redirect' => '/provider/register-failed',
-                ];
-            }
-
             $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
             return $response->withHeader('Content-Type', 'application/json');
         });
