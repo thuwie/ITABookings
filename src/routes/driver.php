@@ -13,6 +13,70 @@ use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
 
+     // GET
+    $app->get('/driver/register', function ($request, $response) use ($twig) {
+        $provinceServices  = $this->get(ProvinceServicePort::class);
+        $providerService  = $this->get(ProviderServicePort::class);
+        $userServices = $this->get(UserServicePort::class);
+        $user = $userServices->getUserInformation();
+        $providers = $providerService->getProviders(null);
+        $provinces = $provinceServices->getProvinces();
+
+        $html = $twig->render('pages/driver/dri_register.html.twig', 
+        ['user'=> $user,'providers' =>  $providers, 'provinces' => $provinces
+        ]);
+
+        $response->getBody()->write($html);
+        return $response;
+    })->add(new AuthMiddleware());
+
+
+    // POST
+    $app->post('/driver/register', function ($request, $response) {
+         $driverServices  =  $this->get(DriverServicePort::class);
+        $paymentService   = $this->get(InformationPaymentServicePort::class);
+        try {
+            $body = $request->getParsedBody();
+
+            $driverInfo = json_decode($body['driver-information'], true);
+            $paymentInfo  = json_decode($body['payment-information'], true);
+
+            $files = $request->getUploadedFiles();
+            $qr   = $files['qr_image'] ?? null;
+
+            $driverResult = $driverServices->save($driverInfo);
+
+            if ($driverResult) {
+                $paymentResult = $paymentService->save($paymentInfo, $qr);
+
+                $payload = [
+                    'status'  => $paymentResult  ? 'success' : 'error',
+                    'message' => $paymentResult  
+                        ? 'Đăng ký tài xế thành công'
+                        : 'Đăng ký tài xế thất bại'
+                    , 'redirect' => '/driver/register-successfully'
+                ];
+            } else {
+                $payload = [
+                    'status' => 'error',
+                    'message' => 'Đăng ký tài xế thất bại',
+                    'redirect' => '/driver/register-failed'
+                ];
+            }
+
+        } catch (\Exception $e) {
+            $payload = [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'redirect' => '/driver/register-failed'
+            ];
+        }
+
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
+        return $response->withHeader('Content-Type', 'application/json');
+    });
+
+
     $app->group('/driver', function (RouteCollectorProxy $group) use ($twig) {
 
         // Load services ONCE here
@@ -23,20 +87,6 @@ return function (App $app, $twig) {
         $paymentService   = $container->get(InformationPaymentServicePort::class);
         $userServices = $container->get(UserServicePort::class);
         $driverServices  =  $container->get(DriverServicePort::class);
-
-        // GET
-        $group->get('/register', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
-            $user = $userServices->getUserInformation();
-            $providers = $providerService->getProviders(null);
-            $provinces = $provinceServices->getProvinces();
-
-            $html = $twig->render('pages/driver/dri_register.html.twig', 
-            ['user'=> $user,'providers' =>  $providers, 'provinces' => $provinces
-            ]);
-
-            $response->getBody()->write($html);
-            return $response;
-        });
 
          // GET
         $group->get('/register-successfully', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
@@ -54,50 +104,6 @@ return function (App $app, $twig) {
 
             $response->getBody()->write($html);
             return $response;
-        });
-
-        // POST
-        $group->post('/register', function ($request, $response) use ($paymentService, $driverServices) {
-
-            try {
-                $body = $request->getParsedBody();
-
-                $driverInfo = json_decode($body['driver-information'], true);
-                $paymentInfo  = json_decode($body['payment-information'], true);
-
-                $files = $request->getUploadedFiles();
-                $qr   = $files['qr_image'] ?? null;
-
-                $driverResult = $driverServices->save($driverInfo);
-
-                if ($driverResult) {
-                    $paymentResult = $paymentService->save($paymentInfo, $qr);
-
-                    $payload = [
-                        'status'  => $paymentResult  ? 'success' : 'error',
-                        'message' => $paymentResult  
-                            ? 'Đăng ký tài xế thành công'
-                            : 'Đăng ký tài xế thất bại'
-                        , 'redirect' => '/driver/register-successfully'
-                    ];
-                } else {
-                    $payload = [
-                        'status' => 'error',
-                        'message' => 'Đăng ký tài xế thất bại',
-                        'redirect' => '/driver/register-failed'
-                    ];
-                }
-
-            } catch (\Exception $e) {
-                $payload = [
-                    'status' => 'error',
-                    'message' => $e->getMessage(),
-                    'redirect' => '/driver/register-failed'
-                ];
-            }
-
-            $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_UNICODE));
-            return $response->withHeader('Content-Type', 'application/json');
         });
 
     })->add(new AuthMiddleware())

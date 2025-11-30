@@ -19,7 +19,7 @@ return function(App $app, $twig) {
         $user = $this->get(LoginUserUseCasePort::class)->login($email, $password);
         
         $twig->addGlobal('authUser', $user);
-        if( $user['role'] === 'admin') {
+        if(isset($user['role']) && $user['role'] === 'admin') {
             $redirectUrl = '/admin/dashboard';
         };
         // Trả về JSON khi login thành công
