@@ -1,4 +1,3 @@
-{% block body %}
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -8,8 +7,15 @@
     <title>Provider Dashboard</title>
     <link rel="stylesheet" href="/css/pro_dash.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons - giữ bản mới nhất -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Bootstrap CSS - chỉ 1 bản -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS - đồng bộ với CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
@@ -296,15 +302,14 @@
             <div id="tabManageDrivers" class="tab-content">
                 <div class="container">
                     <h2>Quản lý tài xế</h2>
-                    <table>
+                    <table class="table table-striped table-bordered text-center">
                         <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Tên tài xế</th>
                                 <th>GPLX</th>
                                 <th>Ngày cấp</th>
                                 <th>Ngày hết hạn</th>
-                                <th>Trạng thái</th>
-                                <th>Kinh nghiệm</th>
                                 <th>Đánh giá trung bình</th>
                                 <th>Hành động</th>
                             </tr>
@@ -385,6 +390,70 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="confirmLocation" tabindex="-1" aria-labelledby="confirmLocationLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg"> <!-- mở rộng đẹp hơn -->
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmLocationLabel">Thông tin chi tiết tài xế</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body driver-popup">
+
+                    <div class="driver-header">
+                        <div>
+                            <h4 id="driver-name" class="driver-name"></h4>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="driver-info-row">
+                        <div class="info-box d-flex gap-2">
+                            <label class="fw-bold">Ngày tháng năm sinh:</label>
+                            <p id="date_of_birth"></p>
+                        </div>
+
+                        <div class="info-box d-flex gap-2">
+                            <label class="fw-bold">Số bằng lái:</label>
+                            <p id="license_number"></p>
+                        </div>
+
+                        <div class="info-box d-flex gap-2">
+                            <label class="fw-bold">Hạng:</label>
+                            <p id="license_class"></p>
+                        </div>
+                    </div>
+
+                    <div class="driver-info-row ">
+                        <div class="info-box d-flex gap-2">
+                            <label class="fw-bold">Ngày cấp:</label>
+                            <p id="license_issue_date"></p>
+                        </div>
+
+                        <div class="info-box d-flex gap-2">
+                            <label class="fw-bold">Ngày hết hạn:</label>
+                            <p id="license_expiry_date"></p>
+                        </div>
+                    </div>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="duyet" class="btn btn-primary">Duyệt</button>
+                    <button type="button" id="close-modal" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Đóng</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
     <script>
         /* ---------- Tab switching sidebar ---------- */
         function openTabFromSidebar(evt) {
@@ -402,4 +471,3 @@
 </body>
 
 </html>
-{% endblock %}
