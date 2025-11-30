@@ -6,32 +6,40 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Slim\Psr7\Response;
 
 class AuthMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // Khởi động session nếu chưa có
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        if (!isset($_SESSION['user'])) {
-            $role = $_SESSION['user']['role'];
+        // Kiểm tra user login
+        $user = $_SESSION['user'] ?? null;
 
-            if($role === 'admin') {
-                $_SESSION['redirect_after_login'] = '/admin/dashboard';
-            } else {
-                     // Get the URL user is trying to access
-                 $_SESSION['redirect_after_login'] = (string)$request->getUri();
-            };
-            // Redirect to login with redirect query parameter
-            $response = new \Slim\Psr7\Response();
-            return $response
-                ->withHeader('Location', '/login')
+        // Chưa login → redirect về login và dừng chain middleware
+        if (!$user) {
+            $redirectUrl = '/login?redirect=' . urlencode($request->getUri()->getPath());
+            $_SESSION['redirect_after_login'] = $request->getUri()->getPath();
+            return (new Response())
+                ->withHeader('Location', $redirectUrl)
                 ->withStatus(302);
         }
 
+        // Đã login → lưu redirect path dựa trên role
+        $role = $user['role'] ?? 'user';
+
+        if ($role === 'admin') {
+            $_SESSION['redirect_after_login'] = '/admin/dashboard';
+        } else {
+            $uri = $request->getUri()->getPath();
+            $_SESSION['redirect_after_login'] = $uri;
+        }
+
+        // Tiếp tục middleware tiếp theo
         return $handler->handle($request);
     }
-
 }

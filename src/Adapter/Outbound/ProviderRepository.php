@@ -167,6 +167,12 @@ class ProviderRepository implements ProviderRepositoryPort {
 
         return Provider::fromArray((array)$row);
     }
+    public function findByUserId(int $id): ?Provider {
+        $row = DB::table('providers')->where('user_id', $id)->first();
+        if (!$row) return null;
+
+        return Provider::fromArray((array)$row);
+    }
 
    public function saveVehicle(Vehicle $vehicle): array
     {

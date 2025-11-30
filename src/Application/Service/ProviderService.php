@@ -257,9 +257,9 @@ class ProviderService implements ProviderServicePort {
     public function getProfile():array {
         $sessionManager = $this->sessionManager->get('user');
         $providerId = (int) $sessionManager['id'];
-        $provider = $this->getProviderById($providerId);
-        $provider = ['id' => $provider['id'] ,'name' =>  $provider['name'], 'avt' =>$provider['logo_url']];
-        return $provider;
+        $provider = $this->providerRepositoryPort->findByUserId($providerId);
+        $result = ['id' => $provider->getId() ,'name' =>  $provider->getName(), 'avt' =>$provider->getLogoUrl()];
+        return $result;
     }
 
     public function getBookings(): array {
