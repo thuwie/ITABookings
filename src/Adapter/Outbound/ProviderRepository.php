@@ -502,5 +502,28 @@ class ProviderRepository implements ProviderRepositoryPort {
 
         return $rows->toArray();
     }
+
+     public function updateDriver(int $providerId, int $driverId): ?array
+    {
+        // Cập nhật verified_at = hiện tại
+        $updated = DB::table('drivers')
+            ->where('provider_id', $providerId)
+            ->where('id', $driverId)
+            ->update([
+                'verified_at' => Carbon::now(),
+            ]);
+
+        if (!$updated) {
+            return null; // Không tìm thấy hoặc không update được
+        }
+
+        // Lấy lại driver vừa cập nhật để trả về
+        $driver = DB::table('drivers')
+            ->where('provider_id', $providerId)
+            ->where('id', $driverId)
+            ->first();
+
+        return (array) $driver; // trả về dạng mảng
+    }
 }
 

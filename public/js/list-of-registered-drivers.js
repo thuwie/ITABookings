@@ -1,8 +1,10 @@
 const ProviderManagement = {
+    unverifiedDriver: [],
     init() {
         this.addEventElements();
         this.getVehiclesAndRender();
         this.getUnverifiedDrivers();
+        this.getVerifiedDriver();
     },
 
     addEventElements() {
@@ -74,7 +76,6 @@ const ProviderManagement = {
             setTimeout(() => toast.remove(), 400);
         }, duration);
     },
-
     showLoading() {
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.style.display = 'flex';
@@ -82,6 +83,19 @@ const ProviderManagement = {
     hideLoading() {
         const loadingOverlay = document.getElementById('loadingOverlay');
         loadingOverlay.style.display = 'none';
+    },
+    showLoadingĐuyetDriver() {
+        const tbody = document.getElementById('driverList');
+        tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="spinner-duyet-driver"></div>
+                        </td>
+                    </tr>`
+    },
+    hideLoadingĐuyetDriver() {
+        const tbody = document.getElementById('driverList');
+        tbody.innerHTML = ``;
     },
     getVehiclesAndRender() {
         const tbody = document.getElementById('manageVehicleList');
@@ -130,17 +144,113 @@ const ProviderManagement = {
 
         }
     },
-
     getUnverifiedDrivers() {
         const providerId = document.getElementById('provider_id').value;
         const tbody = document.getElementById('driverList');
+        const btnDuyet = document.getElementById('duyet');
         const api = async () => {
             const type = false;
             const res = await fetch(`/provider/${providerId}/${type}/drivers`);
             const drivers = await res.json();
-            console.log(drivers);
-
             if (!Array.isArray(drivers) || drivers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center;">Không có tài xế nào</td>
+                    </tr>`;
+                return;
+            }
+            ProviderManagement.unverifiedDriver = drivers;
+            // Render từng row
+            let html = "";
+            drivers.forEach((v, idx) => {
+                const driverStr = ProviderManagement.escapeQuotes(JSON.stringify(v));
+                btnDuyet.onclick = () => ProviderManagement.handleDuyetDriver(v.driver_id);
+                html += `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td>${v.first_name + " " + v.last_name}</td>
+                                <td>${(() => {
+                        const birthDate = new Date(v.date_of_birth);
+                        let age = new Date().getFullYear() - birthDate.getFullYear();
+                        const m = new Date().getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) age--;
+                        return age;
+                    })()
+                    }</td>
+                                <td>${v.license_number}</td>
+                                <td>${v.license_class}</td>
+                                <td>${new Date(v.created_at).toLocaleDateString('vi-VN')}</td>
+                                <td><span class="badge bg-warning">Chờ duyệt</span></td>
+                                <td> <button type="button" data-bs-toggle="modal" data-bs-target="#confirmLocation" class="btn btn-sm btn-primary"
+                                onclick="ProviderManagement.openPopupDriverDetail(${driverStr})"
+                                >
+                                        Xem chi tiết
+                                </button></td>
+                            </tr>`;
+            });
+
+            tbody.innerHTML = html;
+        };
+        api();
+    },
+    openPopupDriverDetail(data) {
+        const driverName = document.getElementById('driver-name');
+        const dateOfBirth = document.getElementById('date_of_birth');
+        const licenseNumber = document.getElementById('license_number');
+        const licenseClass = document.getElementById('license_class');
+        const licenseIssueDate = document.getElementById('license_issue_date');
+        const licenseExpiryDate = document.getElementById('license_expiry_date');
+
+        driverName.innerHTML = data.first_name + " " + data.last_name;
+        licenseNumber.innerHTML = data.license_number;
+        licenseClass.innerHTML = data.license_class;
+        licenseIssueDate.innerHTML = ProviderManagement.formatDate(data.license_issue_date);
+        licenseExpiryDate.innerHTML = ProviderManagement.formatDate(data.license_expiry_date);
+        dateOfBirth.innerHTML = ProviderManagement.formatDate(data.date_of_birth);
+    },
+    handleDuyetDriver(driverId) {
+        const providerId = document.getElementById('provider_id').value;
+        const closeModal = document.getElementById('close-modal');
+        const api = async () => {
+            closeModal.click();
+            ProviderManagement.showLoadingĐuyetDriver();
+            try {
+                const res = await fetch(`/provider/${providerId}/drivers/${driverId}`, {
+                    method: "PATCH"
+                });
+                const data = await res.json();
+                if (data.success) {
+                    ProviderManagement.showLoadingĐuyetDriver();
+                    ProviderManagement.fetchData();
+                };
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        api();
+    },
+    formatDate(dateStr) {
+        if (!dateStr) return 'N/A';
+        const date = new Date(dateStr);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lưu ý: tháng bắt đầu từ 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    },
+    // Hàm helper escape
+    escapeQuotes(str) {
+        return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    },
+    getVerifiedDriver() {
+        const providerId = document.getElementById('provider_id').value;
+        const tbody = document.getElementById('manageDriverList');
+        const api = async () => {
+            const type = true;
+            const res = await fetch(`/provider/${providerId}/${type}/drivers`);
+            const drivers = await res.json();
+            if (!Array.isArray(drivers) || drivers.length === 0) {
+                ProviderManagement.unverifiedDriver = drivers;
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" style="text-align:center;">Không có tài xế nào</td>
@@ -155,19 +265,11 @@ const ProviderManagement = {
                             <tr>
                                 <td>${idx + 1}</td>
                                 <td>${v.first_name + v.last_name}</td>
-                                <td>${(() => {
-                        const birthDate = new Date(v.date_of_birth);
-                        let age = new Date().getFullYear() - birthDate.getFullYear();
-                        const m = new Date().getMonth() - birthDate.getMonth();
-                        if (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) age--;
-                        return age;
-                    })()
-                    }</td>
-                                <td>${v.license_class}</td>
                                 <td>${v.license_number}</td>
-                                <td>${new Date(v.created_at).toLocaleDateString('vi-VN')}</td>
-                                <td><span class="badge bg-warning">Chờ duyệt</span></td>
-                                <td> <a href="${v.id}" class="btn btn-sm btn-primary">
+                                <td>${v.license_issue_date}</td>
+                                <td>${v.license_expiry_date}</td>
+                                <td>${v.average_rates}</td>
+                                <td> <a href="" class="btn btn-sm btn-primary">
                                         Xem chi tiết
                                 </a></td>
                             </tr>`;
@@ -179,6 +281,8 @@ const ProviderManagement = {
     },
     fetchData() {
         this.getVehiclesAndRender();
+        this.getUnverifiedDrivers();
+        this.getVerifiedDriver();
     }
 
 };

@@ -16,4 +16,5 @@ interface ProviderServicePort {
     public function getProviderWithVehicle($providerId, $vehicleId): array;
     public function getProfile():array;
     public function getVehiclesByProviderId($providerId): array;
+    public function verifyDriver($providerId, $driverId): bool;
 }

@@ -24,11 +24,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
             session_start();
         }
 
-        $userId = null;
-
-        if(isset( $_SESSION['user']['id'])) {
-            $userId = $_SESSION['user']['id'];
-        }
+        $userId = $_SESSION['user']['id'];
 
         // Lấy role của user từ DB
         $userRoles = DB::table('user_roles')

@@ -317,6 +317,43 @@ return function (App $app, $twig) {
     });
 
 
+     /** ---------------------------
+         * PATCH /provider/{id}/drivers/{id}
+         * --------------------------- */   
+    $group->patch('/{providerId}/drivers/{driverId}', function ($request, $response, $args) use ($providerService) {
+
+        $providerId = $args['providerId'];
+        $driverId = $args['driverId'];
+
+        try {
+            // Giả sử ProviderService có hàm cập nhật driver
+            $updatedDriver = $providerService->verifyDriver($providerId, $driverId);
+
+            if ($updatedDriver) {
+                $response->getBody()->write(json_encode([
+                    'success' => true,
+                    'driver' => $updatedDriver
+                ]));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode([
+                    'success' => false,
+                    'message' => 'Không tìm thấy driver'
+                ]));
+                return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            }
+        } catch (\Exception $e) {
+            $response->getBody()->write(json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+        }
+    });
+
+
+
+
     })
     ->add(new AuthorizationMiddleware(2))
     ->add(new AuthMiddleware());
