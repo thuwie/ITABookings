@@ -33,4 +33,5 @@ interface ProviderRepositoryPort {
     public function saveDriversTrips(array $data): bool;
     public function getVehiclesWithStatusByProviderId(int $providerId): array;
     public function getDriversByProviderId(int $providerId, ?bool $filter_value = null): array;
+    public function updateDriver(int $providerId, int $driverId): ?array;
 }

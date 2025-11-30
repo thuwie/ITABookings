@@ -7,6 +7,8 @@ use App\Application\Port\Outbound\SessionManagerInterfacePort;
 use App\Application\Port\Outbound\InformationPaymentPort;
 use App\Application\Port\Outbound\UploadImageRepositoryPort;
 use App\Application\Port\Outbound\BookingRepositoryPort;
+use App\Application\Port\Outbound\UserRepositoryPort;
+use App\Application\Port\Outbound\EmailRepositoryPort;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Domain\Entity\Provider;
 use App\Domain\Entity\Vehicle;
@@ -14,6 +16,7 @@ use App\Domain\Entity\Utility;
 use App\Domain\Entity\VehicleImage;
 use App\Domain\Entity\VehicleUtility;
 use App\Domain\Entity\CostsRelatedProvider;
+use App\Domain\Entity\UserRole;
 
 
 
@@ -23,13 +26,18 @@ class ProviderService implements ProviderServicePort {
     private InformationPaymentPort $paymentInformation;
     private UploadImageRepositoryPort $uploadImageRepository;
     private BookingRepositoryPort $bookingRepository;
+    private UserRepositoryPort $userRepository;
+    private EmailRepositoryPort $emailRepository;
+
 
     public function __construct (
         ProviderRepositoryPort  $providerRepositoryPort,
         SessionManagerInterfacePort $sessionManager,
         InformationPaymentPort $paymentInformation,
         UploadImageRepositoryPort $uploadImageRepository,
-        BookingRepositoryPort $bookingRepository
+        BookingRepositoryPort $bookingRepository,
+        UserRepositoryPort $userRepository,
+        EmailRepositoryPort $emailRepository
     ) 
     {
         $this->providerRepositoryPort = $providerRepositoryPort;
@@ -37,6 +45,8 @@ class ProviderService implements ProviderServicePort {
         $this->paymentInformation = $paymentInformation;
         $this->uploadImageRepository = $uploadImageRepository;
         $this->bookingRepository = $bookingRepository;
+        $this->userRepository = $userRepository;
+        $this->emailRepository = $emailRepository;
     }
 
     public function save($provider, $logo): bool { 
@@ -281,5 +291,33 @@ class ProviderService implements ProviderServicePort {
         $result = $this->providerRepositoryPort->getDriversByProviderId($parseProviderId, $parseFilterValue);
         return $result;
     }
+
+     public function verifyDriver($providerId, $driverId): bool {
+        return DB::transaction(function () use ($providerId, $driverId) {
+            $parseProviderId = (int) $providerId;
+            $parseDriverId = (int) $driverId;
+            $updatedDriver = $this->providerRepositoryPort->updateDriver($parseProviderId,  $parseDriverId);
+            $provider = $this->providerRepositoryPort->findById($parseProviderId);
+            if($updatedDriver && $provider) {
+                $userId =  (int) $updatedDriver['user_id'];
+                $user = $this->userRepository->findById($userId);
+                if($user) {
+                    $userRole = new UserRole($userId, 3);
+                    $savedRole = $this->userRepository->saveRole($userRole);
+                    if($savedRole) {
+                        $emailUser = $user->getEmail();
+                        $userName = $user->getFirstName() . '' . $user->getLastName();
+                        $business = $provider->getName();
+                        $confirmedAt = $updatedDriver['verified_at'];
+
+                        $emailer = ['email' => $emailUser, 'userName' => $userName, 'approvedAt' => $confirmedAt, 'businessName' =>$business];
+                        $isSent = $this->emailRepository->driverEmailSending($emailer); 
+                        return $isSent && true;
+                    };
+                }
+            }
+            return false;
+            });
+     }
 }
     

@@ -171,6 +171,8 @@ return function (): Container {
                 $container->get(InformationPaymentPort::class),
                 $container->get(UploadImageRepositoryPort::class),
                 $container->get(BookingRepositoryPort::class),
+                $container->get(UserRepositoryPort::class),
+                $container->get(EmailRepositoryPort::class),
         );  
         });
 
