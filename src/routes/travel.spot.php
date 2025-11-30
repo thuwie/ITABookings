@@ -22,7 +22,7 @@ return function(App $app, $twig) {
         );
 
         return $response;
-        });
+        })->add(new AuthMiddleware())->add(new AuthorizationMiddleware(1));
 
         $app->get('/travel-spot/{id}', function ($request, $response, $args) use ($twig) {
         $id = $args['id'];

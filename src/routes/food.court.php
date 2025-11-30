@@ -4,6 +4,8 @@ use App\Application\Port\Inbound\TravelSpotPort;
 use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
 use App\Helper\FileHelper;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\AuthorizationMiddleware;
 
 return function(App $app, $twig) {
 
@@ -25,7 +27,7 @@ return function(App $app, $twig) {
             ]));
 
         return $response;
-    });
+    })->add(new AuthMiddleware())->add(new AuthorizationMiddleware(1));
 
     $app->post('/food-court/create', function ($request, $response, $args) use ($twig) {
 
@@ -58,7 +60,7 @@ return function(App $app, $twig) {
         $response->getBody()->write(json_encode($result));
 
         return $response->withHeader('Content-Type', 'application/json');
-    });
+    })->add(new AuthMiddleware())->add(new AuthorizationMiddleware(1));
 
     $app->get('/food-court/{id}', function ($request, $response, $args) use ($twig) {
         $id = $args['id'];

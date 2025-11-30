@@ -4,13 +4,15 @@ use  App\Application\Port\Inbound\ProvinceServicePort;
 use App\Application\Port\Inbound\TravelSpotPort;
 use App\Application\Port\Inbound\FoodCourtServicePort;
 use App\Helper\FileHelper;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\AuthorizationMiddleware;
 
 return function(App $app, $twig) {
 
     $app->get('/province/create', function ($request, $response, $args) use ($twig) {
         $response->getBody()->write($twig->render('pages/province/create-province.html.twig'));
         return $response;
-    });
+    })->add(new AuthMiddleware())->add(new AuthorizationMiddleware(1));
 
     $app->get('/province/{id}', function ($request, $response, $args) use ($twig) {
         $id = $args['id'];
@@ -94,7 +96,7 @@ return function(App $app, $twig) {
          
         // Đặt header Content-Type cho chuẩn REST
         return $response->withHeader('Content-Type', 'application/json');
-    });
+    })->add(new AuthMiddleware())->add(new AuthorizationMiddleware(1));
 
    $app->get('/food-courts-belong-provinces', function ($request, $response, $args) use ($twig) {
 
