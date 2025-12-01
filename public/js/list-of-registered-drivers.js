@@ -129,9 +129,6 @@ const ProviderManagement = {
                                 <td>${v.vehicle_status === 'available'
                             ? '<span class="badge bg-success">Xe còn trống</span>'
                             : '<span class="badge bg-danger text-white">Xe đã được thuê</span>'}</td>
-                                <td> <a href="${v.id}" class="btn btn-sm btn-primary">
-                                        Xem chi tiết
-                                </a></td>
                             </tr>`;
                 });
 
@@ -269,9 +266,6 @@ const ProviderManagement = {
                                 <td>${v.license_issue_date}</td>
                                 <td>${v.license_expiry_date}</td>
                                 <td>${v.average_rates}</td>
-                                <td> <a href="" class="btn btn-sm btn-primary">
-                                        Xem chi tiết
-                                </a></td>
                             </tr>`;
             });
 

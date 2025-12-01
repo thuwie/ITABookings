@@ -6,15 +6,18 @@
 {% block body %}
 
 {# banner searching #}
-<div class="bg-banner-custom p-3 position-relative">
+<div id="bannerWrapper"
+    style="position: relative; overflow: hidden; margin: 0 auto;">
+    <video id="bannerVideo" autoplay muted loop playsinline>
+        <source src="/videoBanner/7067693071668.mp4" type="video/mp4">
+    </video>
 
-    <h2 class="text-center text-white mt-4">Khám phá điểm du lịch mơ ước của bạn</h2>
-
-    <div class="bg-white w-25 py-2 px-3 rounded-5 position-absolute top-50 start-50 translate-middle">
-        <i class="bi bi-search"></i>
-        <input type="text" name="search" class="ms-2 border-0 shadow-none focus-ring-0 input-searching"
-            placeholder="Bạn cần tìm gì...." style="width: 90%" />
-    </div>
+    <h2 style="
+        position: absolute; top: 50%; left: 50%; 
+        transform: translate(-50%, -50%); 
+        color: white; z-index: 10;">
+        Khám phá điểm du lịch mơ ước của bạn
+    </h2>
 </div>
 
 <div class="container mt-5 gap-5 d-flex flex-column">
@@ -304,4 +307,27 @@
 
     </section>
 </div>
+{% block javascripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("bannerVideo");
+    const wrapper = document.getElementById("bannerWrapper");
+
+    if (!video || !wrapper) return; // phòng lỗi nếu Twig render trục trặc
+
+    video.addEventListener("loadedmetadata", () => {
+        let scale = 1; // chỉnh tỷ lệ thu nhỏ
+
+        const w = video.videoWidth * scale;
+        const h = video.videoHeight * scale;
+
+        video.style.width = w + "px";
+        video.style.height = h + "px";
+
+        wrapper.style.width = w + "px";
+        wrapper.style.height = h + "px";
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}
