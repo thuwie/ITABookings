@@ -111,7 +111,7 @@ class BookingRepository implements BookingRepositoryPort {
     public function getBookings($userId): array {
         $rows = DB::table('bookings')
         ->join('providers', 'bookings.provider_id', '=', 'providers.id')
-        ->where('providers.user_id', $userId)
+        ->where('providers.id', $userId)
         ->select(
             'bookings.*',
         )

@@ -20,21 +20,6 @@
         -2px -2px 8px rgba(255, 255, 255, 0.9);
 }
 
-/*Banner searching*/
-.bg-banner-custom {
-    background-image: url('../images/banner.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 100%;
-    height: 300px;
-}
-
-.input-searching:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
 /*Hiệu ứng cho các dịch vụ nổi bật*/
 .pointer-hover-col {
     transition: transform 0.3s ease, box-shadow 0.3s ease;

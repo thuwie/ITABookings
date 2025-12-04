@@ -355,7 +355,6 @@ return function (App $app, $twig) {
 
 
     })
-    ->add(new AuthMiddleware())
-    ->add(new AuthorizationMiddleware(2));
-
+    ->add(new AuthorizationMiddleware(2))
+    ->add(new AuthMiddleware());
 };

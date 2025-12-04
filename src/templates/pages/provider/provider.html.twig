@@ -56,22 +56,7 @@
                     <img class="icon" src="https://img.icons8.com/?size=100&id=22117&format=png&color=000000">
                     <span>Quản lý tài xế</span>
                 </button>
-                <button class="side-item" data-tab="tabDriverPayments" onclick="openTabFromSidebar(event)">
-                    <img class="icon" src="https://img.icons8.com/?size=100&id=ckrjM2xjKegD&format=png&color=000000">
-                    <span>Thanh toán tài xế</span>
-                </button>
-                <button class="side-item" data-tab="tabRevenue" onclick="openTabFromSidebar(event)">
-                    <img class="icon" src="https://img.icons8.com/?size=100&id=3005&format=png&color=000000">
-                    <span>Tổng doanh thu</span>
-                </button>
             </nav>
-
-            <div class="spacer"></div>
-            <a href="logout.php" class="logout-btn">
-                <span class="material-symbols-rounded">logout</span>
-                <span class="text">Đăng xuất</span>
-            </a>
-
         </div>
         <div class="main-content">
             <!-- TAB 1 -->
@@ -94,7 +79,6 @@
                                 <th>Ngày kết thúc</th>
                                 <th>Tổng tiền</th>
                                 <th>Trạng thái</th>
-                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="bookingList">
@@ -113,12 +97,6 @@
                                     {% else %}
                                     <span class="badge bg-danger text-white">Chưa thanh toán</span>
                                     {% endif %}
-                                </td>
-
-                                <td>
-                                    <a href="/provider/booking/{{ booking.id }}" class="btn btn-sm btn-primary">
-                                        Xem
-                                    </a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -264,7 +242,6 @@
                                 <th>Tiêu thụ nhiên liệu (lít)/100km</th>
                                 <th>Phí bảo dưỡng</th>
                                 <th>Trạng thái</th>
-                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="manageVehicleList">
@@ -311,7 +288,6 @@
                                 <th>Ngày cấp</th>
                                 <th>Ngày hết hạn</th>
                                 <th>Đánh giá trung bình</th>
-                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="manageDriverList">

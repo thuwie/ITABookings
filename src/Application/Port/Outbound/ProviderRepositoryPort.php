@@ -5,6 +5,7 @@ use App\Domain\Entity\Vehicle;
 use App\Domain\Entity\CostsRelatedProvider;
 use Psr\Http\Message\UploadedFileInterface;
 interface ProviderRepositoryPort {
+    public function findByUserId(int $id): ?Provider;
     public function save(Provider $provider): Provider;
     public function saveLogo(?UploadedFileInterface $logo, string $providerName): string;
     public function savePathLogo($url, Provider $provider): bool;
