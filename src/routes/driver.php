@@ -12,6 +12,23 @@ use App\Middleware\AuthorizationMiddleware;
 use App\Middleware\AuthMiddleware;
 
 return function (App $app, $twig) {
+// GET
+        $app->get('/driver/register-successfully', function ($request, $response) use ($twig) {
+        
+            $html = $twig->render('pages/driver/dri_success.html.twig');
+
+            $response->getBody()->write($html);
+            return $response;
+        });
+
+         // GET
+        $app->get('/driver/register-failed', function ($request, $response) use ($twig) {
+
+            $html = $twig->render('pages/driver/dri_failed.html.twig');
+
+            $response->getBody()->write($html);
+            return $response;
+        });
 
      // GET
     $app->get('/driver/register', function ($request, $response) use ($twig) {
@@ -88,24 +105,7 @@ return function (App $app, $twig) {
         $userServices = $container->get(UserServicePort::class);
         $driverServices  =  $container->get(DriverServicePort::class);
 
-         // GET
-        $group->get('/register-successfully', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
-        
-            $html = $twig->render('pages/driver/dri_success.html.twig');
-
-            $response->getBody()->write($html);
-            return $response;
-        });
-
-         // GET
-        $group->get('/register-failed', function ($request, $response) use ($twig, $userServices, $providerService, $provinceServices) {
-
-            $html = $twig->render('pages/driver/dri_failed.html.twig');
-
-            $response->getBody()->write($html);
-            return $response;
-        });
-
+         
     })->add(new AuthMiddleware())
     ->add(new AuthorizationMiddleware(3));
 

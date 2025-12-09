@@ -113,6 +113,10 @@ class RouteService implements RouteServicePort {
         // Loop through all vehicles
         foreach ($providersWithVehicles as $vehicle) {
             $providerId = $vehicle->provider_id;
+            if (!isset($list_driver_costs[$providerId])) {
+                // Skip provider without cost data
+                continue;
+            }
 
             $fuel_cost = ($km  / 100) * (float)$vehicle->fuel_consumption * (float)$extraCosts->fuel_price;
             $maintenance_cost = $km  * (int)$vehicle->maintenance_per_km;

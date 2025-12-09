@@ -49,15 +49,15 @@
                                     {% elseif authUser.role == 'driver' and authUser.status == 'unverified' %}
                                     <li class="border-bottom pb-1 text-black">
                                         <a href="driver/register-form-detail"
-                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đơn
+                                            style="font-size: 12px; text-decoration-line: none; color: black; opacity: 0.5; cursor: default">Đơn
                                             đăng
-                                            ký tài xế</a>
+                                            ký tài xế (chưa xử lý)</a>
                                     </li>
                                     {% elseif authUser.role == 'driver' and authUser.status == 'verified' %}
                                     <li class="border-bottom pb-1 text-black">
                                         <a href="/driver/dashboard"
-                                            style="font-size: 12px; text-decoration-line: none; color: black;">Đơn đăng
-                                            ký tài xế</a>
+                                            style="font-size: 12px; text-decoration-line: none; color: black; opacity: 0.5; cursor: default">Đơn đăng
+                                            ký tài xế (chưa xử lý)</a>
                                     </li>
                                     {% else %}
                                     <li class="border-bottom pb-1 text-black">
